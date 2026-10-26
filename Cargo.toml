@@ -1,0 +1,38 @@
+[package]
+name = "slay_of_pokemon"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bevy = { version = "0.19", default-features = false, features = [
+    "bevy_winit",
+    "bevy_render",
+    "bevy_core_pipeline",
+    "bevy_sprite",
+    "bevy_sprite_render",
+    "bevy_text",
+    "bevy_ui",
+    "bevy_ui_render",
+    "bevy_asset",
+    "bevy_state",
+    "bevy_color",
+    "bevy_window",
+    "bevy_camera",
+    "bevy_mesh",
+    "bevy_material",
+    "bevy_log",
+    "png",
+    "default_font",
+    "wayland",
+    "x11",
+    "multi_threaded",
+    "async_executor",
+    "custom_cursor",
+] }
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+ron = "0.8"
+rand = "0.8"
+bevy_save = "2.0"
+bevy_hanabi = "0.19"
+bevy_tweening = "0.16"
