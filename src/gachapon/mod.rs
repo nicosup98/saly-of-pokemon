@@ -1,6 +1,7 @@
 use bevy::prelude::*;
 use rand::Rng;
 use crate::run::{AppState, MetaProfile};
+pub use crate::pokemon::species_rarity;
 
 pub struct GachaponPlugin;
 
@@ -11,7 +12,7 @@ impl Plugin for GachaponPlugin {
 }
 
 pub fn on_enter_gachapon(meta: Res<MetaProfile>) {
-    println!("\n🎰 === TIENDA GACHAPÓN ===");
+    println!("\n[GACHAPON] === TIENDA GACHAPÓN ===");
     println!("Fichas disponibles: {} Fichas Gachapón", meta.gachapon_tokens);
     println!("Pokémon desbloqueados: {:?}", meta.unlocked_pokemon);
     println!("Fragmentos acumulados: {:?}", meta.pokemon_fragments);

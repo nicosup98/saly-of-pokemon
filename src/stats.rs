@@ -77,6 +77,45 @@ impl PokemonStats {
         ((b * l) / 100.0 + 5.0).round()
     }
 
+    /// Retorna la cantidad de experiencia (XP) requerida para avanzar del nivel actual al siguiente.
+    /// Utiliza una progresión cuadrática: a mayor nivel, se requiere más XP y más combates para subir.
+    pub fn exp_to_next_level(&self) -> u32 {
+        Self::calc_exp_to_next_level(self.level)
+    }
+
+    /// Fórmula de progresión cuadrática de experiencia según el nivel:
+    /// Requerido(Nivel) = 40 + (8 * Nivel) + (2 * Nivel^2)
+    /// Nv. 5 -> 130 XP
+    /// Nv. 10 -> 320 XP
+    /// Nv. 20 -> 1000 XP
+    /// Nv. 30 -> 2080 XP
+    pub fn calc_exp_to_next_level(level: u32) -> u32 {
+        let l = level;
+        40 + 8 * l + 2 * l * l
+    }
+
+    /// Añade experiencia al Pokémon y procesa subidas de nivel consecutivas si supera el umbral.
+    /// Retorna la cantidad de niveles subidos y los registros generados.
+    pub fn gain_exp(&mut self, exp_amount: u32) -> (u32, Vec<String>) {
+        self.exp += exp_amount;
+        let mut levels_gained = 0;
+        let mut logs = Vec::new();
+
+        while self.level < 100 {
+            let needed = self.exp_to_next_level();
+            if self.exp >= needed {
+                self.exp -= needed;
+                self.level += 1;
+                levels_gained += 1;
+                logs.push(format!("[NIVEL] ¡{} ha alcanzado el Nivel {}!", self.name, self.level));
+            } else {
+                break;
+            }
+        }
+
+        (levels_gained, logs)
+    }
+
     /// Factor Porcentual de Mitigación por Defensa (Def o Sp. Def):
     /// Factor = 100 / (100 + Def)
     pub fn calc_mitigation(effective_def: f32) -> f32 {
@@ -174,7 +213,7 @@ impl PokemonStats {
             if burn_stacks > 0 {
                 let dmg = (burn_stacks * 3).max(1);
                 self.hp = (self.hp - dmg).max(0);
-                logs.push(format!("🔥 {} recibe {} de daño por Quemadura.", self.name, dmg));
+                logs.push(format!("[QUEMADURA] {} recibe {} de daño por Quemadura.", self.name, dmg));
             }
         }
         // Veneno
@@ -182,7 +221,7 @@ impl PokemonStats {
             if poison_stacks > 0 {
                 let dmg = (poison_stacks * 4).max(1);
                 self.hp = (self.hp - dmg).max(0);
-                logs.push(format!("☠️ {} recibe {} de daño por Toxina.", self.name, dmg));
+                logs.push(format!("[TOXINA] {} recibe {} de daño por Toxina.", self.name, dmg));
             }
         }
         logs

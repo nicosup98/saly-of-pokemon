@@ -45,9 +45,17 @@ pub struct ProfileSummary {
 
 pub struct SavePlugin;
 
+/// Evento global para mostrar una notificación visual flotante al guardar o cargar partida
+#[derive(Message, Debug, Clone)]
+pub struct SaveNotificationEvent {
+    pub message: String,
+    pub is_error: bool,
+}
+
 impl Plugin for SavePlugin {
     fn build(&self, app: &mut App) {
-        app.init_resource::<ActiveSaveSlot>();
+        app.init_resource::<ActiveSaveSlot>()
+            .add_message::<SaveNotificationEvent>();
     }
 }
 

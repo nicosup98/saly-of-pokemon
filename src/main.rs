@@ -1,19 +1,6 @@
 #![allow(deprecated)]
 
-pub mod types;
-pub mod stats;
-pub mod card;
-pub mod relics;
-pub mod pokemon;
-pub mod run;
-pub mod combat;
-pub mod map;
-pub mod shop;
-pub mod pokemon_center;
-pub mod gachapon;
-pub mod save;
-pub mod vfx;
-pub mod ui;
+pub use slay_of_pokemon::*;
 
 use bevy::prelude::*;
 use crate::card::{Card, InHand, create_starter_deck};
@@ -30,8 +17,13 @@ use bevy_hanabi::HanabiPlugin;
 
 fn main() {
     println!("============================================================");
-    println!("🔥 SPIREMON: ROGUELIKE DECKBUILDER RPG (RUST + BEVY ENGINE) 🔥");
+    println!("* SPIREMON: ROGUELIKE DECKBUILDER RPG (RUST + BEVY ENGINE) *");
     println!("============================================================\n");
+
+    println!(
+        "[ASSETS] Ejecutable autocontenido inicializado ({} assets incrustados en memoria).",
+        EMBEDDED_ASSETS.len()
+    );
 
     let args: Vec<String> = std::env::args().collect();
     let is_demo = args.contains(&"--demo".to_string());
@@ -40,7 +32,7 @@ fn main() {
     let mut app = App::new();
 
     if is_demo || !has_display {
-        println!("🚀 Modo Demostración / Simulación CLI activado.");
+        println!("[DEMO] Modo Demostración / Simulación CLI activado.");
         app.add_plugins(MinimalPlugins)
             .add_plugins(bevy::state::app::StatesPlugin)
             .init_state::<AppState>()
@@ -53,7 +45,7 @@ fn main() {
             .add_plugins(pokemon_center::PokemonCenterPlugin)
             .add_plugins(gachapon::GachaponPlugin)
             .add_plugins(save::SavePlugin)
-        .add_plugins(vfx::HanabiVfxPlugin)
+            .add_plugins(vfx::HanabiVfxPlugin)
             .add_systems(Startup, print_welcome)
             .add_systems(Update, display_combat_hud.run_if(in_state(AppState::Combat)));
 
@@ -65,36 +57,49 @@ fn main() {
 
         let backend = match std::env::var("WGPU_BACKEND").as_deref() {
             Ok("vulkan") => {
-                println!("🔧 Backend gráfico seleccionado: Vulkan");
+                println!("[GPU] Backend gráfico seleccionado: Vulkan");
                 Some(Backends::VULKAN)
             }
             Ok("gl") | Ok("gles") => {
-                println!("🔧 Backend gráfico seleccionado: OpenGL / GL");
+                println!("[GPU] Backend gráfico seleccionado: OpenGL / GL");
                 Some(Backends::GL)
             }
             _ => {
                 // En Wayland nativo, Vulkan (Backends::PRIMARY) utiliza VK_KHR_wayland_surface
                 // de forma directa y estable.
-                println!("🔧 Backend gráfico seleccionado: Primario (Vulkan nativo Wayland)");
+                println!("[GPU] Backend gráfico seleccionado: Primario (Vulkan nativo Wayland)");
                 Some(Backends::PRIMARY)
             }
         };
 
-        app.add_plugins(DefaultPlugins.set(WindowPlugin {
-            primary_window: Some(Window {
-                title: "SpireMon: Roguelike Deckbuilder RPG (Rust + Bevy)".into(),
-                resolution: bevy::window::WindowResolution::new(1280, 720),
-                resizable: true,
-                ..default()
-            }),
-            ..default()
-        }).set(RenderPlugin {
-            render_creation: WgpuSettings {
-                backends: backend,
-                ..default()
-            }.into(),
-            ..default()
-        }))
+        // Registrar los assets incrustados en el binario como la fuente por defecto en memoria
+        register_embedded_assets(&mut app);
+
+        app.add_plugins(
+            DefaultPlugins
+                .set(WindowPlugin {
+                    primary_window: Some(Window {
+                        title: "SpireMon: Roguelike Deckbuilder RPG (Rust + Bevy)".into(),
+                        resolution: bevy::window::WindowResolution::new(1280, 720),
+                        resizable: true,
+                        ..default()
+                    }),
+                    ..default()
+                })
+                .set(bevy::asset::AssetPlugin {
+                    meta_check: bevy::asset::AssetMetaCheck::Never,
+                    watch_for_changes_override: Some(false),
+                    ..default()
+                })
+                .set(RenderPlugin {
+                    render_creation: WgpuSettings {
+                        backends: backend,
+                        ..default()
+                    }
+                    .into(),
+                    ..default()
+                }),
+        )
         .init_state::<AppState>()
         .add_sub_state::<CombatPhase>()
         .init_resource::<CurrentRunState>()
@@ -140,7 +145,7 @@ fn display_combat_hud(
     if let (Ok((player, player_sprite)), Ok((enemy, enemy_sprite))) = (q_player.single(), q_enemy.single()) {
         println!("\n------------------------------------------------------------");
         println!(
-            "❤️ JUGADOR: {} (Nv. {}) [Sprite: {}] | HP: {}/{} | Bloqueo: {} | Energía: {}/{}",
+            "[JUGADOR]: {} (Nv. {}) [Sprite: {}] | HP: {}/{} | Bloqueo: {} | Energía: {}/{}",
             player.name, player.level, player_sprite.relative_path(), player.hp, player.max_hp, player.block, run_state.energy, run_state.max_energy
         );
         println!(
@@ -148,10 +153,10 @@ fn display_combat_hud(
             player.atk, player.def, player.sp_atk, player.sp_def, player.spe
         );
         println!(
-            "👾 RIVAL:   {} (Nv. {}) [Sprite: {}] | HP: {}/{} | Bloqueo: {}",
+            "[RIVAL]:   {} (Nv. {}) [Sprite: {}] | HP: {}/{} | Bloqueo: {}",
             enemy.name, enemy.level, enemy_sprite.relative_path(), enemy.hp, enemy.max_hp, enemy.block
         );
-        println!("🎴 MANO:");
+        println!("[MANO]:");
         for (i, card) in q_hand.iter().enumerate() {
             println!(
                 "   [{}] {} ({:?}, Coste {}, Mult: {:.2}x)",
@@ -164,36 +169,36 @@ fn display_combat_hud(
 
 /// Simula un combate por turnos completo, subida de nivel y evolución canónica
 fn run_demo_simulation(app: &mut App) {
-    println!("\n🚀 === INICIANDO SIMULACIÓN DE RUN (PISO 1 / ACTO 1) ===");
+    println!("\n=== INICIANDO SIMULACIÓN DE RUN (PISO 1 / ACTO 1) ===");
 
     // Cambia el estado a Combate
     app.world_mut().resource_mut::<NextState<AppState>>().set(AppState::Combat);
     app.update();
 
     // Turno 1: Jugador juega carta 0 (Ataque)
-    println!("\n👉 [ACCIÓN JUGADOR]: Jugando carta de mano en índice 0...");
+    println!("\n-> [ACCIÓN JUGADOR]: Jugando carta de mano en índice 0...");
     app.world_mut().write_message(PlayCardEvent { card_index: 0 });
     app.update();
 
     // Jugador juega otra carta
-    println!("\n👉 [ACCIÓN JUGADOR]: Jugando carta de mano en índice 1...");
+    println!("\n-> [ACCIÓN JUGADOR]: Jugando carta de mano en índice 1...");
     app.world_mut().write_message(PlayCardEvent { card_index: 0 });
     app.update();
 
     // Fin de turno
-    println!("\n👉 [ACCIÓN JUGADOR]: Fin de turno...");
+    println!("\n-> [ACCIÓN JUGADOR]: Fin de turno...");
     app.world_mut().write_message(EndPlayerTurnEvent);
     app.update();
 
     // Imprime logs de combate
     let run_state = app.world().resource::<CurrentRunState>();
-    println!("\n📜 Registro de eventos de combate:");
+    println!("\n[LOGS] Registro de eventos de combate:");
     for log in &run_state.battle_logs {
         println!("   {}", log);
     }
 
     // Demostración de evolución canónica (Sección 5.3) y actualización de sprites
-    println!("\n🧬 === DEMOSTRACIÓN DE SALTO EVOLUTIVO CANÓNICO (Charmander -> Charmeleon -> Charizard) ===");
+    println!("\n=== DEMOSTRACIÓN DE SALTO EVOLUTIVO CANÓNICO (Charmander -> Charmeleon -> Charizard) ===");
     let mut demo_charmander = pokemon::create_pokemon_from_species(4, 5).unwrap();
     let mut demo_sprite = pokemon::PokemonSprite::new(4, true);
     println!(
@@ -227,7 +232,7 @@ fn run_demo_simulation(app: &mut App) {
     );
 
     // Demostración de generación del mapa procedural (Sección 6.3)
-    println!("\n🗺️ === GENERACIÓN PROCEDURAL DE MAPA (ACTO 1 - 15 PISOS, 3 CAMINOS) ===");
+    println!("\n=== GENERACIÓN PROCEDURAL DE MAPA (ACTO 1 - 15 PISOS, 3 CAMINOS) ===");
     let act_map = map::generator::generate_act_map(1);
     for floor in &act_map.floors {
         let node_icons: Vec<String> = floor
@@ -238,12 +243,12 @@ fn run_demo_simulation(app: &mut App) {
     }
 
     // Demostración de Gachapón con fragmentos
-    println!("\n🎰 === METAPROGRESIÓN: TIRADA GACHAPÓN CON FRAGMENTOS ===");
+    println!("\n=== METAPROGRESIÓN: TIRADA GACHAPÓN CON FRAGMENTOS ===");
     let mut meta = app.world_mut().resource_mut::<MetaProfile>();
     meta.pokemon_fragments.insert(123, 3); // 3 fragmentos de Scyther
     println!("Insertando 3 fragmentos de Scyther (Tasa potenciada al 35%)...");
     let pulled = gachapon::pull_gachapon(&mut meta, Some(123), 3);
     println!("¡Resultado de la tirada: ID de especie obtenido = {:?}! Desbloqueados actuales: {:?}\n", pulled, meta.unlocked_pokemon);
 
-    println!("✅ Todas las mecánicas y sistemas del GDD han sido ejecutados con éxito en Bevy ECS.");
+    println!("[OK] Todas las mecánicas y sistemas del GDD han sido ejecutados con éxito en Bevy ECS.");
 }

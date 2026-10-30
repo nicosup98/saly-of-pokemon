@@ -33,6 +33,9 @@ pub struct CombatVictoryData {
     pub player_species_id: u32,
     pub player_level: u32,
     pub exp_gained: u32,
+    pub player_exp: u32,
+    pub exp_to_next: u32,
+    pub levels_gained: u32,
     pub money_gained: u32,
     pub tokens_gained: u32,
     pub fragment_reward: Option<String>,
@@ -40,6 +43,20 @@ pub struct CombatVictoryData {
     pub evolution_msg: Option<String>,
     pub reward_cards: Vec<crate::card::Card>,
     pub card_chosen: bool,
+}
+
+/// Calcula la cantidad de experiencia (XP) otorgada al derrotar a un enemigo:
+/// - Los entrenadores comunes dan experiencia base moderada.
+/// - Los minijefes otorgan sustancialmente más experiencia.
+/// - El líder del gimnasio (jefe de nivel) otorga una gran bonificación de experiencia.
+pub fn calculate_exp_reward(is_boss: bool, is_mini_boss: bool, enemy_level: u32) -> u32 {
+    if is_boss {
+        250 + enemy_level * 20
+    } else if is_mini_boss {
+        100 + enemy_level * 10
+    } else {
+        40 + enemy_level * 4
+    }
 }
 
 pub fn roll_victory_cards(player_element: Option<crate::types::ElementType>) -> Vec<crate::card::Card> {
@@ -174,6 +191,7 @@ impl Plugin for CombatPlugin {
             .add_message::<EndPlayerTurnEvent>()
             .add_message::<UseConsumableEvent>()
             .add_message::<CombatAnimEvent>()
+            .add_message::<DeckShuffleAnimEvent>()
             .add_systems(OnEnter(AppState::Combat), setup_combat)
             .add_systems(
                 Update,
@@ -198,6 +216,7 @@ pub fn setup_combat(
     map: Res<CurrentMap>,
     mut next_phase: ResMut<NextState<CombatPhase>>,
     existing_entities: Query<Entity, Or<(With<PlayerPokemon>, With<EnemyPokemon>, With<Card>)>>,
+    mut ev_shuffle: Option<MessageWriter<DeckShuffleAnimEvent>>,
 ) {
     // Limpia entidades de combates previos
     for e in existing_entities.iter() {
@@ -207,10 +226,11 @@ pub fn setup_combat(
     run_state.battle_logs.clear();
     run_state.energy = run_state.max_energy;
 
-    // Crea el Pokémon del jugador según su ID y piso actual
+    // Crea el Pokémon del jugador según su ID y nivel persistente
     let player_level = run_state.player_level();
     let mut player_stats = create_pokemon_from_species(run_state.selected_starter_id, player_level)
         .unwrap_or_else(|| create_pokemon_from_species(4, 5).unwrap());
+    player_stats.exp = run_state.player_exp();
 
     // El HP se conserva entre combates (solo se recupera en el Centro Pokémon o con objetos)
     if let Some(hp) = run_state.player_hp {
@@ -281,6 +301,10 @@ pub fn setup_combat(
     // Spawnea las cartas en la pila de robo
     let mut deck = run_state.player_deck.clone();
     deck.shuffle(&mut rand::thread_rng());
+
+    if let Some(ref mut ev_shuffle) = ev_shuffle {
+        ev_shuffle.write(DeckShuffleAnimEvent { card_count: deck.len() });
+    }
 
     for (i, card) in deck.into_iter().enumerate() {
         if i < 5 {
@@ -460,6 +484,7 @@ pub fn handle_end_turn(
     q_hand: Query<Entity, With<InHand>>,
     q_draw: Query<(Entity, &Card), With<InDrawPile>>,
     q_discard: Query<(Entity, &Card), With<InDiscardPile>>,
+    mut ev_shuffle: Option<MessageWriter<DeckShuffleAnimEvent>>,
 ) {
     if ev_end.read().next().is_none() {
         return;
@@ -566,12 +591,16 @@ pub fn handle_end_turn(
     // Roba 5 cartas nuevas
     let mut draw_pile: Vec<Entity> = q_draw.iter().map(|(e, _)| e).collect();
     if draw_pile.len() < 5 {
+        let recycled_count = q_discard.iter().count();
         // Recicla el descarte en la pila de robo
         for (e, _) in q_discard.iter() {
             commands.entity(e).remove::<InDiscardPile>().insert(InDrawPile);
             draw_pile.push(e);
         }
         run_state.add_log("[BARAJAR] Barajando el mazo de descarte en el mazo de robo.");
+        if let Some(ref mut ev_shuffle) = ev_shuffle {
+            ev_shuffle.write(DeckShuffleAnimEvent { card_count: recycled_count });
+        }
     }
 
     draw_pile.shuffle(&mut rand::thread_rng());
@@ -609,15 +638,29 @@ pub fn check_combat_outcome(
         commands.entity(enemy_entity).insert(CombatOutcomeResolved);
         run_state.add_log(format!("[VICTORIA] ¡Has derrotado a {}!", enemy.name));
 
-        // Recompensa de EXP
-        let exp_gain = if ai.is_boss { 5 } else { 2 };
-        player.level += exp_gain;
-        run_state.add_log(format!("[EXP] Ganas {} niveles de EXP (Nivel actual: {}).", exp_gain, player.level));
+        // Recompensa de EXP escalonada según el tipo de rival (minijefes y líderes dan sustancialmente más)
+        let exp_gain = calculate_exp_reward(ai.is_boss, ai.is_mini_boss, enemy.level);
+        let (levels_gained, level_logs) = player.gain_exp(exp_gain);
+        if levels_gained > 0 {
+            crate::pokemon::update_pokemon_stats_for_level(&mut player);
+        }
+        for log in level_logs {
+            run_state.add_log(log);
+        }
+        run_state.add_log(format!(
+            "[EXP] Ganas +{} EXP (Nivel actual: Nv. {} [{}/{} XP]).",
+            exp_gain, player.level, player.exp, player.exp_to_next_level()
+        ));
+
+        // Persiste nivel y experiencia acumulada en la partida
+        run_state.player_level = Some(player.level);
+        run_state.player_exp = Some(player.exp);
 
         // Comprobación de evolución canónica
         let evo_result = check_evolution(&mut player);
         if let Some(ref evo_msg) = evo_result {
             run_state.add_log(evo_msg);
+            run_state.selected_starter_id = player.species_id;
             if let Ok(mut sprite) = q_player_sprite.single_mut() {
                 sprite.species_id = player.species_id;
                 run_state.add_log(format!("[EVOLUCIÓN] Sprite actualizado a: {}", sprite.relative_path()));
@@ -669,6 +712,9 @@ pub fn check_combat_outcome(
             player_species_id: player.species_id,
             player_level: player.level,
             exp_gained: exp_gain,
+            player_exp: player.exp,
+            exp_to_next: player.exp_to_next_level(),
+            levels_gained,
             money_gained: money_gain,
             tokens_gained: tokens_gain,
             fragment_reward,

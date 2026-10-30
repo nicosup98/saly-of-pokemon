@@ -78,3 +78,9 @@ pub struct EndPlayerTurnEvent;
 pub struct UseConsumableEvent {
     pub slot_index: usize,
 }
+
+/// Evento emitido al barajar el mazo (al inicio o al reciclar descarte en la pila de robo)
+#[derive(Message, Debug, Clone)]
+pub struct DeckShuffleAnimEvent {
+    pub card_count: usize,
+}

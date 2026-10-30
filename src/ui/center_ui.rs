@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use crate::pokemon::create_pokemon_from_species;
 use crate::pokemon_center::upgrade_card_at_center;
 use crate::run::{AppState, CurrentRunState};
-use crate::ui::{element_color, CleanupUi, Button, BorderColor};
+use crate::ui::{element_color, CleanupUi, Button, BorderColor, CardHoverAnimation};
 
 pub struct CenterUiPlugin;
 
@@ -73,15 +73,41 @@ fn setup_center_ui(
             Node {
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
+                position_type: PositionType::Relative,
                 flex_direction: FlexDirection::Column,
                 justify_content: JustifyContent::SpaceBetween,
                 align_items: AlignItems::Center,
                 padding: UiRect::all(Val::Px(20.0)),
+                overflow: Overflow::clip(),
                 ..default()
             },
-            BackgroundColor(Color::srgb(0.08, 0.14, 0.12)),
         ))
         .with_children(|root| {
+            // Fondo temático del Centro Pokémon
+            root.spawn((
+                ImageNode::new(asset_server.load("fondos/centro_pokemon.jpeg")),
+                Node {
+                    position_type: PositionType::Absolute,
+                    left: Val::Px(0.0),
+                    right: Val::Px(0.0),
+                    top: Val::Px(0.0),
+                    bottom: Val::Px(0.0),
+                    ..default()
+                },
+            ));
+
+            // Tinte de contraste suave
+            root.spawn((
+                Node {
+                    position_type: PositionType::Absolute,
+                    left: Val::Px(0.0),
+                    right: Val::Px(0.0),
+                    top: Val::Px(0.0),
+                    bottom: Val::Px(0.0),
+                    ..default()
+                },
+                BackgroundColor(Color::srgba(0.04, 0.08, 0.06, 0.40)),
+            ));
             // === CABECERA ===
             root.spawn(Node {
                 width: Val::Percent(100.0),
@@ -142,7 +168,7 @@ fn setup_center_ui(
                     BackgroundColor(Color::srgb(0.18, 0.35, 0.25)),
                     BorderColor(Color::srgb(0.4, 0.9, 0.6)),
                 )).with_child((
-                    Text::new("CONTINUAR ASCENSO ➔"),
+                    Text::new("CONTINUAR ASCENSO ->"),
                     TextFont::from_font_size(14.0),
                     TextColor(Color::WHITE),
                 ));
@@ -254,7 +280,7 @@ fn setup_center_ui(
                             ..default()
                         }).with_children(|left| {
                             left.spawn((
-                                Text::new("💖 OPCIÓN 1: DESCANSAR Y CURAR (+35% HP)"),
+                                Text::new("[+] OPCIÓN 1: DESCANSAR Y CURAR (+35% HP)"),
                                 TextFont::from_font_size(16.0),
                                 TextColor(Color::srgb(1.0, 0.6, 0.7)),
                             ));
@@ -339,32 +365,80 @@ fn setup_center_ui(
                                         Button,
                                         CenterUpgradeCardButton(idx),
                                         Node {
-                                            width: Val::Px(110.0),
-                                            height: Val::Px(85.0),
+                                            width: Val::Px(120.0),
+                                            height: Val::Px(160.0),
                                             flex_direction: FlexDirection::Column,
                                             justify_content: JustifyContent::SpaceBetween,
                                             align_items: AlignItems::Center,
-                                            padding: UiRect::all(Val::Px(6.0)),
                                             border: UiRect::all(Val::Px(1.5)),
+                                            border_radius: BorderRadius::all(Val::Px(6.0)),
+                                            overflow: Overflow::clip(),
                                             ..default()
                                         },
-                                        BackgroundColor(Color::srgb(0.15, 0.20, 0.25)),
+                                        UiTransform::default(),
+                                        GlobalZIndex(10),
+                                        CardHoverAnimation::new(col).with_lift(-12.0).with_scale(1.08),
+                                        BackgroundColor(Color::srgba(0.06, 0.08, 0.12, 0.2)),
                                         BorderColor(col),
                                     )).with_children(|c_btn| {
+                                        // Fondo ilustrado del tipo de carta
                                         c_btn.spawn((
-                                            Text::new(card.display_name()),
-                                            TextFont::from_font_size(11.5),
-                                            TextColor(Color::WHITE),
+                                            ImageNode::new(asset_server.load(card.asset_path())),
+                                            Node {
+                                                position_type: PositionType::Absolute,
+                                                left: Val::Px(0.0),
+                                                right: Val::Px(0.0),
+                                                top: Val::Px(0.0),
+                                                bottom: Val::Px(0.0),
+                                                ..default()
+                                            },
                                         ));
+
+                                        // Cabecera: Nombre y Coste (en el banner superior)
+                                        c_btn.spawn(Node {
+                                            width: Val::Percent(100.0),
+                                            height: Val::Px(26.0),
+                                            margin: UiRect::top(Val::Px(8.0)),
+                                            padding: UiRect::axes(Val::Px(10.0), Val::Px(2.0)),
+                                            flex_direction: FlexDirection::Row,
+                                            justify_content: JustifyContent::SpaceBetween,
+                                            align_items: AlignItems::Center,
+                                            ..default()
+                                        }).with_children(|h| {
+                                            h.spawn((
+                                                Text::new(card.display_name()),
+                                                TextFont::from_font_size(10.5),
+                                                TextColor(Color::WHITE),
+                                            ));
+                                            h.spawn((
+                                                Text::new(format!("{} EN", card.energy_cost)),
+                                                TextFont::from_font_size(10.5),
+                                                TextColor(Color::srgb(1.0, 0.85, 0.2)),
+                                            ));
+                                        });
+
+                                        // Espacio central para el arte elemental
+                                        c_btn.spawn(Node {
+                                            flex_grow: 1.0,
+                                            ..default()
+                                        });
+
+                                        // Botón ENTRENAR en banner inferior
                                         c_btn.spawn((
-                                            Text::new(format!("{} EN | {:.1}x", card.energy_cost, card.multiplier)),
+                                            Node {
+                                                width: Val::Percent(85.0),
+                                                height: Val::Px(24.0),
+                                                margin: UiRect::bottom(Val::Px(10.0)),
+                                                justify_content: JustifyContent::Center,
+                                                align_items: AlignItems::Center,
+                                                border_radius: BorderRadius::all(Val::Px(4.0)),
+                                                ..default()
+                                            },
+                                            BackgroundColor(Color::srgba(0.1, 0.4, 0.2, 0.85)),
+                                        )).with_child((
+                                            Text::new("ENTRENAR ->"),
                                             TextFont::from_font_size(10.0),
-                                            TextColor(Color::srgb(0.8, 0.8, 0.8)),
-                                        ));
-                                        c_btn.spawn((
-                                            Text::new("ENTRENAR ➔"),
-                                            TextFont::from_font_size(9.5),
-                                            TextColor(Color::srgb(0.4, 0.9, 0.5)),
+                                            TextColor(Color::srgb(0.9, 1.0, 0.9)),
                                         ));
                                     });
                                 }
@@ -377,7 +451,7 @@ fn setup_center_ui(
             // === BARRA INFERIOR DE MENSAJES ===
             root.spawn((
                 CenterStatusBanner,
-                Text::new("💡 Elige una opción: Descansar para recuperar vida o Entrenar para mejorar una carta a '+'."),
+                Text::new("[INFO] Elige una opción: Descansar para recuperar vida o Entrenar para mejorar una carta a '+'."),
                 TextFont::from_font_size(13.0),
                 TextColor(Color::srgb(0.5, 0.85, 0.65)),
             ));
@@ -396,7 +470,7 @@ fn handle_heal_action(
         if *interaction == Interaction::Pressed {
             if center_state.action_taken {
                 if let Ok(mut text) = q_status.single_mut() {
-                    **text = "⚠️ Ya has realizado tu acción de descanso en este Centro Pokémon.".to_string();
+                    **text = "[!] Ya has realizado tu acción de descanso en este Centro Pokémon.".to_string();
                 }
                 continue;
             }
@@ -412,7 +486,7 @@ fn handle_heal_action(
             run_state.player_hp = Some(cur_hp);
             let healed_amount = cur_hp - before;
 
-            let msg = format!("💖 ¡Descanso completado! Tu Pokémon recuperó {} HP ({} / {}).", healed_amount, cur_hp, max_h);
+            let msg = format!("[CURACIÓN] ¡Descanso completado! Tu Pokémon recuperó {} HP ({} / {}).", healed_amount, cur_hp, max_h);
             run_state.add_log(msg.clone());
 
             if let Ok(mut text) = q_status.single_mut() {
@@ -441,7 +515,7 @@ fn handle_upgrade_card_click(
         if *interaction == Interaction::Pressed {
             if center_state.action_taken {
                 if let Ok(mut text) = q_status.single_mut() {
-                    **text = "⚠️ Ya has utilizado tu acción de descanso en este Centro Pokémon.".to_string();
+                    **text = "[!] Ya has utilizado tu acción de descanso en este Centro Pokémon.".to_string();
                 }
                 continue;
             }

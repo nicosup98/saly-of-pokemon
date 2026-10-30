@@ -1,7 +1,8 @@
 use bevy::prelude::*;
 use crate::map::generator::NodeType;
 use crate::map::CurrentMap;
-use crate::run::{AppState, CurrentRunState};
+use crate::run::{AppState, CurrentRunState, MetaProfile};
+use crate::save::{self, ActiveSaveSlot, SaveNotificationEvent};
 use crate::ui::{CleanupUi, Button, BorderColor};
 
 pub struct MapUiPlugin;
@@ -15,10 +16,21 @@ impl Plugin for MapUiPlugin {
         )
         .add_systems(
             Update,
-            (handle_node_selection, node_hover_feedback).run_if(in_state(AppState::MapNavigation)),
+            (
+                handle_node_selection,
+                handle_map_header_actions,
+                node_hover_feedback,
+            )
+                .run_if(in_state(AppState::MapNavigation)),
         )
         .add_systems(OnExit(AppState::MapNavigation), cleanup_map_ui);
     }
+}
+
+#[derive(Component)]
+pub enum MapHeaderAction {
+    SaveGame,
+    BackToMenu,
 }
 
 #[derive(Component)]
@@ -60,7 +72,9 @@ fn setup_map_ui(
     mut commands: Commands,
     run_state: Res<CurrentRunState>,
     map: Res<CurrentMap>,
+    active_slot: Option<Res<ActiveSaveSlot>>,
 ) {
+    let current_slot = active_slot.as_ref().map(|s| s.0).unwrap_or(1);
     let current_floor = (run_state.current_floor as usize).clamp(1, 15);
     let floor_nodes = &map.act_map.floors[current_floor - 1];
     let reachable = map.reachable_indices(current_floor as u8);
@@ -80,27 +94,86 @@ fn setup_map_ui(
             BackgroundColor(Color::srgb(0.08, 0.10, 0.14)),
         ))
         .with_children(|root| {
-            // Cabecera
+            // Cabecera con botones de Guardado y Menú
             root.spawn(Node {
-                flex_direction: FlexDirection::Column,
+                width: Val::Percent(100.0),
+                flex_direction: FlexDirection::Row,
+                justify_content: JustifyContent::SpaceBetween,
                 align_items: AlignItems::Center,
-                row_gap: Val::Px(6.0),
                 ..default()
-            }).with_children(|header| {
-                header.spawn((
-                    Text::new(format!("MAPA DE RUTA - ACTO {}", run_state.current_act)),
-                    TextFont::from_font_size(26.0),
-                    TextColor(Color::srgb(0.4, 0.8, 1.0)),
-                ));
-                header.spawn((
-                    Text::new(format!(
-                        "Piso {}/15 | Elige tu próximo destino ({} camino(s) disponible(s))",
-                        current_floor,
-                        reachable.len()
-                    )),
-                    TextFont::from_font_size(16.0),
-                    TextColor(Color::srgb(0.8, 0.8, 0.8)),
-                ));
+            })
+            .with_children(|top_bar| {
+                // Botón Menú Principal
+                top_bar
+                    .spawn((
+                        Button,
+                        MapHeaderAction::BackToMenu,
+                        Node {
+                            padding: UiRect::axes(Val::Px(14.0), Val::Px(8.0)),
+                            border: UiRect::all(Val::Px(1.5)),
+                            border_radius: BorderRadius::all(Val::Px(6.0)),
+                            justify_content: JustifyContent::Center,
+                            align_items: AlignItems::Center,
+                            ..default()
+                        },
+                        BackgroundColor(Color::srgb(0.20, 0.22, 0.30)),
+                        BorderColor(Color::srgb(0.5, 0.55, 0.7)),
+                    ))
+                    .with_child((
+                        Text::new("<- MENÚ PRINCIPAL"),
+                        TextFont::from_font_size(12.5),
+                        TextColor(Color::WHITE),
+                    ));
+
+                // Títulos centrales
+                top_bar
+                    .spawn(Node {
+                        flex_direction: FlexDirection::Column,
+                        align_items: AlignItems::Center,
+                        row_gap: Val::Px(4.0),
+                        ..default()
+                    })
+                    .with_children(|header| {
+                        header.spawn((
+                            Text::new(format!(
+                                "MAPA DE RUTA - ACTO {} (Perfil #{})",
+                                run_state.current_act, current_slot
+                            )),
+                            TextFont::from_font_size(24.0),
+                            TextColor(Color::srgb(0.4, 0.8, 1.0)),
+                        ));
+                        header.spawn((
+                            Text::new(format!(
+                                "Piso {}/15 | Elige tu próximo destino ({} camino(s) disponible(s))",
+                                current_floor,
+                                reachable.len()
+                            )),
+                            TextFont::from_font_size(14.5),
+                            TextColor(Color::srgb(0.8, 0.8, 0.8)),
+                        ));
+                    });
+
+                // Botón Guardar Partida
+                top_bar
+                    .spawn((
+                        Button,
+                        MapHeaderAction::SaveGame,
+                        Node {
+                            padding: UiRect::axes(Val::Px(16.0), Val::Px(8.0)),
+                            border: UiRect::all(Val::Px(2.0)),
+                            border_radius: BorderRadius::all(Val::Px(6.0)),
+                            justify_content: JustifyContent::Center,
+                            align_items: AlignItems::Center,
+                            ..default()
+                        },
+                        BackgroundColor(Color::srgb(0.18, 0.45, 0.28)),
+                        BorderColor(Color::srgb(0.35, 0.90, 0.55)),
+                    ))
+                    .with_child((
+                        Text::new(format!("GUARDAR EN PERFIL #{}", current_slot)),
+                        TextFont::from_font_size(12.5),
+                        TextColor(Color::WHITE),
+                    ));
             });
 
             // Progreso del Acto: 15 pisos (recorridos, actual y futuros)
@@ -256,7 +329,7 @@ fn handle_node_selection(
         map.path_history.push(btn.index);
         let floor = run_state.current_floor;
         run_state.add_log(format!(
-            "🚩 Piso {}: eliges {} {}.",
+            "[RUTA] Piso {}: eliges {} {}.",
             floor,
             btn.node_type.icon(),
             btn.node_type.name()
@@ -270,6 +343,49 @@ fn handle_node_selection(
         };
         ev_trans.write(TransitionToEvent { target });
         break;
+    }
+}
+
+fn handle_map_header_actions(
+    q_actions: Query<(&Interaction, &MapHeaderAction), Changed<Interaction>>,
+    active_slot: Option<Res<ActiveSaveSlot>>,
+    meta: Res<MetaProfile>,
+    run_state: Res<CurrentRunState>,
+    map: Res<CurrentMap>,
+    mut ev_notify: MessageWriter<SaveNotificationEvent>,
+    mut ev_trans: MessageWriter<TransitionToEvent>,
+) {
+    let slot = active_slot.as_ref().map(|s| s.0).unwrap_or(1);
+    for (interaction, action) in q_actions.iter() {
+        if *interaction != Interaction::Pressed {
+            continue;
+        }
+        match action {
+            MapHeaderAction::SaveGame => {
+                match save::save_profile(slot, &meta, &run_state, Some(&map)) {
+                    Ok(_) => {
+                        ev_notify.write(SaveNotificationEvent {
+                            message: format!(
+                                "[GUARDADO] Partida guardada en el Perfil #{} (Acto {} - Piso {})",
+                                slot, run_state.current_act, run_state.current_floor
+                            ),
+                            is_error: false,
+                        });
+                    }
+                    Err(e) => {
+                        ev_notify.write(SaveNotificationEvent {
+                            message: format!("[ERROR] Error al guardar: {}", e),
+                            is_error: true,
+                        });
+                    }
+                }
+            }
+            MapHeaderAction::BackToMenu => {
+                ev_trans.write(TransitionToEvent {
+                    target: AppState::MainMenu,
+                });
+            }
+        }
     }
 }
 

@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use crate::run::{AppState, CurrentRunState};
 use crate::shop::ShopInventory;
-use crate::ui::{element_color, CleanupUi, Button, BorderColor};
+use crate::ui::{element_color, CleanupUi, Button, BorderColor, CardHoverAnimation};
 
 pub struct ShopUiPlugin;
 
@@ -32,6 +32,9 @@ pub struct ShopExitButton;
 
 #[derive(Component)]
 pub struct ShopBuyCardButton(pub usize);
+
+#[derive(Component)]
+pub struct ShopCardPriceBadge(pub usize);
 
 #[derive(Component)]
 pub struct ShopBuyRelicButton(pub usize);
@@ -77,15 +80,41 @@ fn setup_shop_ui(
             Node {
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
+                position_type: PositionType::Relative,
                 flex_direction: FlexDirection::Column,
                 justify_content: JustifyContent::SpaceBetween,
                 align_items: AlignItems::Center,
                 padding: UiRect::all(Val::Px(16.0)),
+                overflow: Overflow::clip(),
                 ..default()
             },
-            BackgroundColor(Color::srgb(0.06, 0.08, 0.12)),
         ))
         .with_children(|root| {
+            // Fondo temático de la Tienda Poké Mart
+            root.spawn((
+                ImageNode::new(asset_server.load("fondos/tienda_pokemon.jpeg")),
+                Node {
+                    position_type: PositionType::Absolute,
+                    left: Val::Px(0.0),
+                    right: Val::Px(0.0),
+                    top: Val::Px(0.0),
+                    bottom: Val::Px(0.0),
+                    ..default()
+                },
+            ));
+
+            // Tinte de contraste para preservar la nitidez del inventario
+            root.spawn((
+                Node {
+                    position_type: PositionType::Absolute,
+                    left: Val::Px(0.0),
+                    right: Val::Px(0.0),
+                    top: Val::Px(0.0),
+                    bottom: Val::Px(0.0),
+                    ..default()
+                },
+                BackgroundColor(Color::srgba(0.04, 0.06, 0.10, 0.38)),
+            ));
             // === BARRA SUPERIOR ===
             root.spawn(Node {
                 width: Val::Percent(100.0),
@@ -116,7 +145,7 @@ fn setup_shop_ui(
                         },
                     ));
                     left.spawn((
-                        Text::new("🏪 POKÉ MART (SILPH S.A.)"),
+                        Text::new("[TIENDA] POKÉ MART (SILPH S.A.)"),
                         TextFont::from_font_size(20.0),
                         TextColor(Color::srgb(0.35, 0.75, 1.0)),
                     ));
@@ -150,7 +179,7 @@ fn setup_shop_ui(
                     BackgroundColor(Color::srgb(0.18, 0.22, 0.30)),
                     BorderColor(Color::srgb(0.4, 0.7, 1.0)),
                 )).with_child((
-                    Text::new("VOLVER AL MAPA ➔"),
+                    Text::new("VOLVER AL MAPA ->"),
                     TextFont::from_font_size(14.0),
                     TextColor(Color::WHITE),
                 ));
@@ -173,7 +202,7 @@ fn setup_shop_ui(
                     ..default()
                 }).with_children(|section_cards| {
                     section_cards.spawn((
-                        Text::new("🃏 CARTAS EN VENTA (Minitienda Táctica)"),
+                        Text::new("[CARTAS] CARTAS EN VENTA (Minitienda Táctica)"),
                         TextFont::from_font_size(16.0),
                         TextColor(Color::srgb(0.9, 0.9, 0.5)),
                     ));
@@ -190,52 +219,80 @@ fn setup_shop_ui(
                             let elem_col = element_color(item.card.element);
 
                             cards_row.spawn((
+                                Button,
+                                ShopBuyCardButton(i),
                                 ShopCardItemContainer(i),
                                 Node {
                                     width: Val::Percent(15.8),
-                                    height: Val::Px(180.0),
+                                    height: Val::Px(196.0),
                                     flex_direction: FlexDirection::Column,
                                     justify_content: JustifyContent::SpaceBetween,
                                     align_items: AlignItems::Center,
-                                    padding: UiRect::all(Val::Px(8.0)),
                                     border: UiRect::all(Val::Px(2.0)),
+                                    border_radius: BorderRadius::all(Val::Px(6.0)),
+                                    overflow: Overflow::clip(),
                                     ..default()
                                 },
-                                BackgroundColor(Color::srgb(0.12, 0.14, 0.20)),
+                                UiTransform::default(),
+                                GlobalZIndex(10),
+                                CardHoverAnimation::new(elem_col).with_lift(-14.0).with_scale(1.06),
+                                BackgroundColor(Color::srgba(0.06, 0.08, 0.12, 0.2)),
                                 BorderColor(elem_col),
                             )).with_children(|card_box| {
-                                // Encabezado: Coste y Nombre
+                                // Fondo ilustrado según tipo de carta
+                                card_box.spawn((
+                                    ImageNode::new(asset_server.load(item.card.asset_path())),
+                                    Node {
+                                        position_type: PositionType::Absolute,
+                                        left: Val::Px(0.0),
+                                        right: Val::Px(0.0),
+                                        top: Val::Px(0.0),
+                                        bottom: Val::Px(0.0),
+                                        ..default()
+                                    },
+                                ));
+
+                                // Encabezado: Nombre y Coste (en el banner superior)
                                 card_box.spawn(Node {
                                     width: Val::Percent(100.0),
+                                    height: Val::Px(30.0),
+                                    margin: UiRect::top(Val::Px(10.0)),
+                                    padding: UiRect::axes(Val::Px(10.0), Val::Px(2.0)),
                                     flex_direction: FlexDirection::Row,
                                     justify_content: JustifyContent::SpaceBetween,
                                     align_items: AlignItems::Center,
                                     ..default()
                                 }).with_children(|ch| {
                                     ch.spawn((
-                                        Text::new(format!("{} EN", item.card.energy_cost)),
-                                        TextFont::from_font_size(13.0),
-                                        TextColor(Color::srgb(1.0, 0.9, 0.2)),
+                                        Text::new(item.card.display_name()),
+                                        TextFont::from_font_size(11.0),
+                                        TextColor(Color::WHITE),
                                     ));
                                     ch.spawn((
-                                        Text::new(format!("{:?}", item.card.rarity)),
-                                        TextFont::from_font_size(10.0),
-                                        TextColor(Color::srgb(0.7, 0.7, 0.8)),
+                                        Text::new(format!("{} EN", item.card.energy_cost)),
+                                        TextFont::from_font_size(11.0),
+                                        TextColor(Color::srgb(1.0, 0.9, 0.2)),
                                     ));
                                 });
 
-                                // Nombre de la carta
-                                card_box.spawn((
-                                    Text::new(item.card.display_name()),
-                                    TextFont::from_font_size(13.0),
-                                    TextColor(Color::WHITE),
-                                ));
+                                // Espacio central transparente para apreciar la ilustración elemental
+                                card_box.spawn(Node {
+                                    flex_grow: 1.0,
+                                    ..default()
+                                });
 
-                                // Descripción / Multiplicador
-                                card_box.spawn((
-                                    Text::new(format!("{:.1}x {:?} ({:?})", item.card.multiplier, item.card.category, item.card.element)),
-                                    TextFont::from_font_size(10.5),
-                                    TextColor(Color::srgb(0.8, 0.8, 0.8)),
+                                // Descripción / Multiplicador en caja de descripción
+                                card_box.spawn(Node {
+                                    width: Val::Percent(86.0),
+                                    min_height: Val::Px(32.0),
+                                    padding: UiRect::new(Val::Px(4.0), Val::Px(20.0), Val::Px(2.0), Val::Px(2.0)),
+                                    justify_content: JustifyContent::Center,
+                                    align_items: AlignItems::FlexStart,
+                                    ..default()
+                                }).with_child((
+                                    Text::new(format!("{:.1}x ({:?})", item.card.multiplier, item.card.category)),
+                                    TextFont::from_font_size(9.5),
+                                    TextColor(Color::srgb(0.95, 0.95, 0.95)),
                                 ));
 
                                 // Etiqueta de descuento si aplica
@@ -243,20 +300,20 @@ fn setup_shop_ui(
                                     card_box.spawn((
                                         Node {
                                             padding: UiRect::axes(Val::Px(6.0), Val::Px(2.0)),
+                                            border_radius: BorderRadius::all(Val::Px(4.0)),
                                             ..default()
                                         },
                                         BackgroundColor(Color::srgb(0.85, 0.2, 0.2)),
                                     )).with_child((
                                         Text::new(format!("-{}% ¡OFERTA!", item.discount_percent)),
-                                        TextFont::from_font_size(10.0),
+                                        TextFont::from_font_size(9.0),
                                         TextColor(Color::WHITE),
                                     ));
                                 }
 
-                                // Precio y Botón Comprar
+                                // Precio y Etiqueta
                                 card_box.spawn((
-                                    Button,
-                                    ShopBuyCardButton(i),
+                                    ShopCardPriceBadge(i),
                                     Node {
                                         width: Val::Percent(100.0),
                                         height: Val::Px(26.0),
@@ -270,6 +327,7 @@ fn setup_shop_ui(
                                         Color::srgb(0.2, 0.6, 0.3)
                                     }),
                                 )).with_child((
+                                    ShopCardPriceBadge(i),
                                     Text::new(if item.purchased {
                                         "VENDIDO".to_string()
                                     } else {
@@ -305,7 +363,7 @@ fn setup_shop_ui(
                     .insert(BorderColor(Color::srgb(0.3, 0.4, 0.6)))
                     .with_children(|col_relics| {
                         col_relics.spawn((
-                            Text::new("💎 RELIQUIAS EQUIPABLES"),
+                            Text::new("[RELIQUIAS] RELIQUIAS EQUIPABLES"),
                             TextFont::from_font_size(15.0),
                             TextColor(Color::srgb(0.4, 0.8, 1.0)),
                         ));
@@ -475,7 +533,7 @@ fn setup_shop_ui(
             // === BARRA DE ESTADO / MENSAJES ===
             root.spawn((
                 ShopStatusBanner,
-                Text::new("💡 Pasa el ratón o pulsa sobre un artículo para adquirirlo con tus Poké-Dólares."),
+                Text::new("[INFO] Pasa el ratón o pulsa sobre un artículo para adquirirlo con tus Poké-Dólares."),
                 TextFont::from_font_size(13.0),
                 TextColor(Color::srgb(0.6, 0.8, 1.0)),
             ));
@@ -484,18 +542,20 @@ fn setup_shop_ui(
 
 fn handle_buy_card(
     mut q_buttons: Query<(&Interaction, &ShopBuyCardButton, &mut BackgroundColor), Changed<Interaction>>,
+    mut q_badges: Query<(&ShopCardPriceBadge, &mut BackgroundColor), Without<ShopBuyCardButton>>,
+    mut q_texts: Query<(&ShopCardPriceBadge, &mut Text)>,
     mut run_state: ResMut<CurrentRunState>,
     mut inventory: ResMut<ShopInventory>,
-    mut q_status: Query<&mut Text, With<ShopStatusBanner>>,
+    mut q_status: Query<&mut Text, (With<ShopStatusBanner>, Without<ShopCardPriceBadge>)>,
 ) {
-    for (interaction, btn, mut bg_color) in q_buttons.iter_mut() {
+    for (interaction, btn, _bg_color) in q_buttons.iter_mut() {
         if *interaction == Interaction::Pressed {
             let idx = btn.0;
             if idx < inventory.cards.len() {
                 let item = &mut inventory.cards[idx];
                 if item.purchased {
                     if let Ok(mut text) = q_status.single_mut() {
-                        **text = "⚠️ Este movimiento ya ha sido vendido.".to_string();
+                        **text = "[!] Este movimiento ya ha sido vendido.".to_string();
                     }
                     continue;
                 }
@@ -507,7 +567,17 @@ fn handle_buy_card(
                     let price = item.final_price;
                     run_state.player_deck.push(card);
                     item.purchased = true;
-                    *bg_color = BackgroundColor(Color::srgb(0.3, 0.3, 0.3));
+
+                    for (badge, mut badge_bg) in q_badges.iter_mut() {
+                        if badge.0 == idx {
+                            *badge_bg = BackgroundColor(Color::srgb(0.3, 0.3, 0.3));
+                        }
+                    }
+                    for (badge, mut badge_txt) in q_texts.iter_mut() {
+                        if badge.0 == idx {
+                            **badge_txt = "VENDIDO".to_string();
+                        }
+                    }
 
                     let msg = format!("[TIENDA] ¡Has adquirido {} por {} P$! Añadida a tu mazo.", name, price);
                     run_state.add_log(msg.clone());

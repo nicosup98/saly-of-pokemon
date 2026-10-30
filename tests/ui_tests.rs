@@ -34,7 +34,12 @@ fn test_ui_plugin_initialization_and_state_transitions() {
         .add_plugins(slay_of_pokemon::gachapon::GachaponPlugin)
         .add_plugins(slay_of_pokemon::save::SavePlugin);
 
-    // 1. Iniciar en MainMenu
+    // 1. Iniciar en ProfileSelect (pantalla previa donde se escoge el perfil antes del menú)
+    app.update();
+    assert_eq!(*app.world().resource::<State<AppState>>().get(), AppState::ProfileSelect);
+
+    // Transición a MainMenu
+    app.world_mut().resource_mut::<NextState<AppState>>().set(AppState::MainMenu);
     app.update();
     assert_eq!(*app.world().resource::<State<AppState>>().get(), AppState::MainMenu);
 
@@ -393,7 +398,16 @@ fn test_play_card_lethal_triggers_immediate_victory() {
     }
     let card_idx = attack_index.unwrap_or(0);
 
-    // Jugamos la carta de ataque encontrada
+    // Simulamos clic real en el botón de la carta (lo que genera CardDiscardFlight) y jugamos la carta letal
+    {
+        use slay_of_pokemon::ui::combat_ui::CardButton;
+        let mut q_btns = app.world_mut().query::<(&mut Interaction, &CardButton)>();
+        for (mut inter, btn) in q_btns.iter_mut(app.world_mut()) {
+            if btn.index == card_idx {
+                *inter = Interaction::Pressed;
+            }
+        }
+    }
     app.world_mut().write_message(PlayCardEvent { card_index: card_idx });
 
     // Ejecutamos actualizaciones: handle_play_card reduce HP a 0, check_combat_outcome resuelve victoria
@@ -403,6 +417,15 @@ fn test_play_card_lethal_triggers_immediate_victory() {
     // El combate debe haber terminado de inmediato sin necesidad de emitir EndPlayerTurnEvent pasando a la pantalla de victoria
     assert_eq!(*app.world().resource::<State<AppState>>().get(), AppState::Victory);
     assert_eq!(app.world().resource::<CurrentRunState>().current_floor, floor_before + 1);
+
+    // Verificar que ninguna carta en vuelo al descarte (CardDiscardFlight) quede fija en Victory u otras pantallas
+    use slay_of_pokemon::ui::combat_ui::{CardDiscardFlight, DeckShuffleFlight, DeckShuffleBanner};
+    let stuck_discard_cards = app.world_mut().query::<&CardDiscardFlight>().iter(app.world()).count();
+    let stuck_shuffle_cards = app.world_mut().query::<&DeckShuffleFlight>().iter(app.world()).count();
+    let stuck_shuffle_banners = app.world_mut().query::<&DeckShuffleBanner>().iter(app.world()).count();
+    assert_eq!(stuck_discard_cards, 0, "La carta que derrota al oponente NO debe quedar fija en la pantalla de Victoria ni en el resto de pantallas");
+    assert_eq!(stuck_shuffle_cards, 0, "No deben quedar cartas de barajado colgadas fuera de combate");
+    assert_eq!(stuck_shuffle_banners, 0, "No debe quedar el banner de barajado colgado fuera de combate");
 }
 
 #[test]
@@ -412,8 +435,8 @@ fn test_scene_transition_lifecycle() {
     let mut app = build_full_app();
     app.update();
 
-    // Estado inicial
-    assert_eq!(*app.world().resource::<State<AppState>>().get(), AppState::MainMenu);
+    // Estado inicial en ProfileSelect antes de pasar al menú principal
+    assert_eq!(*app.world().resource::<State<AppState>>().get(), AppState::ProfileSelect);
     assert!(app.world().get_resource::<SceneTransition>().is_some());
 
     // Emitir mensaje para transicionar a MapNavigation
@@ -739,4 +762,94 @@ fn test_pokemon_selector_switches_starter_and_deck() {
     let run_after = app.world().resource::<CurrentRunState>();
     assert_eq!(run_after.selected_starter_id, 1);
     assert!(run_after.player_deck.iter().any(|c| c.id == "vine_whip"), "El mazo de Bulbasaur debe tener Látigo Cepa");
+}
+
+#[test]
+fn test_enemy_intent_vs_active_status_display() {
+    use slay_of_pokemon::combat::ai::{EnemyAI, EnemyIntentType};
+    use slay_of_pokemon::combat::EnemyPokemon;
+    use slay_of_pokemon::pokemon::create_pokemon_from_species;
+    use slay_of_pokemon::stats::PokemonStats;
+    use slay_of_pokemon::types::{ElementType, StatusType};
+    use slay_of_pokemon::ui::combat_ui::{EnemyIntentText, EnemyStatusesText};
+
+    // 1. Verificar que la IA no asigna Burn indiscriminadamente a Pokémon no fuego
+    let mut geodude_stats = create_pokemon_from_species(74, 5).unwrap();
+    geodude_stats.primary_types = vec![ElementType::Rock, ElementType::Ground];
+    let mut geodude_ai = EnemyAI::new(false, false);
+
+    // Forzar turno para debuff/buff
+    for _ in 0..20 {
+        let intent = geodude_ai.decide_next_intent(&geodude_stats);
+        if let EnemyIntentType::Debuff { status, .. } = intent {
+            assert_ne!(
+                status,
+                StatusType::Burn,
+                "Geodude (Roca/Tierra) no debe tener la intención de aplicar Quemadura"
+            );
+        }
+    }
+
+    // 2. Probar HUD en combate: Intención anunciada vs Estados activos
+    let mut app = build_full_app();
+    app.update();
+    go_to(&mut app, AppState::Combat);
+    app.update();
+
+    // Establecer intención explícita de debuff en el enemigo
+    {
+        let mut q_ai = app.world_mut().query::<&mut EnemyAI>();
+        let mut ai = q_ai.single_mut(app.world_mut()).unwrap();
+        ai.current_intent = Some(EnemyIntentType::Debuff {
+            status: StatusType::Burn,
+            stacks: 2,
+        });
+    }
+
+    app.update();
+
+    // Comprobar que EnemyIntentText muestra claramente la intención (acción futura hacia el jugador)
+    // y no la etiqueta engañosa "[ESTADO] Quemadura"
+    {
+        let mut q_intent = app.world_mut().query::<(&Text, &EnemyIntentText)>();
+        let (intent_text, _) = q_intent.single(app.world()).unwrap();
+        assert!(
+            intent_text.as_str().contains("[ACCIÓN RIVAL] Te lanzará: Quemadura (+2)"),
+            "La intención del enemigo debe indicar claramente la acción hacia el jugador: actual='{}'",
+            intent_text.as_str()
+        );
+        assert!(
+            !intent_text.as_str().starts_with("[ESTADO]"),
+            "La intención no debe usar el prefijo ambiguo '[ESTADO]'"
+        );
+    }
+
+    // Comprobar que los estados activos del rival están vacíos si no ha sido afectado
+    {
+        let mut q_statuses = app.world_mut().query::<(&Text, &EnemyStatusesText)>();
+        let (status_text, _) = q_statuses.single(app.world()).unwrap();
+        assert_eq!(
+            status_text.as_str(), "",
+            "El rival sin estados activos no debe mostrar nada en su línea de estados"
+        );
+    }
+
+    // 3. Aplicar estado activo real al rival y comprobar que ahora sí aparece en [ESTADOS]
+    {
+        let mut q_enemy = app.world_mut().query_filtered::<&mut PokemonStats, With<EnemyPokemon>>();
+        let mut enemy = q_enemy.single_mut(app.world_mut()).unwrap();
+        enemy.apply_status(StatusType::Burn, 3);
+    }
+
+    app.update();
+
+    {
+        let mut q_statuses = app.world_mut().query::<(&Text, &EnemyStatusesText)>();
+        let (status_text, _) = q_statuses.single(app.world()).unwrap();
+        assert_eq!(
+            status_text.as_str(),
+            "[ESTADOS RIVAL] Quemadura: 3",
+            "Los estados activos reales deben mostrarse en el texto de estados del rival"
+        );
+    }
 }

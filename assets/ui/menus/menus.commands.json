@@ -1,0 +1,8388 @@
+[
+ {
+  "command": "file.new",
+  "params": {
+   "name": "menus",
+   "width": 1280,
+   "height": 720,
+   "units": "Pixels",
+   "backgroundContents": "transparent"
+  }
+ },
+ {
+  "command": "artboard.setProps",
+  "params": {
+   "index": 0,
+   "name": "menu_main"
+  }
+ },
+ {
+  "command": "artboard.new",
+  "params": {
+   "x": 1360,
+   "y": 0,
+   "width": 760,
+   "height": 620,
+   "name": "menu_pause"
+  }
+ },
+ {
+  "command": "artboard.new",
+  "params": {
+   "x": 2200,
+   "y": 0,
+   "width": 760,
+   "height": 620,
+   "name": "menu_settings"
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 0,
+   "y": 0,
+   "width": 1280,
+   "height": 720
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#0f1928"
+     },
+     {
+      "offset": 0.52,
+      "color": "#0a111c"
+     },
+     {
+      "offset": 1,
+      "color": "#05080d"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 640,
+   "y": -260,
+   "width": 900,
+   "height": 620
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#4aa8ff",
+      "opacity": 0.1
+     },
+     {
+      "offset": 1,
+      "color": "#4aa8ff",
+      "opacity": 0
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": -240,
+   "y": 260,
+   "width": 620,
+   "height": 540
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ff7a3d",
+      "opacity": 0.09
+     },
+     {
+      "offset": 1,
+      "color": "#ff7a3d",
+      "opacity": 0
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 690 0 L 810 0 L 1180 720 L 1060 720 Z",
+   "closed": true
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 2.2
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 760 0 L 880 0 L 1250 720 L 1130 720 Z",
+   "closed": true
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 1.6
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 830 0 L 950 0 L 1320 720 L 1200 720 Z",
+   "closed": true
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#ffffff"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 1.1
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 870,
+   "y": -170,
+   "width": 480,
+   "height": 480
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#4aa8ff"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 5
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 944,
+   "y": -96,
+   "width": 332,
+   "height": 332
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#4aa8ff"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.4
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 4
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 758.6,
+   "y": 564.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 758.6,
+   "y": 602.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 758.6,
+   "y": 640.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 758.6,
+   "y": 678.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 844.6,
+   "y": 564.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 844.6,
+   "y": 602.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 844.6,
+   "y": 640.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 844.6,
+   "y": 678.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 930.6,
+   "y": 564.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 930.6,
+   "y": 602.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 930.6,
+   "y": 640.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 930.6,
+   "y": 678.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 1016.6,
+   "y": 564.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 1016.6,
+   "y": 602.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 1016.6,
+   "y": 640.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 1016.6,
+   "y": 678.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 1102.6,
+   "y": 564.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 1102.6,
+   "y": 602.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 1102.6,
+   "y": 640.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 1102.6,
+   "y": 678.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 1188.6,
+   "y": 564.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 1188.6,
+   "y": 602.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 1188.6,
+   "y": 640.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 1188.6,
+   "y": 678.6,
+   "width": 2.8,
+   "height": 2.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 9
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 82,
+   "y": 155,
+   "width": 42,
+   "height": 2,
+   "radius": 1
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#f2c14e"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 134,
+   "y": 142,
+   "text": "ROGUELIKE DE CARTAS · POKÉMON",
+   "size": 11.5,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#f2c14e",
+   "justify": "left",
+   "area": {
+    "width": 500,
+    "height": 28,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 500,
+   "height": 28,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 200,
+   "size": 11.5
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 78,
+   "y": 170,
+   "text": "SLAY",
+   "size": 128,
+   "font": "Noto Sans Black",
+   "style": "Regular",
+   "color": "#f8f3e6",
+   "justify": "left",
+   "area": {
+    "width": 620,
+    "height": 142,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 620,
+   "height": 142,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": -18,
+   "size": 128
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 82,
+   "y": 280,
+   "text": "OF POKÉMON",
+   "size": 64,
+   "font": "Noto Sans Black",
+   "style": "Regular",
+   "color": "#ffb347",
+   "justify": "left",
+   "area": {
+    "width": 620,
+    "height": 90,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 620,
+   "height": 90,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 8,
+   "size": 64
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffd76b"
+     },
+     {
+      "offset": 0.5,
+      "color": "#ff8a3d"
+     },
+     {
+      "offset": 1,
+      "color": "#e23b2b"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 84,
+   "y": 362,
+   "text": "FORJA TU MAZO · DOMINA LOS GIMNASIOS · SOBREVIVE AL ACTO",
+   "size": 11,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#93a4c0",
+   "justify": "left",
+   "area": {
+    "width": 560,
+    "height": 26,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 560,
+   "height": 26,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 170,
+   "size": 11
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 82,
+   "y": 404,
+   "width": 430,
+   "height": 58,
+   "radius": 29
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#000000"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "effect.apply",
+  "params": {
+   "effect": "stylize.dropShadow",
+   "params": {
+    "mode": "multiply",
+    "opacity": 45,
+    "x": 0,
+    "y": 7,
+    "blur": 14,
+    "color": "#000000"
+   }
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 82,
+   "y": 400,
+   "width": 430,
+   "height": 58,
+   "radius": 29
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffe9a6"
+     },
+     {
+      "offset": 0.38,
+      "color": "#f2c14e"
+     },
+     {
+      "offset": 0.72,
+      "color": "#d38f1e"
+     },
+     {
+      "offset": 1,
+      "color": "#a96210"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#6b4306"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2
+  }
+ },
+ {
+  "command": "effect.apply",
+  "params": {
+   "effect": "stylize.outerGlow",
+   "params": {
+    "mode": "screen",
+    "opacity": 20,
+    "blur": 16,
+    "color": "#f2c14e"
+   }
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 87,
+   "y": 403,
+   "width": 420,
+   "height": 20.88,
+   "radius": 25
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffffff",
+      "opacity": 0.4
+     },
+     {
+      "offset": 1,
+      "color": "#ffffff",
+      "opacity": 0
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 99,
+   "y": 412,
+   "width": 34,
+   "height": 34
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#2a1a06"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#8b5a08"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.4
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 106.5,
+   "y": 419.5,
+   "width": 19,
+   "height": 19
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#f7f9ff"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#0a0f18"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.8
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 106.5 429 A 9.5 9.5 0 0 1 125.5 429 Z",
+   "closed": true
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#f0525c"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 106.5,
+   "y": 427.86,
+   "width": 19,
+   "height": 2.28
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#111827"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 113.15,
+   "y": 426.15,
+   "width": 5.7,
+   "height": 5.7
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#111827"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#f7f9ff"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 0.76
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 114.48,
+   "y": 427.48,
+   "width": 3.04,
+   "height": 3.04
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#f7f9ff"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 146,
+   "y": 400,
+   "text": "INICIAR RUN",
+   "size": 15,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#241503",
+   "justify": "left",
+   "area": {
+    "width": 312,
+    "height": 58,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 312,
+   "height": 58,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 135,
+   "size": 15
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 378,
+   "y": 400,
+   "text": "NUEVO",
+   "size": 8.5,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#5c3a08",
+   "justify": "right",
+   "area": {
+    "width": 92,
+    "height": 58,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 92,
+   "height": 58,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 110,
+   "size": 8.5
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 482 423 L 488 429 L 482 435",
+   "closed": false
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#5c3a08"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 82,
+   "y": 474,
+   "width": 430,
+   "height": 58,
+   "radius": 29
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#000000"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "effect.apply",
+  "params": {
+   "effect": "stylize.dropShadow",
+   "params": {
+    "mode": "multiply",
+    "opacity": 42,
+    "x": 0,
+    "y": 5,
+    "blur": 10,
+    "color": "#000000"
+   }
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 82,
+   "y": 470,
+   "width": 430,
+   "height": 58,
+   "radius": 29
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#1b2638"
+     },
+     {
+      "offset": 0.62,
+      "color": "#111a29"
+     },
+     {
+      "offset": 1,
+      "color": "#090f19"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.8
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 87,
+   "y": 473,
+   "width": 420,
+   "height": 20.88,
+   "radius": 25
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffffff",
+      "opacity": 0.14
+     },
+     {
+      "offset": 1,
+      "color": "#ffffff",
+      "opacity": 0
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 99,
+   "y": 482,
+   "width": 34,
+   "height": 34
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#0b1320"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.4
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 110.6 492.4 L 122.6 499 L 110.6 505.6 Z",
+   "closed": true
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#f2c14e"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "effect.apply",
+  "params": {
+   "effect": "stylize.dropShadow",
+   "params": {
+    "mode": "multiply",
+    "opacity": 30,
+    "x": 0,
+    "y": 1,
+    "blur": 2,
+    "color": "#000000"
+   }
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 146,
+   "y": 470,
+   "text": "CONTINUAR",
+   "size": 15,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#e8effc",
+   "justify": "left",
+   "area": {
+    "width": 312,
+    "height": 58,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 312,
+   "height": 58,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 135,
+   "size": 15
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 378,
+   "y": 470,
+   "text": "PISO 04",
+   "size": 8.5,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#93a4c0",
+   "justify": "right",
+   "area": {
+    "width": 92,
+    "height": 58,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 92,
+   "height": 58,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 110,
+   "size": 8.5
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 482 493 L 488 499 L 482 505",
+   "closed": false
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 82,
+   "y": 544,
+   "width": 430,
+   "height": 58,
+   "radius": 29
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#000000"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "effect.apply",
+  "params": {
+   "effect": "stylize.dropShadow",
+   "params": {
+    "mode": "multiply",
+    "opacity": 42,
+    "x": 0,
+    "y": 5,
+    "blur": 10,
+    "color": "#000000"
+   }
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 82,
+   "y": 540,
+   "width": 430,
+   "height": 58,
+   "radius": 29
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#1b2638"
+     },
+     {
+      "offset": 0.62,
+      "color": "#111a29"
+     },
+     {
+      "offset": 1,
+      "color": "#090f19"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.8
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 87,
+   "y": 543,
+   "width": 420,
+   "height": 20.88,
+   "radius": 25
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffffff",
+      "opacity": 0.14
+     },
+     {
+      "offset": 1,
+      "color": "#ffffff",
+      "opacity": 0
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 99,
+   "y": 552,
+   "width": 34,
+   "height": 34
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#0b1320"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.4
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 115.025,
+   "y": 560.9,
+   "width": 1.9500000000000002,
+   "height": 2.6999999999999997,
+   "radius": 0.375
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#93a4c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 0,
+   "origin": [
+    116,
+    569
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 115.025,
+   "y": 560.9,
+   "width": 1.9500000000000002,
+   "height": 2.6999999999999997,
+   "radius": 0.375
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#93a4c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 45,
+   "origin": [
+    116,
+    569
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 115.025,
+   "y": 560.9,
+   "width": 1.9500000000000002,
+   "height": 2.6999999999999997,
+   "radius": 0.375
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#93a4c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 90,
+   "origin": [
+    116,
+    569
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 115.025,
+   "y": 560.9,
+   "width": 1.9500000000000002,
+   "height": 2.6999999999999997,
+   "radius": 0.375
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#93a4c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 135,
+   "origin": [
+    116,
+    569
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 115.025,
+   "y": 560.9,
+   "width": 1.9500000000000002,
+   "height": 2.6999999999999997,
+   "radius": 0.375
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#93a4c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 180,
+   "origin": [
+    116,
+    569
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 115.025,
+   "y": 560.9,
+   "width": 1.9500000000000002,
+   "height": 2.6999999999999997,
+   "radius": 0.375
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#93a4c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 225,
+   "origin": [
+    116,
+    569
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 115.025,
+   "y": 560.9,
+   "width": 1.9500000000000002,
+   "height": 2.6999999999999997,
+   "radius": 0.375
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#93a4c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 270,
+   "origin": [
+    116,
+    569
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 115.025,
+   "y": 560.9,
+   "width": 1.9500000000000002,
+   "height": 2.6999999999999997,
+   "radius": 0.375
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#93a4c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 315,
+   "origin": [
+    116,
+    569
+   ]
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 110.6,
+   "y": 563.6,
+   "width": 10.799999999999999,
+   "height": 10.799999999999999
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#93a4c0"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 113.6,
+   "y": 566.6,
+   "width": 4.8,
+   "height": 4.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#0b1320"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 146,
+   "y": 540,
+   "text": "OPCIONES",
+   "size": 15,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#e8effc",
+   "justify": "left",
+   "area": {
+    "width": 312,
+    "height": 58,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 312,
+   "height": 58,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 135,
+   "size": 15
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 378,
+   "y": 540,
+   "text": "AUDIO · VÍDEO",
+   "size": 8.5,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#93a4c0",
+   "justify": "right",
+   "area": {
+    "width": 92,
+    "height": 58,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 92,
+   "height": 58,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 110,
+   "size": 8.5
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 482 563 L 488 569 L 482 575",
+   "closed": false
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#8fa3c0"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 82,
+   "y": 614,
+   "width": 430,
+   "height": 58,
+   "radius": 29
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#000000"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "effect.apply",
+  "params": {
+   "effect": "stylize.dropShadow",
+   "params": {
+    "mode": "multiply",
+    "opacity": 42,
+    "x": 0,
+    "y": 5,
+    "blur": 10,
+    "color": "#000000"
+   }
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 82,
+   "y": 610,
+   "width": 430,
+   "height": 58,
+   "radius": 29
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#341620"
+     },
+     {
+      "offset": 0.65,
+      "color": "#1d0b12"
+     },
+     {
+      "offset": 1,
+      "color": "#10060a"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#8c2c3a"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.8
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 87,
+   "y": 613,
+   "width": 420,
+   "height": 20.88,
+   "radius": 25
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffffff",
+      "opacity": 0.14
+     },
+     {
+      "offset": 1,
+      "color": "#ffffff",
+      "opacity": 0
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 99,
+   "y": 622,
+   "width": 34,
+   "height": 34
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#2a0d14"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#8c2c3a"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.4
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 112.4 634.05 L 108.62 634.05 L 108.62 643.95 L 112.4 643.95",
+   "closed": false
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#ff8a94"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2.2,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "shape.line",
+  "params": {
+   "x1": 112.4,
+   "y1": 639,
+   "x2": 122.48,
+   "y2": 639
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#ff8a94"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2.2,
+   "cap": "round"
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 119.24 636.48 L 122.48 639 L 119.24 641.52",
+   "closed": false
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#ff8a94"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2.2,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 146,
+   "y": 610,
+   "text": "SALIR",
+   "size": 15,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#ff9da7",
+   "justify": "left",
+   "area": {
+    "width": 312,
+    "height": 58,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 312,
+   "height": 58,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 135,
+   "size": 15
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 378,
+   "y": 610,
+   "text": "CERRAR JUEGO",
+   "size": 8.5,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#b46772",
+   "justify": "right",
+   "area": {
+    "width": 92,
+    "height": 58,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 92,
+   "height": 58,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 110,
+   "size": 8.5
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 482 633 L 488 639 L 482 645",
+   "closed": false
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#b46772"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 775,
+   "y": 99,
+   "width": 448,
+   "height": 530,
+   "radius": 33
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#26354d"
+     },
+     {
+      "offset": 1,
+      "color": "#0a0f18"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#05080d"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2
+  }
+ },
+ {
+  "command": "effect.apply",
+  "params": {
+   "effect": "stylize.dropShadow",
+   "params": {
+    "mode": "multiply",
+    "opacity": 60,
+    "x": 0,
+    "y": 12,
+    "blur": 22,
+    "color": "#000000"
+   }
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 780,
+   "y": 104,
+   "width": 438,
+   "height": 520,
+   "radius": 28
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#1a2436"
+     },
+     {
+      "offset": 0.55,
+      "color": "#121a29"
+     },
+     {
+      "offset": 1,
+      "color": "#0b111c"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2.2
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 788,
+   "y": 111,
+   "width": 422,
+   "height": 34,
+   "radius": 24
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffffff",
+      "opacity": 0.16
+     },
+     {
+      "offset": 1,
+      "color": "#ffffff",
+      "opacity": 0
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 812,
+   "y": 124,
+   "text": "EQUIPO ACTIVO",
+   "size": 11,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#93a4c0",
+   "justify": "left",
+   "area": {
+    "width": 300,
+    "height": 24,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 300,
+   "height": 24,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 210,
+   "size": 11
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1100,
+   "y": 122,
+   "text": "3 / 6",
+   "size": 12,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#f2c14e",
+   "justify": "right",
+   "area": {
+    "width": 86,
+    "height": 26,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 86,
+   "height": 26,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 120,
+   "size": 12
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 812,
+   "y": 158,
+   "width": 374,
+   "height": 250,
+   "radius": 20
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#0c1522"
+     },
+     {
+      "offset": 1,
+      "color": "#060a11"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#2a3a55"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.5
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 902,
+   "y": 196,
+   "width": 194,
+   "height": 194
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#4aa8ff",
+      "opacity": 0.1
+     },
+     {
+      "offset": 1,
+      "color": "#4aa8ff",
+      "opacity": 0
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 911,
+   "y": 198,
+   "width": 176,
+   "height": 176
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#4aa8ff"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 10
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 881,
+   "y": 168,
+   "width": 236,
+   "height": 236
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#4aa8ff"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 7
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 849,
+   "y": 340,
+   "width": 300,
+   "height": 40
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#131e2e"
+     },
+     {
+      "offset": 1,
+      "color": "#080d15"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#293b56"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.2
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 889,
+   "y": 350,
+   "width": 220,
+   "height": 22
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#000000"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 35
+  }
+ },
+ {
+  "command": "file.place",
+  "params": {
+   "path": "/home/tecnologia/slay_of_pokemon/assets/sprites/pokemon/front/25.png",
+   "rect": [
+    919,
+    200,
+    160,
+    160
+   ]
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 824,
+   "y": 426,
+   "text": "PIKACHU",
+   "size": 18,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#eef3ff",
+   "justify": "left",
+   "area": {
+    "width": 220,
+    "height": 28,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 220,
+   "height": 28,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 40,
+   "size": 18
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1004,
+   "y": 428,
+   "text": "Nv. 18 · ELÉCTRICO",
+   "size": 9.5,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#93a4c0",
+   "justify": "right",
+   "area": {
+    "width": 168,
+    "height": 24,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 168,
+   "height": 24,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 60,
+   "size": 9.5
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 824,
+   "y": 458,
+   "width": 348,
+   "height": 9,
+   "radius": 4.5
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#070b12"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#2a3a55"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 826,
+   "y": 460,
+   "width": 244,
+   "height": 5,
+   "radius": 2.5
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#7dffb0"
+     },
+     {
+      "offset": 1,
+      "color": "#2fae61"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 824,
+   "y": 472,
+   "text": "HP 84 / 120",
+   "size": 8.5,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#93a4c0",
+   "justify": "right",
+   "area": {
+    "width": 348,
+    "height": 18,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 348,
+   "height": 18,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 80,
+   "size": 8.5
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 824,
+   "y": 500,
+   "width": 348,
+   "height": 1
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#3b5374",
+      "opacity": 0
+     },
+     {
+      "offset": 0.5,
+      "color": "#3b5374",
+      "opacity": 0.6
+     },
+     {
+      "offset": 1,
+      "color": "#3b5374",
+      "opacity": 0
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 822,
+   "y": 512,
+   "width": 52,
+   "height": 52
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#0a111c"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.5
+  }
+ },
+ {
+  "command": "file.place",
+  "params": {
+   "path": "/home/tecnologia/slay_of_pokemon/assets/sprites/pokemon/front/6.png",
+   "rect": [
+    822,
+    512,
+    52,
+    52
+   ]
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 886,
+   "y": 514,
+   "text": "CHARIZARD",
+   "size": 12,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#eef3ff",
+   "justify": "left",
+   "area": {
+    "width": 190,
+    "height": 22,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 190,
+   "height": 22,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 60,
+   "size": 12
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 886,
+   "y": 535,
+   "text": "Nv. 16 · FUEGO",
+   "size": 8,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#93a4c0",
+   "justify": "left",
+   "area": {
+    "width": 120,
+    "height": 18,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 120,
+   "height": 18,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 50,
+   "size": 8
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 886,
+   "y": 554,
+   "width": 190,
+   "height": 6,
+   "radius": 3
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#070b12"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 887,
+   "y": 555,
+   "width": 150,
+   "height": 4,
+   "radius": 2
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffb08a"
+     },
+     {
+      "offset": 1,
+      "color": "#d9472f"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1084,
+   "y": 550,
+   "text": "42 / 52",
+   "size": 8,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#93a4c0",
+   "justify": "right",
+   "area": {
+    "width": 88,
+    "height": 18,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 88,
+   "height": 18,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 60,
+   "size": 8
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 834,
+   "y": 576,
+   "width": 28,
+   "height": 28
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.2
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 60
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 838,
+   "y": 580,
+   "text": "+",
+   "size": 16,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#8fa3c0",
+   "justify": "center",
+   "area": {
+    "width": 20,
+    "height": 20,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 20,
+   "height": 20,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "size": 16
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 872,
+   "y": 578,
+   "text": "AÑADIR AL EQUIPO",
+   "size": 9,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#93a4c0",
+   "justify": "left",
+   "area": {
+    "width": 230,
+    "height": 24,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 230,
+   "height": 24,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 120,
+   "size": 9
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1080,
+   "y": 578,
+   "text": "3 ESPACIOS",
+   "size": 7.5,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#5f7392",
+   "justify": "right",
+   "area": {
+    "width": 92,
+    "height": 24,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 92,
+   "height": 24,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 80,
+   "size": 7.5
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 82,
+   "y": 686,
+   "width": 1136,
+   "height": 1
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.setProps",
+  "params": {
+   "opacity": 18
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 82,
+   "y": 694,
+   "text": "v0.1.0 · BUILD 2026.10 · PROTOTIPO",
+   "size": 8,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#5f7392",
+   "justify": "left",
+   "area": {
+    "width": 500,
+    "height": 18,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 500,
+   "height": 18,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 100,
+   "size": 8
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 720,
+   "y": 694,
+   "text": "PERFIL: ASH · FICHAS 120 · ACTO 1",
+   "size": 8,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#5f7392",
+   "justify": "right",
+   "area": {
+    "width": 498,
+    "height": 18,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 498,
+   "height": 18,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 100,
+   "size": 8
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1385,
+   "y": 25,
+   "width": 710,
+   "height": 570,
+   "radius": 35
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#26354d"
+     },
+     {
+      "offset": 1,
+      "color": "#0a0f18"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#05080d"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2
+  }
+ },
+ {
+  "command": "effect.apply",
+  "params": {
+   "effect": "stylize.dropShadow",
+   "params": {
+    "mode": "multiply",
+    "opacity": 60,
+    "x": 0,
+    "y": 12,
+    "blur": 22,
+    "color": "#000000"
+   }
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1390,
+   "y": 30,
+   "width": 700,
+   "height": 560,
+   "radius": 30
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#1a2436"
+     },
+     {
+      "offset": 0.55,
+      "color": "#121a29"
+     },
+     {
+      "offset": 1,
+      "color": "#0b111c"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2.4
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1398,
+   "y": 37,
+   "width": 684,
+   "height": 34,
+   "radius": 26
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffffff",
+      "opacity": 0.16
+     },
+     {
+      "offset": 1,
+      "color": "#ffffff",
+      "opacity": 0
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1436,
+   "y": 30.8,
+   "width": 608,
+   "height": 2,
+   "radius": 1
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#f2c14e",
+      "opacity": 0
+     },
+     {
+      "offset": 0.5,
+      "color": "#f2c14e",
+      "opacity": 0.8
+     },
+     {
+      "offset": 1,
+      "color": "#f2c14e",
+      "opacity": 0
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 1418,
+   "y": 56,
+   "width": 40,
+   "height": 40
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#0b1320"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.5
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1433.68,
+   "y": 71.2,
+   "width": 2.88,
+   "height": 9.600000000000001,
+   "radius": 2
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#f2c14e"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1439.44,
+   "y": 71.2,
+   "width": 2.88,
+   "height": 9.600000000000001,
+   "radius": 2
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#f2c14e"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1472,
+   "y": 56,
+   "text": "PAUSA",
+   "size": 9.5,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#f2c14e",
+   "justify": "left",
+   "area": {
+    "width": 380,
+    "height": 18,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 380,
+   "height": 18,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 220,
+   "size": 9.5
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1470,
+   "y": 74,
+   "text": "MENÚ DE JUEGO",
+   "size": 26,
+   "font": "Noto Sans Black",
+   "style": "Regular",
+   "color": "#eef3ff",
+   "justify": "left",
+   "area": {
+    "width": 480,
+    "height": 42,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 480,
+   "height": 42,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 0,
+   "size": 26
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2014,
+   "y": 52,
+   "width": 44,
+   "height": 44,
+   "radius": 12
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#1a2436"
+     },
+     {
+      "offset": 1,
+      "color": "#0a111c"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.4
+  }
+ },
+ {
+  "command": "shape.line",
+  "params": {
+   "x1": 2029,
+   "y1": 67,
+   "x2": 2043,
+   "y2": 81
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#c4d2e6"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2.2,
+   "cap": "round"
+  }
+ },
+ {
+  "command": "shape.line",
+  "params": {
+   "x1": 2043,
+   "y1": 67,
+   "x2": 2029,
+   "y2": 81
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#c4d2e6"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2.2,
+   "cap": "round"
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1420,
+   "y": 126,
+   "width": 640,
+   "height": 1
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#3b5374",
+      "opacity": 0
+     },
+     {
+      "offset": 0.5,
+      "color": "#3b5374",
+      "opacity": 0.65
+     },
+     {
+      "offset": 1,
+      "color": "#3b5374",
+      "opacity": 0
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1420,
+   "y": 146,
+   "width": 640,
+   "height": 58,
+   "radius": 16
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#3a2a0e"
+     },
+     {
+      "offset": 0.6,
+      "color": "#211706"
+     },
+     {
+      "offset": 1,
+      "color": "#140e04"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#f2c14e"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.8
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1424,
+   "y": 148,
+   "width": 632,
+   "height": 20,
+   "radius": 12
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffffff",
+      "opacity": 0.1
+     },
+     {
+      "offset": 1,
+      "color": "#ffffff",
+      "opacity": 0
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 1439,
+   "y": 158,
+   "width": 34,
+   "height": 34
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#080d15"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#f2c14e"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.2
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 90.6 168.4 L 102.6 175 L 90.6 181.6 Z",
+   "closed": true
+  }
+ },
+ {
+  "command": "object.move",
+  "params": {
+   "dx": 1360,
+   "dy": 0
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#f2c14e"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "effect.apply",
+  "params": {
+   "effect": "stylize.dropShadow",
+   "params": {
+    "mode": "multiply",
+    "opacity": 30,
+    "x": 0,
+    "y": 1,
+    "blur": 2,
+    "color": "#000000"
+   }
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1488,
+   "y": 154,
+   "text": "CONTINUAR",
+   "size": 13.5,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#ffe6a8",
+   "justify": "left",
+   "area": {
+    "width": 360,
+    "height": 24,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 360,
+   "height": 24,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 130,
+   "size": 13.5
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1488,
+   "y": 175,
+   "text": "Volver a la partida",
+   "size": 9.5,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#93a4c0",
+   "justify": "left",
+   "area": {
+    "width": 430,
+    "height": 20,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 430,
+   "height": 20,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 30,
+   "size": 9.5
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1994,
+   "y": 166,
+   "width": 32,
+   "height": 18,
+   "radius": 6
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#080d15"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#6b4306"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1994,
+   "y": 166,
+   "text": "ESC",
+   "size": 8,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#d9b45a",
+   "justify": "center",
+   "area": {
+    "width": 32,
+    "height": 18,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 32,
+   "height": 18,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 80,
+   "size": 8
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1420,
+   "y": 214,
+   "width": 640,
+   "height": 58,
+   "radius": 16
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#161f2f"
+     },
+     {
+      "offset": 1,
+      "color": "#0a101a"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.2
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1424,
+   "y": 216,
+   "width": 632,
+   "height": 20,
+   "radius": 12
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffffff",
+      "opacity": 0.06
+     },
+     {
+      "offset": 1,
+      "color": "#ffffff",
+      "opacity": 0
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 1439,
+   "y": 226,
+   "width": 34,
+   "height": 34
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#080d15"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.2
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1448.5,
+   "y": 235.5,
+   "width": 15,
+   "height": 15,
+   "radius": 2
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#a9bdd8"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1451.8,
+   "y": 236.1,
+   "width": 8.4,
+   "height": 4.5,
+   "radius": 1
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#a9bdd8"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1451.5,
+   "y": 243.9,
+   "width": 9,
+   "height": 6.3,
+   "radius": 1
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#a9bdd8"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.6
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1488,
+   "y": 222,
+   "text": "GUARDAR PARTIDA",
+   "size": 13.5,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#eef3ff",
+   "justify": "left",
+   "area": {
+    "width": 360,
+    "height": 24,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 360,
+   "height": 24,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 130,
+   "size": 13.5
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1488,
+   "y": 243,
+   "text": "Última guarda: hace 2 min",
+   "size": 9.5,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#93a4c0",
+   "justify": "left",
+   "area": {
+    "width": 430,
+    "height": 20,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 430,
+   "height": 20,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 30,
+   "size": 9.5
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 670 237.5 L 675.5 243 L 670 248.5",
+   "closed": false
+  }
+ },
+ {
+  "command": "object.move",
+  "params": {
+   "dx": 1360,
+   "dy": 0
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#7f93b0"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1420,
+   "y": 282,
+   "width": 640,
+   "height": 58,
+   "radius": 16
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#161f2f"
+     },
+     {
+      "offset": 1,
+      "color": "#0a101a"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.2
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1424,
+   "y": 284,
+   "width": 632,
+   "height": 20,
+   "radius": 12
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffffff",
+      "opacity": 0.06
+     },
+     {
+      "offset": 1,
+      "color": "#ffffff",
+      "opacity": 0
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 1439,
+   "y": 294,
+   "width": 34,
+   "height": 34
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#080d15"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.2
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1455.025,
+   "y": 302.9,
+   "width": 1.9500000000000002,
+   "height": 2.6999999999999997,
+   "radius": 0.375
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#a9bdd8"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 0,
+   "origin": [
+    1456,
+    311
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1455.025,
+   "y": 302.9,
+   "width": 1.9500000000000002,
+   "height": 2.6999999999999997,
+   "radius": 0.375
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#a9bdd8"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 45,
+   "origin": [
+    1456,
+    311
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1455.025,
+   "y": 302.9,
+   "width": 1.9500000000000002,
+   "height": 2.6999999999999997,
+   "radius": 0.375
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#a9bdd8"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 90,
+   "origin": [
+    1456,
+    311
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1455.025,
+   "y": 302.9,
+   "width": 1.9500000000000002,
+   "height": 2.6999999999999997,
+   "radius": 0.375
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#a9bdd8"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 135,
+   "origin": [
+    1456,
+    311
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1455.025,
+   "y": 302.9,
+   "width": 1.9500000000000002,
+   "height": 2.6999999999999997,
+   "radius": 0.375
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#a9bdd8"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 180,
+   "origin": [
+    1456,
+    311
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1455.025,
+   "y": 302.9,
+   "width": 1.9500000000000002,
+   "height": 2.6999999999999997,
+   "radius": 0.375
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#a9bdd8"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 225,
+   "origin": [
+    1456,
+    311
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1455.025,
+   "y": 302.9,
+   "width": 1.9500000000000002,
+   "height": 2.6999999999999997,
+   "radius": 0.375
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#a9bdd8"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 270,
+   "origin": [
+    1456,
+    311
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1455.025,
+   "y": 302.9,
+   "width": 1.9500000000000002,
+   "height": 2.6999999999999997,
+   "radius": 0.375
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#a9bdd8"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 315,
+   "origin": [
+    1456,
+    311
+   ]
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 1450.6,
+   "y": 305.6,
+   "width": 10.799999999999999,
+   "height": 10.799999999999999
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#a9bdd8"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 1453.6,
+   "y": 308.6,
+   "width": 4.8,
+   "height": 4.8
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#080d15"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1488,
+   "y": 290,
+   "text": "OPCIONES",
+   "size": 13.5,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#eef3ff",
+   "justify": "left",
+   "area": {
+    "width": 360,
+    "height": 24,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 360,
+   "height": 24,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 130,
+   "size": 13.5
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1488,
+   "y": 311,
+   "text": "Audio, vídeo y controles",
+   "size": 9.5,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#93a4c0",
+   "justify": "left",
+   "area": {
+    "width": 430,
+    "height": 20,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 430,
+   "height": 20,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 30,
+   "size": 9.5
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 670 305.5 L 675.5 311 L 670 316.5",
+   "closed": false
+  }
+ },
+ {
+  "command": "object.move",
+  "params": {
+   "dx": 1360,
+   "dy": 0
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#7f93b0"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1420,
+   "y": 350,
+   "width": 640,
+   "height": 58,
+   "radius": 16
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#2e1119"
+     },
+     {
+      "offset": 1,
+      "color": "#14080c"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#8c2c3a"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.8
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1424,
+   "y": 352,
+   "width": 632,
+   "height": 20,
+   "radius": 12
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffffff",
+      "opacity": 0.06
+     },
+     {
+      "offset": 1,
+      "color": "#ffffff",
+      "opacity": 0
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 1439,
+   "y": 362,
+   "width": 34,
+   "height": 34
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#080d15"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#8c2c3a"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.2
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 92.4 374.05 L 88.62 374.05 L 88.62 383.95 L 92.4 383.95",
+   "closed": false
+  }
+ },
+ {
+  "command": "object.move",
+  "params": {
+   "dx": 1360,
+   "dy": 0
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#ff8a94"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2.2,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "shape.line",
+  "params": {
+   "x1": 1452.4,
+   "y1": 379,
+   "x2": 1462.48,
+   "y2": 379
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#ff8a94"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2.2,
+   "cap": "round"
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 99.24 376.48 L 102.48 379 L 99.24 381.52",
+   "closed": false
+  }
+ },
+ {
+  "command": "object.move",
+  "params": {
+   "dx": 1360,
+   "dy": 0
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#ff8a94"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2.2,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1488,
+   "y": 358,
+   "text": "SALIR AL MENÚ",
+   "size": 13.5,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#ff9da7",
+   "justify": "left",
+   "area": {
+    "width": 360,
+    "height": 24,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 360,
+   "height": 24,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 130,
+   "size": 13.5
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1488,
+   "y": 379,
+   "text": "Se perderá el progreso no guardado",
+   "size": 9.5,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#b46772",
+   "justify": "left",
+   "area": {
+    "width": 430,
+    "height": 20,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 430,
+   "height": 20,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 30,
+   "size": 9.5
+  }
+ },
+ {
+  "command": "path.create",
+  "params": {
+   "d": "M 670 373.5 L 675.5 379 L 670 384.5",
+   "closed": false
+  }
+ },
+ {
+  "command": "object.move",
+  "params": {
+   "dx": 1360,
+   "dy": 0
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#b46772"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2,
+   "cap": "round",
+   "join": "round"
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 1420,
+   "y": 434,
+   "width": 640,
+   "height": 62,
+   "radius": 14
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#090f19"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#22314a"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 1437,
+   "y": 460,
+   "width": 10,
+   "height": 10
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#45d47c"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "effect.apply",
+  "params": {
+   "effect": "stylize.outerGlow",
+   "params": {
+    "mode": "screen",
+    "opacity": 30,
+    "blur": 5,
+    "color": "#45d47c"
+   }
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1456,
+   "y": 448,
+   "text": "PARTIDA EN CURSO",
+   "size": 8,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#45d47c",
+   "justify": "left",
+   "area": {
+    "width": 300,
+    "height": 18,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 300,
+   "height": 18,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 180,
+   "size": 8
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1456,
+   "y": 464,
+   "text": "ACTO 1 · PISO 04 · MAZO 12 CARTAS",
+   "size": 9.5,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#b7c7dd",
+   "justify": "left",
+   "area": {
+    "width": 330,
+    "height": 22,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 330,
+   "height": 22,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 50,
+   "size": 9.5
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1920,
+   "y": 452,
+   "text": "12:34",
+   "size": 12,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#dbe6f5",
+   "justify": "right",
+   "area": {
+    "width": 120,
+    "height": 18,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 120,
+   "height": 18,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 40,
+   "size": 12
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1920,
+   "y": 470,
+   "text": "TIEMPO DE RUN",
+   "size": 7,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#5f7392",
+   "justify": "right",
+   "area": {
+    "width": 120,
+    "height": 14,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 120,
+   "height": 14,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 110,
+   "size": 7
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1420,
+   "y": 540,
+   "text": "PULSA ESC PARA VOLVER AL COMBATE",
+   "size": 8,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#5f7392",
+   "justify": "left",
+   "area": {
+    "width": 420,
+    "height": 20,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 420,
+   "height": 20,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 150,
+   "size": 8
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 1920,
+   "y": 540,
+   "text": "v0.1.0",
+   "size": 8,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#5f7392",
+   "justify": "right",
+   "area": {
+    "width": 140,
+    "height": 20,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 140,
+   "height": 20,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 100,
+   "size": 8
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2225,
+   "y": 25,
+   "width": 710,
+   "height": 570,
+   "radius": 35
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#26354d"
+     },
+     {
+      "offset": 1,
+      "color": "#0a0f18"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#05080d"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2
+  }
+ },
+ {
+  "command": "effect.apply",
+  "params": {
+   "effect": "stylize.dropShadow",
+   "params": {
+    "mode": "multiply",
+    "opacity": 60,
+    "x": 0,
+    "y": 12,
+    "blur": 22,
+    "color": "#000000"
+   }
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2230,
+   "y": 30,
+   "width": 700,
+   "height": 560,
+   "radius": 30
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#1a2436"
+     },
+     {
+      "offset": 0.55,
+      "color": "#121a29"
+     },
+     {
+      "offset": 1,
+      "color": "#0b111c"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2.4
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2238,
+   "y": 37,
+   "width": 684,
+   "height": 34,
+   "radius": 26
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffffff",
+      "opacity": 0.16
+     },
+     {
+      "offset": 1,
+      "color": "#ffffff",
+      "opacity": 0
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2276,
+   "y": 30.8,
+   "width": 608,
+   "height": 2,
+   "radius": 1
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#f2c14e",
+      "opacity": 0
+     },
+     {
+      "offset": 0.5,
+      "color": "#f2c14e",
+      "opacity": 0.8
+     },
+     {
+      "offset": 1,
+      "color": "#f2c14e",
+      "opacity": 0
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 2258,
+   "y": 56,
+   "width": 40,
+   "height": 40
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#0b1320"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.5
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2276.895,
+   "y": 66.82,
+   "width": 2.21,
+   "height": 3.06,
+   "radius": 0.42500000000000004
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#f2c14e"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 0,
+   "origin": [
+    2278,
+    76
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2276.895,
+   "y": 66.82,
+   "width": 2.21,
+   "height": 3.06,
+   "radius": 0.42500000000000004
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#f2c14e"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 45,
+   "origin": [
+    2278,
+    76
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2276.895,
+   "y": 66.82,
+   "width": 2.21,
+   "height": 3.06,
+   "radius": 0.42500000000000004
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#f2c14e"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 90,
+   "origin": [
+    2278,
+    76
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2276.895,
+   "y": 66.82,
+   "width": 2.21,
+   "height": 3.06,
+   "radius": 0.42500000000000004
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#f2c14e"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 135,
+   "origin": [
+    2278,
+    76
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2276.895,
+   "y": 66.82,
+   "width": 2.21,
+   "height": 3.06,
+   "radius": 0.42500000000000004
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#f2c14e"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 180,
+   "origin": [
+    2278,
+    76
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2276.895,
+   "y": 66.82,
+   "width": 2.21,
+   "height": 3.06,
+   "radius": 0.42500000000000004
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#f2c14e"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 225,
+   "origin": [
+    2278,
+    76
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2276.895,
+   "y": 66.82,
+   "width": 2.21,
+   "height": 3.06,
+   "radius": 0.42500000000000004
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#f2c14e"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 270,
+   "origin": [
+    2278,
+    76
+   ]
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2276.895,
+   "y": 66.82,
+   "width": 2.21,
+   "height": 3.06,
+   "radius": 0.42500000000000004
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#f2c14e"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "object.rotate",
+  "params": {
+   "angle": 315,
+   "origin": [
+    2278,
+    76
+   ]
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 2271.88,
+   "y": 69.88,
+   "width": 12.24,
+   "height": 12.24
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#f2c14e"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 2275.28,
+   "y": 73.28,
+   "width": 5.44,
+   "height": 5.44
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#0b1320"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2312,
+   "y": 56,
+   "text": "AJUSTES",
+   "size": 9.5,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#f2c14e",
+   "justify": "left",
+   "area": {
+    "width": 380,
+    "height": 18,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 380,
+   "height": 18,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 220,
+   "size": 9.5
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2310,
+   "y": 74,
+   "text": "OPCIONES",
+   "size": 26,
+   "font": "Noto Sans Black",
+   "style": "Regular",
+   "color": "#eef3ff",
+   "justify": "left",
+   "area": {
+    "width": 480,
+    "height": 42,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 480,
+   "height": 42,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 0,
+   "size": 26
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2854,
+   "y": 52,
+   "width": 44,
+   "height": 44,
+   "radius": 12
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#1a2436"
+     },
+     {
+      "offset": 1,
+      "color": "#0a111c"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.4
+  }
+ },
+ {
+  "command": "shape.line",
+  "params": {
+   "x1": 2869,
+   "y1": 67,
+   "x2": 2883,
+   "y2": 81
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#c4d2e6"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2.2,
+   "cap": "round"
+  }
+ },
+ {
+  "command": "shape.line",
+  "params": {
+   "x1": 2883,
+   "y1": 67,
+   "x2": 2869,
+   "y2": 81
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#c4d2e6"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2.2,
+   "cap": "round"
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2260,
+   "y": 128,
+   "width": 190,
+   "height": 34,
+   "radius": 10
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#3a2a0e"
+     },
+     {
+      "offset": 1,
+      "color": "#1a1204"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#f2c14e"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.6
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2260,
+   "y": 128,
+   "text": "AUDIO",
+   "size": 9.5,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#ffe6a8",
+   "justify": "center",
+   "area": {
+    "width": 190,
+    "height": 34,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 190,
+   "height": 34,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 170,
+   "size": 9.5
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2462,
+   "y": 128,
+   "width": 190,
+   "height": 34,
+   "radius": 10
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#141d2c"
+     },
+     {
+      "offset": 1,
+      "color": "#090f19"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#2a3a55"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2462,
+   "y": 128,
+   "text": "VÍDEO",
+   "size": 9.5,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#93a4c0",
+   "justify": "center",
+   "area": {
+    "width": 190,
+    "height": 34,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 190,
+   "height": 34,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 170,
+   "size": 9.5
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2664,
+   "y": 128,
+   "width": 190,
+   "height": 34,
+   "radius": 10
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#141d2c"
+     },
+     {
+      "offset": 1,
+      "color": "#090f19"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#2a3a55"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2664,
+   "y": 128,
+   "text": "CONTROLES",
+   "size": 9.5,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#93a4c0",
+   "justify": "center",
+   "area": {
+    "width": 190,
+    "height": 34,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 190,
+   "height": 34,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 170,
+   "size": 9.5
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2260,
+   "y": 182,
+   "text": "AUDIO",
+   "size": 8,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#5f7392",
+   "justify": "left",
+   "area": {
+    "width": 220,
+    "height": 18,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 220,
+   "height": 18,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 220,
+   "size": 8
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2260,
+   "y": 200,
+   "text": "MÚSICA",
+   "size": 10,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#b7c7dd",
+   "justify": "left",
+   "area": {
+    "width": 180,
+    "height": 18,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 180,
+   "height": 18,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 150,
+   "size": 10
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2840,
+   "y": 200,
+   "text": "70%",
+   "size": 10,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#f2c14e",
+   "justify": "right",
+   "area": {
+    "width": 60,
+    "height": 18,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 60,
+   "height": 18,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 80,
+   "size": 10
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2260,
+   "y": 222,
+   "width": 640,
+   "height": 7,
+   "radius": 3.5
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#070b12"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#2a3a55"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2261,
+   "y": 223,
+   "width": 446.59999999999997,
+   "height": 5,
+   "radius": 2.5
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffffff",
+      "opacity": 0.35
+     },
+     {
+      "offset": 0.4,
+      "color": "#f2c14e",
+      "opacity": 1
+     },
+     {
+      "offset": 1,
+      "color": "#f2c14e",
+      "opacity": 0.65
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 2698.6,
+   "y": 216.5,
+   "width": 18,
+   "height": 18
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffffff"
+     },
+     {
+      "offset": 1,
+      "color": "#cfdaea"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#f2c14e"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2
+  }
+ },
+ {
+  "command": "effect.apply",
+  "params": {
+   "effect": "stylize.dropShadow",
+   "params": {
+    "mode": "multiply",
+    "opacity": 50,
+    "x": 0,
+    "y": 2,
+    "blur": 4,
+    "color": "#000000"
+   }
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2260,
+   "y": 250,
+   "text": "EFECTOS",
+   "size": 10,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#b7c7dd",
+   "justify": "left",
+   "area": {
+    "width": 180,
+    "height": 18,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 180,
+   "height": 18,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 150,
+   "size": 10
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2840,
+   "y": 250,
+   "text": "85%",
+   "size": 10,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#4aa8ff",
+   "justify": "right",
+   "area": {
+    "width": 60,
+    "height": 18,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 60,
+   "height": 18,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 80,
+   "size": 10
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2260,
+   "y": 272,
+   "width": 640,
+   "height": 7,
+   "radius": 3.5
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#070b12"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#2a3a55"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2261,
+   "y": 273,
+   "width": 542.3,
+   "height": 5,
+   "radius": 2.5
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffffff",
+      "opacity": 0.35
+     },
+     {
+      "offset": 0.4,
+      "color": "#4aa8ff",
+      "opacity": 1
+     },
+     {
+      "offset": 1,
+      "color": "#4aa8ff",
+      "opacity": 0.65
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 2794.3,
+   "y": 266.5,
+   "width": 18,
+   "height": 18
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffffff"
+     },
+     {
+      "offset": 1,
+      "color": "#cfdaea"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#4aa8ff"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2
+  }
+ },
+ {
+  "command": "effect.apply",
+  "params": {
+   "effect": "stylize.dropShadow",
+   "params": {
+    "mode": "multiply",
+    "opacity": 50,
+    "x": 0,
+    "y": 2,
+    "blur": 4,
+    "color": "#000000"
+   }
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2260,
+   "y": 300,
+   "text": "VOZ",
+   "size": 10,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#b7c7dd",
+   "justify": "left",
+   "area": {
+    "width": 180,
+    "height": 18,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 180,
+   "height": 18,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 150,
+   "size": 10
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2840,
+   "y": 300,
+   "text": "40%",
+   "size": 10,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#45d47c",
+   "justify": "right",
+   "area": {
+    "width": 60,
+    "height": 18,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 60,
+   "height": 18,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 80,
+   "size": 10
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2260,
+   "y": 322,
+   "width": 640,
+   "height": 7,
+   "radius": 3.5
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "color": "#070b12"
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#2a3a55"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2261,
+   "y": 323,
+   "width": 255.20000000000002,
+   "height": 5,
+   "radius": 2.5
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffffff",
+      "opacity": 0.35
+     },
+     {
+      "offset": 0.4,
+      "color": "#45d47c",
+      "opacity": 1
+     },
+     {
+      "offset": 1,
+      "color": "#45d47c",
+      "opacity": 0.65
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 2507.2,
+   "y": 316.5,
+   "width": 18,
+   "height": 18
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffffff"
+     },
+     {
+      "offset": 1,
+      "color": "#cfdaea"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#45d47c"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 2
+  }
+ },
+ {
+  "command": "effect.apply",
+  "params": {
+   "effect": "stylize.dropShadow",
+   "params": {
+    "mode": "multiply",
+    "opacity": 50,
+    "x": 0,
+    "y": 2,
+    "blur": 4,
+    "color": "#000000"
+   }
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2260,
+   "y": 356,
+   "width": 640,
+   "height": 1
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#3b5374",
+      "opacity": 0
+     },
+     {
+      "offset": 0.5,
+      "color": "#3b5374",
+      "opacity": 0.55
+     },
+     {
+      "offset": 1,
+      "color": "#3b5374",
+      "opacity": 0
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "none": true
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2260,
+   "y": 372,
+   "text": "INTERFAZ",
+   "size": 8,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#5f7392",
+   "justify": "left",
+   "area": {
+    "width": 220,
+    "height": 18,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 220,
+   "height": 18,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 220,
+   "size": 8
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2260,
+   "y": 388,
+   "text": "PANTALLA COMPLETA",
+   "size": 10,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#dbe6f5",
+   "justify": "left",
+   "area": {
+    "width": 420,
+    "height": 20,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 420,
+   "height": 20,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 130,
+   "size": 10
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2260,
+   "y": 405,
+   "text": "Usar toda la pantalla",
+   "size": 8.5,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#7286a3",
+   "justify": "left",
+   "area": {
+    "width": 420,
+    "height": 17,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 420,
+   "height": 17,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 20,
+   "size": 8.5
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2846,
+   "y": 388,
+   "width": 54,
+   "height": 28,
+   "radius": 14
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#5a3c08"
+     },
+     {
+      "offset": 1,
+      "color": "#2a1b04"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#f2c14e"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.6
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 2877,
+   "y": 393,
+   "width": 18,
+   "height": 18
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#fff3cd"
+     },
+     {
+      "offset": 1,
+      "color": "#f2c14e"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#05080d"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.4
+  }
+ },
+ {
+  "command": "effect.apply",
+  "params": {
+   "effect": "stylize.dropShadow",
+   "params": {
+    "mode": "multiply",
+    "opacity": 45,
+    "x": 0,
+    "y": 2,
+    "blur": 4,
+    "color": "#000000"
+   }
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2826,
+   "y": 388,
+   "text": "ON",
+   "size": 6.5,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#f2c14e",
+   "justify": "right",
+   "area": {
+    "width": 14,
+    "height": 28,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 14,
+   "height": 28,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 60,
+   "size": 6.5
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2260,
+   "y": 426,
+   "text": "ANIMACIONES RÁPIDAS",
+   "size": 10,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#dbe6f5",
+   "justify": "left",
+   "area": {
+    "width": 420,
+    "height": 20,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 420,
+   "height": 20,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 130,
+   "size": 10
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2260,
+   "y": 443,
+   "text": "Combate a x1.5 de velocidad",
+   "size": 8.5,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#7286a3",
+   "justify": "left",
+   "area": {
+    "width": 420,
+    "height": 17,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 420,
+   "height": 17,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 20,
+   "size": 8.5
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2846,
+   "y": 426,
+   "width": 54,
+   "height": 28,
+   "radius": 14
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#1b2638"
+     },
+     {
+      "offset": 1,
+      "color": "#0a111c"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.6
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 2851,
+   "y": 431,
+   "width": 18,
+   "height": 18
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#b7c7dd"
+     },
+     {
+      "offset": 1,
+      "color": "#6c7f9c"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#05080d"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.4
+  }
+ },
+ {
+  "command": "effect.apply",
+  "params": {
+   "effect": "stylize.dropShadow",
+   "params": {
+    "mode": "multiply",
+    "opacity": 45,
+    "x": 0,
+    "y": 2,
+    "blur": 4,
+    "color": "#000000"
+   }
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2826,
+   "y": 426,
+   "text": "OFF",
+   "size": 6.5,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#5f7392",
+   "justify": "right",
+   "area": {
+    "width": 14,
+    "height": 28,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 14,
+   "height": 28,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 60,
+   "size": 6.5
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2260,
+   "y": 464,
+   "text": "TEXTO GRANDE",
+   "size": 10,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#dbe6f5",
+   "justify": "left",
+   "area": {
+    "width": 420,
+    "height": 20,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 420,
+   "height": 20,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 130,
+   "size": 10
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2260,
+   "y": 481,
+   "text": "Mejor legibilidad en cartas",
+   "size": 8.5,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#7286a3",
+   "justify": "left",
+   "area": {
+    "width": 420,
+    "height": 17,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 420,
+   "height": 17,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 20,
+   "size": 8.5
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2846,
+   "y": 464,
+   "width": 54,
+   "height": 28,
+   "radius": 14
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#1b2638"
+     },
+     {
+      "offset": 1,
+      "color": "#0a111c"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.6
+  }
+ },
+ {
+  "command": "shape.ellipse",
+  "params": {
+   "x": 2851,
+   "y": 469,
+   "width": 18,
+   "height": 18
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#b7c7dd"
+     },
+     {
+      "offset": 1,
+      "color": "#6c7f9c"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#05080d"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.4
+  }
+ },
+ {
+  "command": "effect.apply",
+  "params": {
+   "effect": "stylize.dropShadow",
+   "params": {
+    "mode": "multiply",
+    "opacity": 45,
+    "x": 0,
+    "y": 2,
+    "blur": 4,
+    "color": "#000000"
+   }
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2826,
+   "y": 464,
+   "text": "OFF",
+   "size": 6.5,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#5f7392",
+   "justify": "right",
+   "area": {
+    "width": 14,
+    "height": 28,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 14,
+   "height": 28,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 60,
+   "size": 6.5
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2260,
+   "y": 512,
+   "width": 280,
+   "height": 46,
+   "radius": 23
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#1a2436"
+     },
+     {
+      "offset": 1,
+      "color": "#090f19"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#3b5374"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.4
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2260,
+   "y": 512,
+   "text": "RESTABLECER",
+   "size": 10,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#a9bdd8",
+   "justify": "center",
+   "area": {
+    "width": 280,
+    "height": 46,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 280,
+   "height": 46,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 150,
+   "size": 10
+  }
+ },
+ {
+  "command": "shape.rectangle",
+  "params": {
+   "x": 2560,
+   "y": 512,
+   "width": 280,
+   "height": 46,
+   "radius": 23
+  }
+ },
+ {
+  "command": "paint.setFill",
+  "params": {
+   "gradient": {
+    "kind": "linear",
+    "stops": [
+     {
+      "offset": 0,
+      "color": "#ffe9a6"
+     },
+     {
+      "offset": 0.4,
+      "color": "#f2c14e"
+     },
+     {
+      "offset": 1,
+      "color": "#b7821f"
+     }
+    ],
+    "angle": -90
+   }
+  }
+ },
+ {
+  "command": "paint.setStroke",
+  "params": {
+   "color": "#6b4306"
+  }
+ },
+ {
+  "command": "stroke.set",
+  "params": {
+   "weight": 1.8
+  }
+ },
+ {
+  "command": "effect.apply",
+  "params": {
+   "effect": "stylize.outerGlow",
+   "params": {
+    "mode": "screen",
+    "opacity": 18,
+    "blur": 12,
+    "color": "#f2c14e"
+   }
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2560,
+   "y": 512,
+   "text": "GUARDAR CAMBIOS",
+   "size": 10,
+   "font": "Inter",
+   "style": "SemiBold",
+   "color": "#241503",
+   "justify": "center",
+   "area": {
+    "width": 280,
+    "height": 46,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 280,
+   "height": 46,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 140,
+   "size": 10
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2260,
+   "y": 572,
+   "text": "LOS CAMBIOS SE APLICAN AL INSTANTE",
+   "size": 7,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#5f7392",
+   "justify": "left",
+   "area": {
+    "width": 420,
+    "height": 16,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 420,
+   "height": 16,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 130,
+   "size": 7
+  }
+ },
+ {
+  "command": "text.create",
+  "params": {
+   "x": 2760,
+   "y": 572,
+   "text": "v0.1.0",
+   "size": 7,
+   "font": "Inter",
+   "style": "Medium",
+   "color": "#5f7392",
+   "justify": "right",
+   "area": {
+    "width": 140,
+    "height": 16,
+    "fit": "shrinkText"
+   }
+  }
+ },
+ {
+  "command": "text.areaOptions",
+  "params": {
+   "width": 140,
+   "height": 16,
+   "inset": 0,
+   "verticalAlign": "center",
+   "fit": "shrinkText",
+   "fitMinPercent": 40
+  }
+ },
+ {
+  "command": "text.setStyle",
+  "params": {
+   "tracking": 100,
+   "size": 7
+  }
+ },
+ {
+  "command": "file.saveAs",
+  "params": {
+   "path": "/home/tecnologia/slay_of_pokemon/assets/ui/menus/menus.vectorcraft"
+  }
+ },
+ {
+  "command": "document.export",
+  "params": {
+   "path": "/home/tecnologia/slay_of_pokemon/assets/ui/menus/menu_main.png",
+   "format": "png",
+   "artboard": 0,
+   "scale": 2,
+   "background": "transparent"
+  }
+ },
+ {
+  "command": "document.export",
+  "params": {
+   "path": "/home/tecnologia/slay_of_pokemon/assets/ui/menus/menu_main.svg",
+   "format": "svg",
+   "artboard": 0,
+   "svg": {
+    "outlineText": true,
+    "decimals": 3
+   }
+  }
+ },
+ {
+  "command": "document.export",
+  "params": {
+   "path": "/home/tecnologia/slay_of_pokemon/assets/ui/menus/menu_pause.png",
+   "format": "png",
+   "artboard": 1,
+   "scale": 2,
+   "background": "transparent"
+  }
+ },
+ {
+  "command": "document.export",
+  "params": {
+   "path": "/home/tecnologia/slay_of_pokemon/assets/ui/menus/menu_pause.svg",
+   "format": "svg",
+   "artboard": 1,
+   "svg": {
+    "outlineText": true,
+    "decimals": 3
+   }
+  }
+ },
+ {
+  "command": "document.export",
+  "params": {
+   "path": "/home/tecnologia/slay_of_pokemon/assets/ui/menus/menu_settings.png",
+   "format": "png",
+   "artboard": 2,
+   "scale": 2,
+   "background": "transparent"
+  }
+ },
+ {
+  "command": "document.export",
+  "params": {
+   "path": "/home/tecnologia/slay_of_pokemon/assets/ui/menus/menu_settings.svg",
+   "format": "svg",
+   "artboard": 2,
+   "svg": {
+    "outlineText": true,
+    "decimals": 3
+   }
+  }
+ }
+]

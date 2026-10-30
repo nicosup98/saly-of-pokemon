@@ -3,7 +3,7 @@ use crate::combat::CombatVictoryData;
 use crate::pokemon::PokemonSprite;
 use crate::run::{AppState, CurrentRunState};
 use crate::ui::transition_ui::TransitionToEvent;
-use crate::ui::{element_color, BorderColor, Button, CleanupUi};
+use crate::ui::{element_color, BorderColor, Button, CleanupUi, CardHoverAnimation};
 
 pub struct VictoryUiPlugin;
 
@@ -108,7 +108,7 @@ fn setup_victory_ui(
             ))
             .with_children(|banner| {
                 banner.spawn((
-                    Text::new("★ ¡VICTORIA SOBRE EL ENTRENADOR! ★"),
+                    Text::new("* ¡VICTORIA SOBRE EL ENTRENADOR! *"),
                     TextFont::from_font_size(26.0),
                     TextColor(Color::srgb(1.0, 0.86, 0.2)),
                 ));
@@ -157,12 +157,12 @@ fn setup_victory_ui(
                         // Partículas de estrellas de victoria orbitando
                         for i in 0..6 {
                             let (symbol, start_x, start_y, speed) = match i {
-                                0 => ("★", 30.0, 160.0, 35.0),
-                                1 => ("✦", 260.0, 170.0, 40.0),
-                                2 => ("★", 70.0, 190.0, 30.0),
-                                3 => ("✧", 220.0, 150.0, 45.0),
-                                4 => ("★", 160.0, 200.0, 32.0),
-                                _ => ("✦", 120.0, 180.0, 38.0),
+                                0 => ("*", 30.0, 160.0, 35.0),
+                                1 => ("+", 260.0, 170.0, 40.0),
+                                2 => ("*", 70.0, 190.0, 30.0),
+                                3 => ("+", 220.0, 150.0, 45.0),
+                                4 => ("*", 160.0, 200.0, 32.0),
+                                _ => ("+", 120.0, 180.0, 38.0),
                             };
                             pedestal.spawn((
                                 VictoryStarParticle {
@@ -173,6 +173,7 @@ fn setup_victory_ui(
                                     lifetime: 2.2,
                                     elapsed: (i as f32) * 0.35,
                                 },
+                                UiTransform::default(),
                                 Text::new(symbol),
                                 TextFont::from_font_size(18.0),
                                 TextColor(Color::srgba(1.0, 0.85, 0.2, 0.8)),
@@ -199,6 +200,7 @@ fn setup_victory_ui(
                                     base_y: 0.0,
                                     elapsed: 0.2,
                                 },
+                                UiTransform::default(),
                                 ImageNode::new(asset_server.load("sprites/trainers/player_front.png")),
                                 Node {
                                     width: Val::Px(64.0),
@@ -214,6 +216,7 @@ fn setup_victory_ui(
                                     base_y: 0.0,
                                     elapsed: 0.0,
                                 },
+                                UiTransform::default(),
                                 ImageNode::new(sprite_handle),
                                 Node {
                                     width: Val::Px(110.0),
@@ -280,11 +283,26 @@ fn setup_victory_ui(
                                     TextFont::from_font_size(11.0),
                                     TextColor(Color::WHITE),
                                 ));
+                                let exp_text = if victory.levels_gained > 0 {
+                                    format!(
+                                        "+{} EXP ganados (¡SUBES DE NIVEL! Nv. {} -> Nv. {} [{}/{} XP])",
+                                        victory.exp_gained,
+                                        victory.player_level.saturating_sub(victory.levels_gained),
+                                        victory.player_level,
+                                        victory.player_exp,
+                                        victory.exp_to_next
+                                    )
+                                } else {
+                                    format!(
+                                        "+{} EXP ganados (Nivel actual: Nv. {} [{}/{} XP])",
+                                        victory.exp_gained,
+                                        victory.player_level,
+                                        victory.player_exp,
+                                        victory.exp_to_next
+                                    )
+                                };
                                 r.spawn((
-                                    Text::new(format!(
-                                        "+{} Niveles de EXP ganados (Nivel actual: Nv. {})",
-                                        victory.exp_gained, victory.player_level
-                                    )),
+                                    Text::new(exp_text),
                                     TextFont::from_font_size(13.0),
                                     TextColor(Color::WHITE),
                                 ));
@@ -483,21 +501,43 @@ fn setup_victory_ui(
                                     Button,
                                     VictoryRewardCardButton { index: i },
                                     Node {
-                                        width: Val::Px(150.0),
-                                        height: Val::Px(155.0),
+                                        width: Val::Px(148.0),
+                                        height: Val::Px(198.0),
                                         flex_direction: FlexDirection::Column,
                                         justify_content: JustifyContent::SpaceBetween,
-                                        padding: UiRect::all(Val::Px(8.0)),
+                                        align_items: AlignItems::Center,
                                         border: UiRect::all(Val::Px(2.0)),
+                                        border_radius: BorderRadius::all(Val::Px(6.0)),
+                                        overflow: Overflow::clip(),
                                         ..default()
                                     },
-                                    BackgroundColor(Color::srgb(0.14, 0.16, 0.24)),
+                                    UiTransform::default(),
+                                    GlobalZIndex(10),
+                                    CardHoverAnimation::new(border_col).with_lift(-16.0).with_scale(1.08),
+                                    BackgroundColor(Color::srgba(0.06, 0.08, 0.12, 0.2)),
                                     BorderColor(border_col),
                                 ))
                                 .with_children(|c_box| {
+                                    // Fondo con el asset ilustrado del tipo de carta
+                                    c_box.spawn((
+                                        ImageNode::new(asset_server.load(card.asset_path())),
+                                        Node {
+                                            position_type: PositionType::Absolute,
+                                            left: Val::Px(0.0),
+                                            right: Val::Px(0.0),
+                                            top: Val::Px(0.0),
+                                            bottom: Val::Px(0.0),
+                                            ..default()
+                                        },
+                                    ));
+
                                     // Cabecera: Nombre y Coste EN
                                     c_box
                                         .spawn(Node {
+                                            width: Val::Percent(100.0),
+                                            height: Val::Px(30.0),
+                                            margin: UiRect::top(Val::Px(12.0)),
+                                            padding: UiRect::axes(Val::Px(14.0), Val::Px(2.0)),
                                             flex_direction: FlexDirection::Row,
                                             justify_content: JustifyContent::SpaceBetween,
                                             align_items: AlignItems::Center,
@@ -516,46 +556,26 @@ fn setup_victory_ui(
                                             ));
                                         });
 
-                                    // Insignia de Tipo
-                                    c_box
-                                        .spawn((
-                                            Node {
-                                                padding: UiRect::axes(Val::Px(4.0), Val::Px(2.0)),
-                                                align_self: AlignSelf::Center,
-                                                ..default()
-                                            },
-                                            BackgroundColor(border_col),
-                                        ))
-                                        .with_child((
-                                            Text::new(format!("{:?}", card.element).to_uppercase()),
-                                            TextFont::from_font_size(10.0),
-                                            TextColor(Color::srgb(0.1, 0.1, 0.1)),
-                                        ));
+                                    // Espacio central para el arte elemental
+                                    c_box.spawn(Node {
+                                        flex_grow: 1.0,
+                                        ..default()
+                                    });
 
-                                    // Descripción
-                                    c_box.spawn((
+                                    // Descripción en banner inferior
+                                    c_box.spawn(Node {
+                                        width: Val::Percent(86.0),
+                                        min_height: Val::Px(36.0),
+                                        margin: UiRect::bottom(Val::Px(14.0)),
+                                        padding: UiRect::new(Val::Px(8.0), Val::Px(26.0), Val::Px(4.0), Val::Px(4.0)),
+                                        justify_content: JustifyContent::Center,
+                                        align_items: AlignItems::FlexStart,
+                                        ..default()
+                                    }).with_child((
                                         Text::new(desc),
-                                        TextFont::from_font_size(11.0),
-                                        TextColor(Color::srgb(0.85, 0.85, 0.85)),
+                                        TextFont::from_font_size(9.5),
+                                        TextColor(Color::srgb(0.95, 0.95, 0.95)),
                                     ));
-
-                                    // Botón inferior
-                                    c_box
-                                        .spawn((
-                                            Node {
-                                                width: Val::Percent(100.0),
-                                                height: Val::Px(24.0),
-                                                justify_content: JustifyContent::Center,
-                                                align_items: AlignItems::Center,
-                                                ..default()
-                                            },
-                                            BackgroundColor(Color::srgb(0.2, 0.5, 0.3)),
-                                        ))
-                                        .with_child((
-                                            Text::new("+ AÑADIR AL MAZO"),
-                                            TextFont::from_font_size(10.0),
-                                            TextColor(Color::WHITE),
-                                        ));
                                 });
                         }
                     });
@@ -625,35 +645,37 @@ fn setup_victory_ui(
 }
 
 /// Animación procedural de celebración del Pokémon del jugador (saltos alegres repetidos)
+/// utilizando `UiTransform` para evitar recalcular el layout Flexbox (Taffy) cada frame.
 fn animate_victory_celebration(
     time: Res<Time>,
-    mut q_sprite: Query<(&mut VictoryCelebrationSprite, &mut Node)>,
+    mut q_sprite: Query<(&mut VictoryCelebrationSprite, &mut UiTransform)>,
 ) {
-    let dt = time.delta_secs();
-    for (mut celebration, mut node) in q_sprite.iter_mut() {
+    let dt = time.delta_secs().min(0.05);
+    for (mut celebration, mut transform) in q_sprite.iter_mut() {
         celebration.elapsed += dt;
-        // Bouncing jubiloso continuo
-        let bounce = (celebration.elapsed * 7.5).sin().abs() * 18.0;
-        node.top = Val::Px(-bounce);
+        // Bouncing jubiloso continuo con squash & stretch sutil
+        let wave = (celebration.elapsed * 7.5).sin().abs();
+        let bounce = wave * 18.0;
+        transform.translation = Val2::px(0.0, -bounce);
+        transform.scale = Vec2::new(1.0 - wave * 0.03, 1.0 + wave * 0.05);
     }
 }
 
-/// Animación de las estrellas y destellos de victoria que orbitan al Pokémon
+/// Animación de las estrellas y destellos de victoria que orbitan al Pokémon usando `UiTransform`
 fn animate_victory_stars(
     time: Res<Time>,
-    mut q_stars: Query<(&mut VictoryStarParticle, &mut Node, &mut TextColor)>,
+    mut q_stars: Query<(&mut VictoryStarParticle, &mut UiTransform, &mut TextColor)>,
 ) {
-    let dt = time.delta_secs();
-    for (mut star, mut node, mut color) in q_stars.iter_mut() {
+    let dt = time.delta_secs().min(0.05);
+    for (mut star, mut transform, mut color) in q_stars.iter_mut() {
         star.elapsed += dt;
         let progress = (star.elapsed % star.lifetime) / star.lifetime;
 
-        // Subida vertical con oscilación sinusoidal horizontal
-        let y = star.start_y - progress * 90.0;
-        let x = star.start_x + (star.elapsed * 4.0 + star.phase).sin() * 12.0;
+        // Subida vertical con oscilación sinusoidal horizontal mediante UiTransform
+        let dy = -progress * 90.0;
+        let dx = (star.elapsed * 4.0 + star.phase).sin() * 12.0;
 
-        node.top = Val::Px(y);
-        node.left = Val::Px(x);
+        transform.translation = Val2::px(dx, dy);
 
         // Destello de brillo
         let alpha = if progress < 0.2 {
@@ -691,7 +713,7 @@ fn handle_victory_card_click(
 
                 // Actualiza mensaje de feedback
                 if let Ok(mut text) = q_feedback.single_mut() {
-                    **text = format!("★ ¡Añadida {} a tu mazo de combate con éxito! ★", chosen_card.display_name());
+                    **text = format!("* ¡Añadida {} a tu mazo de combate con éxito! *", chosen_card.display_name());
                 }
 
                 // Despawn container de cartas para que no se puedan escoger más
@@ -729,14 +751,29 @@ fn handle_skip_card_click(
     }
 }
 
-/// Al pulsar el botón "CONTINUAR AL MAPA", realiza la transición suave de escena
+/// Al pulsar el botón "CONTINUAR AL MAPA", autoguarda la partida y realiza la transición suave de escena
 fn handle_continue_click(
     mut q_continue: Query<&Interaction, (With<VictoryContinueButton>, Changed<Interaction>)>,
     mut ev_trans: MessageWriter<TransitionToEvent>,
+    mut ev_notify: MessageWriter<crate::save::SaveNotificationEvent>,
+    active_slot: Option<Res<crate::save::ActiveSaveSlot>>,
+    meta: Res< crate::run::MetaProfile>,
     run_state: Res<CurrentRunState>,
+    map_res: Option<Res<crate::map::CurrentMap>>,
 ) {
     for interaction in q_continue.iter_mut() {
         if *interaction == Interaction::Pressed {
+            let slot = active_slot.as_ref().map(|s| s.0).unwrap_or(1);
+            let map_ref = map_res.as_ref().map(|m| &**m);
+            if crate::save::save_profile(slot, &meta, &run_state, map_ref).is_ok() {
+                ev_notify.write(crate::save::SaveNotificationEvent {
+                    message: format!(
+                        "[AUTO-GUARDADO] Victoria guardada en el Perfil #{} (Acto {} - Piso {})",
+                        slot, run_state.current_act, run_state.current_floor
+                    ),
+                    is_error: false,
+                });
+            }
             let target = if run_state.current_floor > 45 {
                 AppState::RunSummary
             } else {

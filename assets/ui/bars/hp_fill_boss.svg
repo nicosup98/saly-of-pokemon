@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="700" height="80" viewBox="0 0 700 80">
+  <defs>
+    <linearGradient id="linear-gradient-1" x1="350" y1="18" x2="350" y2="62" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ecd6ff"/>
+      <stop offset="0.35" stop-color="#b06bff"/>
+      <stop offset="1" stop-color="#5e1fa8"/>
+    </linearGradient>
+    <linearGradient id="linear-gradient-2" x1="350" y1="23" x2="350" y2="43.24" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.42"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <title>hp_fill_boss</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M39 18 L658 18 L680 30 L680 50 L658 62 L39 62 C26.333 62 20 55.667 20 43 L20 37 C20 24.333 26.333 18 39 18 Z" fill="url(#linear-gradient-1)" stroke="#d9b3ff" stroke-width="2" stroke-miterlimit="10"/>
+    <path d="M37 23 L653 23 L675 35 L675 31.24 L653 43.24 L37 43.24 C29 43.24 25 39.24 25 31.24 L25 35 C25 27 29 23 37 23 Z" fill="url(#linear-gradient-2)"/>
+  </g>
+</svg>

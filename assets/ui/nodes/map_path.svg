@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="360" height="120" viewBox="0 0 360 120">
+  <defs>
+    <filter id="filter-1" filterUnits="userSpaceOnUse" x="6.15" y="14.104" width="347.7" height="93.746" data-vc-blend="screen" color-interpolation-filters="sRGB"><feComponentTransfer in="SourceAlpha"><feFuncA type="linear" slope="255"/></feComponentTransfer><feMorphology operator="dilate" radius="0.25"/><feGaussianBlur stdDeviation="4" result="glow"/><feFlood flood-color="#4aa8ff" flood-opacity="0.55"/><feComposite in2="glow" operator="in" result="paint"/><feMerge><feMergeNode in="paint"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="filter-2" filterUnits="userSpaceOnUse" x="302.25" y="18.25" width="71.5" height="71.5" data-vc-blend="screen" color-interpolation-filters="sRGB"><feComponentTransfer in="SourceAlpha"><feFuncA type="linear" slope="255"/></feComponentTransfer><feMorphology operator="dilate" radius="0.25"/><feGaussianBlur stdDeviation="5" result="glow"/><feFlood flood-color="#4aa8ff" flood-opacity="0.45"/><feComposite in2="glow" operator="in" result="paint"/><feMerge><feMergeNode in="paint"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <title>map_path</title>
+  <g id="Layer_1" data-name="Layer 1">
+    <path d="M22 92 C90 92 110 28 180 30 C250 32 270 88 338 54" fill="none" stroke="#4aa8ff" stroke-width="11" stroke-miterlimit="10" opacity="0.14"/>
+    <path d="M22 92 C90 92 110 28 180 30 C250 32 270 88 338 54" fill="none" stroke="#0a111c" stroke-width="7" stroke-miterlimit="10"/>
+    <g filter="url(#filter-1)">
+      <path d="M22 92 C90 92 110 28 180 30 C250 32 270 88 338 54" fill="none" stroke="#4aa8ff" stroke-width="3.2" stroke-linecap="round" stroke-miterlimit="10" stroke-dasharray="1.5 10"/>
+    </g>
+    <path d="M9 92 C9 84.82 14.82 79 22 79 C29.18 79 35 84.82 35 92 C35 99.18 29.18 105 22 105 C14.82 105 9 99.18 9 92 Z" fill="#0b111c" stroke="#4aa8ff" stroke-width="2.5" stroke-miterlimit="10"/>
+    <path d="M16.5 92 C16.5 88.962 18.962 86.5 22 86.5 C25.038 86.5 27.5 88.962 27.5 92 C27.5 95.038 25.038 97.5 22 97.5 C18.962 97.5 16.5 95.038 16.5 92 Z" fill="#4aa8ff"/>
+    <g filter="url(#filter-2)">
+      <path d="M321 54 C321 44.611 328.611 37 338 37 C347.389 37 355 44.611 355 54 C355 63.389 347.389 71 338 71 C328.611 71 321 63.389 321 54 Z" fill="#0b111c" stroke="#4aa8ff" stroke-width="3" stroke-miterlimit="10"/>
+    </g>
+    <path d="M331 54 C331 50.134 334.134 47 338 47 C341.866 47 345 50.134 345 54 C345 57.866 341.866 61 338 61 C334.134 61 331 57.866 331 54 Z" fill="#cfeaff"/>
+  </g>
+</svg>

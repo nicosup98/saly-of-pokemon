@@ -1,12 +1,12 @@
 use bevy::prelude::*;
 use crate::pokemon::get_species_data;
 use crate::run::{AppState, CurrentRunState, MetaProfile};
-use crate::save::{self, ActiveSaveSlot, TOTAL_SLOTS};
+use crate::save::{self, ActiveSaveSlot, SaveNotificationEvent, TOTAL_SLOTS};
 use crate::ui::{BorderColor, Button, CleanupUi};
 use crate::ui::transition_ui::TransitionToEvent;
 use bevy_tweening::{
-    lens::TransformScaleLens,
-    AnimTarget, RepeatCount, Tween, TweenAnim,
+    lens::UiTransformScaleLens,
+    AnimTarget, RepeatCount, RepeatStrategy, Tween, TweenAnim,
 };
 
 pub struct ProfileUiPlugin;
@@ -73,14 +73,14 @@ fn setup_profile_ui(
             })
             .with_children(|header| {
                 header.spawn((
-                    Text::new("GESTIÓN DE PERFILES DE GUARDADO"),
+                    Text::new("SELECCIÓN DE PERFIL / GUARDADO"),
                     TextFont::from_font_size(24.0),
                     TextColor(Color::srgb(1.0, 0.85, 0.2)),
                 ));
                 header.spawn((
                     Text::new(format!(
-                        "Existen {} ranuras de guardado independientes (Ranura activa actual: #{})",
-                        TOTAL_SLOTS, current_active_slot
+                        "Elige tu archivo de guardado antes de entrar al menú principal (Ranura activa: #{})",
+                        current_active_slot
                     )),
                     TextFont::from_font_size(14.0),
                     TextColor(Color::srgb(0.75, 0.8, 0.9)),
@@ -123,8 +123,10 @@ fn setup_profile_ui(
                             justify_content: JustifyContent::SpaceBetween,
                             padding: UiRect::all(Val::Px(16.0)),
                             border: UiRect::all(Val::Px(2.0)),
+                            border_radius: BorderRadius::all(Val::Px(10.0)),
                             ..default()
                         },
+                        UiTransform::default(),
                         BackgroundColor(bg_col),
                         BorderColor(border_col),
                     ));
@@ -144,13 +146,13 @@ fn setup_profile_ui(
                         })
                         .with_children(|top| {
                             top.spawn((
-                                Text::new(format!("RANURA {}", slot)),
+                                Text::new(format!("PERFIL / RANURA {}", slot)),
                                 TextFont::from_font_size(18.0),
                                 TextColor(Color::WHITE),
                             ));
                             if is_active {
                                 top.spawn((
-                                    Text::new("★ ACTIVO"),
+                                    Text::new("[* ACTIVO]"),
                                     TextFont::from_font_size(12.0),
                                     TextColor(Color::srgb(1.0, 0.85, 0.2)),
                                 ));
@@ -247,7 +249,7 @@ fn setup_profile_ui(
                                             align_items: AlignItems::Center,
                                             ..default()
                                         },
-                                        BackgroundColor(Color::srgb(0.25, 0.45, 0.35)),
+                                        BackgroundColor(Color::srgb(0.25, 0.55, 0.35)),
                                     ))
                                     .with_child((
                                         Text::new("GUARDAR PROGRESO AQUÍ"),
@@ -280,13 +282,13 @@ fn setup_profile_ui(
                                 flex_direction: FlexDirection::Column,
                                 align_items: AlignItems::Center,
                                 justify_content: JustifyContent::Center,
-                                height: Val::Px(160.0),
+                                height: Val::Px(140.0),
                                 row_gap: Val::Px(8.0),
                                 ..default()
                             })
                             .with_children(|empty| {
                                 empty.spawn((
-                                    Text::new("— RANURA VACÍA —"),
+                                    Text::new("- RANURA VACÍA -"),
                                     TextFont::from_font_size(14.0),
                                     TextColor(Color::srgb(0.5, 0.55, 0.65)),
                                 ));
@@ -297,25 +299,55 @@ fn setup_profile_ui(
                                 ));
                             });
 
-                            card.spawn((
-                                Button,
-                                ProfileSlotAction::New(slot),
-                                Node {
-                                    width: Val::Percent(100.0),
-                                    height: Val::Px(42.0),
-                                    justify_content: JustifyContent::Center,
-                                    align_items: AlignItems::Center,
-                                    border: UiRect::all(Val::Px(1.5)),
-                                    ..default()
-                                },
-                                BackgroundColor(Color::srgb(0.18, 0.35, 0.55)),
-                                BorderColor(Color::srgb(0.4, 0.7, 0.9)),
-                            ))
-                            .with_child((
-                                Text::new("INICIAR NUEVA PARTIDA"),
-                                TextFont::from_font_size(13.0),
-                                TextColor(Color::WHITE),
-                            ));
+                            card.spawn(Node {
+                                width: Val::Percent(100.0),
+                                flex_direction: FlexDirection::Column,
+                                row_gap: Val::Px(8.0),
+                                ..default()
+                            })
+                            .with_children(|empty_actions| {
+                                empty_actions
+                                    .spawn((
+                                        Button,
+                                        ProfileSlotAction::Save(slot),
+                                        Node {
+                                            width: Val::Percent(100.0),
+                                            height: Val::Px(36.0),
+                                            justify_content: JustifyContent::Center,
+                                            align_items: AlignItems::Center,
+                                            border: UiRect::all(Val::Px(1.5)),
+                                            ..default()
+                                        },
+                                        BackgroundColor(Color::srgb(0.22, 0.52, 0.35)),
+                                        BorderColor(Color::srgb(0.4, 0.9, 0.55)),
+                                    ))
+                                    .with_child((
+                                        Text::new("GUARDAR PARTIDA ACTUAL AQUÍ"),
+                                        TextFont::from_font_size(12.0),
+                                        TextColor(Color::WHITE),
+                                    ));
+
+                                empty_actions
+                                    .spawn((
+                                        Button,
+                                        ProfileSlotAction::New(slot),
+                                        Node {
+                                            width: Val::Percent(100.0),
+                                            height: Val::Px(36.0),
+                                            justify_content: JustifyContent::Center,
+                                            align_items: AlignItems::Center,
+                                            border: UiRect::all(Val::Px(1.5)),
+                                            ..default()
+                                        },
+                                        BackgroundColor(Color::srgb(0.18, 0.35, 0.55)),
+                                        BorderColor(Color::srgb(0.4, 0.7, 0.9)),
+                                    ))
+                                    .with_child((
+                                        Text::new("INICIAR NUEVA PARTIDA"),
+                                        TextFont::from_font_size(12.0),
+                                        TextColor(Color::WHITE),
+                                    ));
+                            });
                         }
                     });
                 }
@@ -341,18 +373,19 @@ fn setup_profile_ui(
                         Button,
                         ProfileBackButton,
                         Node {
-                            width: Val::Px(220.0),
+                            width: Val::Px(280.0),
                             height: Val::Px(44.0),
                             justify_content: JustifyContent::Center,
                             align_items: AlignItems::Center,
                             border: UiRect::all(Val::Px(1.5)),
+                            border_radius: BorderRadius::all(Val::Px(8.0)),
                             ..default()
                         },
-                        BackgroundColor(Color::srgb(0.25, 0.28, 0.35)),
-                        BorderColor(Color::srgb(0.5, 0.55, 0.65)),
+                        BackgroundColor(Color::srgb(0.20, 0.40, 0.65)),
+                        BorderColor(Color::srgb(0.4, 0.7, 0.95)),
                     ))
                     .with_child((
-                        Text::new("VOLVER AL MENÚ"),
+                        Text::new("CONTINUAR AL MENÚ PRINCIPAL ->"),
                         TextFont::from_font_size(14.0),
                         TextColor(Color::WHITE),
                     ));
@@ -362,16 +395,17 @@ fn setup_profile_ui(
     if let Some(card_id) = active_card_id {
         let tween = Tween::new(
             EaseFunction::SineInOut,
-            std::time::Duration::from_millis(1500),
-            TransformScaleLens {
-                start: Vec3::splat(1.0),
-                end: Vec3::splat(1.02),
+            std::time::Duration::from_millis(1200),
+            UiTransformScaleLens {
+                start: Vec2::splat(0.99),
+                end: Vec2::splat(1.03),
             },
         )
-        .with_repeat_count(RepeatCount::Infinite);
+        .with_repeat(RepeatCount::Infinite, RepeatStrategy::MirroredRepeat);
         commands.spawn((
+            CleanupUi,
             TweenAnim::new(tween),
-            AnimTarget::component::<Transform>(card_id),
+            AnimTarget::component::<UiTransform>(card_id),
         ));
     }
 }
@@ -384,7 +418,7 @@ fn handle_profile_slot_actions(
     map_res: Option<ResMut<crate::map::CurrentMap>>,
     mut q_msg: Query<&mut Text, With<ProfileStatusMessage>>,
     mut ev_trans: MessageWriter<TransitionToEvent>,
-    mut next_state: ResMut<NextState<AppState>>,
+    mut ev_notify: MessageWriter<SaveNotificationEvent>,
 ) {
     for (interaction, action) in q_buttons.iter_mut() {
         if *interaction == Interaction::Pressed {
@@ -400,17 +434,29 @@ fn handle_profile_slot_actions(
                                     *map = m;
                                 }
                             }
+                            let msg = format!(
+                                "[OK] ¡Ranura #{} cargada con éxito! (Pokémon #{})",
+                                slot, run_state.selected_starter_id
+                            );
                             if let Ok(mut text) = q_msg.single_mut() {
-                                **text = format!("✅ ¡Ranura #{} cargada con éxito! (Pokémon #{})", slot, run_state.selected_starter_id);
+                                **text = msg.clone();
                             }
-                            // Transicionar de vuelta al menú para ver los datos cargados
+                            ev_notify.write(SaveNotificationEvent {
+                                message: msg,
+                                is_error: false,
+                            });
                             ev_trans.write(TransitionToEvent { target: AppState::MainMenu });
                             return;
                         }
                         Err(e) => {
+                            let msg = format!("[ERROR] Error al cargar: {}", e);
                             if let Ok(mut text) = q_msg.single_mut() {
-                                **text = format!("❌ Error al cargar: {}", e);
+                                **text = msg.clone();
                             }
+                            ev_notify.write(SaveNotificationEvent {
+                                message: msg,
+                                is_error: true,
+                            });
                         }
                     }
                 }
@@ -419,14 +465,27 @@ fn handle_profile_slot_actions(
                     match save::save_profile(*slot, &meta, &run_state, map_ref) {
                         Ok(_) => {
                             active_slot.0 = *slot;
+                            let msg = format!(
+                                "[GUARDADO] ¡Progreso guardado con éxito en el Perfil #{}! (Acto {} - Piso {})",
+                                slot, run_state.current_act, run_state.current_floor
+                            );
                             if let Ok(mut text) = q_msg.single_mut() {
-                                **text = format!("💾 ¡Progreso guardado con éxito en la Ranura #{}!", slot);
+                                **text = msg.clone();
                             }
+                            ev_notify.write(SaveNotificationEvent {
+                                message: msg,
+                                is_error: false,
+                            });
                         }
                         Err(e) => {
+                            let msg = format!("[ERROR] Error al guardar: {}", e);
                             if let Ok(mut text) = q_msg.single_mut() {
-                                **text = format!("❌ Error al guardar: {}", e);
+                                **text = msg.clone();
                             }
+                            ev_notify.write(SaveNotificationEvent {
+                                message: msg,
+                                is_error: true,
+                            });
                         }
                     }
                 }
@@ -437,14 +496,26 @@ fn handle_profile_slot_actions(
                     let _ = save::save_profile(*slot, &new_meta, &new_run, None);
                     *meta = new_meta;
                     *run_state = new_run;
-                    next_state.set(AppState::StarterSelection);
+                    ev_notify.write(SaveNotificationEvent {
+                        message: format!(
+                            "[NUEVA PARTIDA] Perfil #{} seleccionado e inicializado.",
+                            slot
+                        ),
+                        is_error: false,
+                    });
+                    ev_trans.write(TransitionToEvent { target: AppState::MainMenu });
                     return;
                 }
                 ProfileSlotAction::Delete(slot) => {
                     let _ = save::delete_profile(*slot);
+                    let msg = format!("[BORRADO] Ranura #{} eliminada.", slot);
                     if let Ok(mut text) = q_msg.single_mut() {
-                        **text = format!("🗑️ Ranura #{} eliminada.", slot);
+                        **text = msg.clone();
                     }
+                    ev_notify.write(SaveNotificationEvent {
+                        message: msg,
+                        is_error: false,
+                    });
                 }
             }
         }

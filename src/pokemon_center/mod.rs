@@ -10,8 +10,8 @@ impl Plugin for PokemonCenterPlugin {
 }
 
 pub fn on_enter_center(mut run_state: ResMut<CurrentRunState>) {
-    run_state.add_log("🏥 ¡Has llegado a un Centro Pokémon de descanso!");
-    run_state.add_log("💡 Opciones disponibles: Curar 35% de HP o Entrenar una carta a su versión '+'.");
+    run_state.add_log("[CENTRO] ¡Has llegado a un Centro Pokémon de descanso!");
+    run_state.add_log("[INFO] Opciones disponibles: Curar 35% de HP o Entrenar una carta a su versión '+'.");
 }
 
 /// Aplica la curación de descanso

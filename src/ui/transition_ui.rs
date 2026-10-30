@@ -162,6 +162,7 @@ fn setup_transition_ui(mut commands: Commands) {
         // Ícono Pokéball animado
         parent.spawn((
             TransitionPokeballSpinner,
+            UiTransform::default(),
             Node {
                 width: Val::Px(56.0),
                 height: Val::Px(56.0),
@@ -237,29 +238,39 @@ fn update_transition_animation(
     mut q_overlay: Query<(&mut BackgroundColor, &mut Visibility), With<TransitionOverlayRoot>>,
     mut q_title: Query<(&mut Text, &mut TextColor), (With<TransitionBannerTitle>, Without<TransitionBannerSubtitle>)>,
     mut q_sub: Query<(&mut Text, &mut TextColor), (With<TransitionBannerSubtitle>, Without<TransitionBannerTitle>)>,
-    mut q_spinner: Query<(&mut Transform, &mut Visibility), (With<TransitionPokeballSpinner>, Without<TransitionOverlayRoot>)>,
+    mut q_spinner: Query<(&mut UiTransform, &mut Visibility), (With<TransitionPokeballSpinner>, Without<TransitionOverlayRoot>)>,
 ) {
     let Ok((mut bg_col, mut overlay_vis)) = q_overlay.single_mut() else { return };
 
     if transition.phase == TransitionPhase::Idle {
-        *overlay_vis = Visibility::Hidden;
+        if *overlay_vis != Visibility::Hidden {
+            *overlay_vis = Visibility::Hidden;
+        }
         return;
     }
 
-    let dt = time.delta_secs();
+    let raw_dt = time.delta_secs();
 
     // Si el tiempo está congelado o en pruebas ECS sin simulación de reloj, aplicar de inmediato
-    if dt <= 0.0 {
+    if raw_dt <= 0.0 {
         if let Some(target) = transition.target_state.take() {
             next_state.set(target);
         }
         transition.phase = TransitionPhase::Idle;
         transition.progress = 0.0;
-        *overlay_vis = Visibility::Hidden;
+        if *overlay_vis != Visibility::Hidden {
+            *overlay_vis = Visibility::Hidden;
+        }
         return;
     }
 
-    *overlay_vis = Visibility::Visible;
+    // Limitar el delta por frame (máx 33ms) para que la carga pesada de `OnEnter` al cambiar de estado
+    // no provoque un salto brusco en el primer frame de FadeIn.
+    let dt = raw_dt.min(0.033);
+
+    if *overlay_vis != Visibility::Visible {
+        *overlay_vis = Visibility::Visible;
+    }
 
     match transition.phase {
         TransitionPhase::FadeOut => {
@@ -284,34 +295,43 @@ fn update_transition_animation(
         TransitionPhase::Idle => return,
     }
 
-    let alpha = transition.progress.clamp(0.0, 1.0);
+    let raw_alpha = transition.progress.clamp(0.0, 1.0);
+    // Curva smoothstep para transición visual sedosa
+    let alpha = raw_alpha * raw_alpha * (3.0 - 2.0 * raw_alpha);
 
     // Efecto de color de fondo
     if transition.effect == TransitionEffect::CombatFlash
         && transition.phase == TransitionPhase::FadeOut
-        && alpha < 0.25
+        && raw_alpha < 0.25
     {
-        let flash = (1.0 - alpha * 4.0).clamp(0.0, 1.0);
+        let flash = (1.0 - raw_alpha * 4.0).clamp(0.0, 1.0);
         *bg_col = BackgroundColor(Color::srgba(1.0, 1.0, 1.0, flash));
     } else {
         *bg_col = BackgroundColor(Color::srgba(0.05, 0.06, 0.09, alpha));
     }
 
-    // Textos
+    // Textos (solo mutar String cuando cambia el título para no recalcular glifos en cada frame)
     if let Ok((mut text, mut color)) = q_title.single_mut() {
-        **text = transition.banner_title.clone();
+        if text.as_str() != transition.banner_title {
+            **text = transition.banner_title.clone();
+        }
         *color = TextColor(Color::srgba(1.0, 1.0, 1.0, alpha));
     }
     if let Ok((mut text, mut color)) = q_sub.single_mut() {
-        **text = transition.banner_subtitle.clone();
+        if text.as_str() != transition.banner_subtitle {
+            **text = transition.banner_subtitle.clone();
+        }
         *color = TextColor(Color::srgba(0.7, 0.75, 0.85, alpha));
     }
 
-    // Rotación de la Pokéball
+    // Rotación de la Pokéball mediante UiTransform
     if let Ok((mut transform, mut spin_vis)) = q_spinner.single_mut() {
-        *spin_vis = if alpha > 0.1 { Visibility::Visible } else { Visibility::Hidden };
-        transform.rotation = Quat::from_rotation_z(time.elapsed_secs() * 5.0);
+        let target_vis = if alpha > 0.1 { Visibility::Visible } else { Visibility::Hidden };
+        if *spin_vis != target_vis {
+            *spin_vis = target_vis;
+        }
+        transform.rotation = Rot2::radians(time.elapsed_secs() * 5.0);
         let scale = (0.7 + 0.3 * alpha).clamp(0.0, 1.0);
-        transform.scale = Vec3::splat(scale);
+        transform.scale = Vec2::splat(scale);
     }
 }

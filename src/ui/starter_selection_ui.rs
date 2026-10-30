@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use crate::pokemon::get_species_data;
 use crate::run::{AppState, CurrentRunState, MetaProfile};
 use crate::types::ElementType;
-use crate::ui::{element_color, BorderColor, Button, CleanupUi};
+use crate::ui::{element_color, BorderColor, Button, CleanupUi, CardHoverAnimation};
 use crate::ui::transition_ui::TransitionToEvent;
 
 pub struct StarterSelectionUiPlugin;
@@ -137,6 +137,9 @@ fn setup_starter_selection(
                             border: UiRect::all(Val::Px(2.0)),
                             ..default()
                         },
+                        UiTransform::default(),
+                        GlobalZIndex(10),
+                        CardHoverAnimation::new(border_col).with_lift(-16.0).with_scale(1.06),
                         BackgroundColor(card_bg),
                         BorderColor(border_col),
                     ))
@@ -330,7 +333,12 @@ fn handle_pick_pokemon(
 
 fn update_starter_cards_visuals(
     run_state: Res<CurrentRunState>,
-    mut q_cards: Query<(&StarterCardButton, &mut BackgroundColor, &mut bevy::ui::BorderColor)>,
+    mut q_cards: Query<(
+        &StarterCardButton,
+        &mut BackgroundColor,
+        &mut bevy::ui::BorderColor,
+        Option<&mut CardHoverAnimation>,
+    )>,
     mut q_badges: Query<(&StarterActiveBadge, &mut Text), Without<StarterActiveText>>,
     mut q_texts: Query<(&StarterActiveText, &mut Text), Without<StarterActiveBadge>>,
 ) {
@@ -339,13 +347,17 @@ fn update_starter_cards_visuals(
     }
 
     // Actualiza tarjetas
-    for (card, mut bg, mut border) in q_cards.iter_mut() {
+    for (card, mut bg, mut border, mut hover) in q_cards.iter_mut() {
         let is_active = card.0 == run_state.selected_starter_id;
-        *border = if is_active {
-            BorderColor(Color::srgb(1.0, 0.85, 0.2))
+        let border_col = if is_active {
+            Color::srgb(1.0, 0.85, 0.2)
         } else {
-            BorderColor(Color::srgb(0.28, 0.32, 0.42))
+            Color::srgb(0.28, 0.32, 0.42)
         };
+        *border = BorderColor(border_col);
+        if let Some(ref mut h) = hover {
+            h.base_border = border_col;
+        }
         *bg = if is_active {
             BackgroundColor(Color::srgb(0.22, 0.20, 0.16))
         } else {

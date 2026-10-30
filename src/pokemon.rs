@@ -376,6 +376,21 @@ pub fn get_species_data(id: u32) -> Option<SpeciesData> {
     get_species_database().into_iter().find(|s| s.id == id)
 }
 
+/// Recalcula las estadísticas de un Pokémon al subir de nivel según las estadísticas base de su especie
+pub fn update_pokemon_stats_for_level(stats: &mut PokemonStats) {
+    let db = get_species_database();
+    if let Some(sp) = db.iter().find(|s| s.id == stats.species_id) {
+        let old_max_hp = stats.max_hp;
+        stats.max_hp = PokemonStats::calc_hp(sp.base_hp, stats.level);
+        stats.hp += (stats.max_hp - old_max_hp).max(0);
+        stats.atk = PokemonStats::calc_stat(sp.base_atk, stats.level);
+        stats.def = PokemonStats::calc_stat(sp.base_def, stats.level);
+        stats.sp_atk = PokemonStats::calc_stat(sp.base_sp_atk, stats.level);
+        stats.sp_def = PokemonStats::calc_stat(sp.base_sp_def, stats.level);
+        stats.spe = PokemonStats::calc_stat(sp.base_spe, stats.level);
+    }
+}
+
 /// Comprueba si el Pokémon actual debe evolucionar según su nivel y el GDD
 pub fn check_evolution(stats: &mut PokemonStats) -> Option<String> {
     let db = get_species_database();
@@ -399,9 +414,21 @@ pub fn check_evolution(stats: &mut PokemonStats) -> Option<String> {
                 stats.sp_def = PokemonStats::calc_stat(next_sp.base_sp_def, stats.level);
                 stats.spe = PokemonStats::calc_stat(next_sp.base_spe, stats.level);
 
-                return Some(format!("🌟 ¡Tu {} ha evolucionado a {}!", old_name, stats.name));
+                return Some(format!("[*] ¡Tu {} ha evolucionado a {}!", old_name, stats.name));
             }
         }
     }
     None
+}
+
+/// Determina la categoría de rareza de una especie de Pokémon para el Gachapón y animaciones
+pub fn species_rarity(species_id: u32) -> crate::types::RarityTier {
+    use crate::types::RarityTier::*;
+    match species_id {
+        150 | 6 | 9 | 3 => Legendary,
+        123 | 143 | 5 | 8 | 2 | 26 => Exotic,
+        4 | 7 | 1 | 25 => Rare,
+        74 | 95 | 121 => Uncommon,
+        _ => Common,
+    }
 }

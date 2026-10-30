@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use serde::{Deserialize, Serialize};
 use rand::Rng;
 use crate::stats::PokemonStats;
-use crate::types::{MoveCategory, StatusType};
+use crate::types::{ElementType, MoveCategory, StatusType};
 
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub enum EnemyIntentType {
@@ -99,10 +99,35 @@ impl EnemyAI {
                     }
                 }
             } else {
-                // Debuff
-                EnemyIntentType::Debuff {
-                    status: StatusType::Burn,
-                    stacks: 2,
+                // Debuff o Buff temático según el tipo elemental del Pokémon
+                let (status, is_buff) = if stats.primary_types.contains(&ElementType::Fire) {
+                    (StatusType::Burn, false)
+                } else if stats.primary_types.contains(&ElementType::Electric) {
+                    (StatusType::Paralysis, false)
+                } else if stats.primary_types.contains(&ElementType::Grass) {
+                    (StatusType::LeechSeed, false)
+                } else if stats.primary_types.contains(&ElementType::Poison) {
+                    (StatusType::Poison, false)
+                } else if stats.primary_types.contains(&ElementType::Ice) {
+                    (StatusType::Chill, false)
+                } else if stats.primary_types.contains(&ElementType::Water) {
+                    (StatusType::Chill, false)
+                } else if stats.effective_def() >= stats.effective_atk() {
+                    (StatusType::IronDefense, true)
+                } else {
+                    (StatusType::SwordDance, true)
+                };
+
+                if is_buff {
+                    EnemyIntentType::Buff {
+                        status,
+                        stacks: 1,
+                    }
+                } else {
+                    EnemyIntentType::Debuff {
+                        status,
+                        stacks: 2,
+                    }
                 }
             }
         };

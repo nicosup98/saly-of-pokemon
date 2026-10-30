@@ -81,9 +81,9 @@ pub fn on_enter_map(
             return;
         }
         map.start_act(act_num);
-        run_state.add_log(format!("🗺️ ¡Has alcanzado el Acto {}!", act_num));
+        run_state.add_log(format!("[MAPA] ¡Has alcanzado el Acto {}!", act_num));
     }
 
     let floor = run_state.current_floor;
-    run_state.add_log(format!("🚩 Piso {}/15 - Elige tu próximo destino.", floor));
+    run_state.add_log(format!("[RUTA] Piso {}/15 - Elige tu próximo destino.", floor));
 }

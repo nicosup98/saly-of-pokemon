@@ -1,3 +1,4 @@
+use std::path::Path;
 use slay_of_pokemon::card::create_master_card_catalog;
 use slay_of_pokemon::gachapon::pull_gachapon;
 use slay_of_pokemon::map::generator::{generate_act_map, NodeType};
@@ -171,4 +172,202 @@ fn test_trainer_sprites_exist() {
             path
         );
     }
+}
+
+#[test]
+fn test_situation_backgrounds_exist_and_mapping() {
+    use slay_of_pokemon::map::generator::NodeType;
+    use slay_of_pokemon::ui::combat_ui::combat_background_path;
+
+    let expected_backgrounds = [
+        ("assets/fondos/fondo_pelea.jpeg", "Combate contra entrenadores comunes"),
+        ("assets/fondos/gym_misty.jpeg", "Combate contra Mini Jefe / Élite"),
+        ("assets/fondos/gym_blaine.jpeg", "Combate contra Líder de Gimnasio"),
+        ("assets/fondos/centro_pokemon.jpeg", "Centro Pokémon"),
+        ("assets/fondos/tienda_pokemon.jpeg", "Tienda Poké Mart"),
+    ];
+
+    for (path, desc) in expected_backgrounds {
+        assert!(
+            std::path::Path::new(path).exists(),
+            "Falta el fondo para {}: {}",
+            desc,
+            path
+        );
+    }
+
+    // Comprobar la selección contextual del fondo para cada situación
+    assert_eq!(
+        combat_background_path(Some(NodeType::Enemy), false, false),
+        "fondos/fondo_pelea.jpeg"
+    );
+    assert_eq!(
+        combat_background_path(Some(NodeType::MiniBoss), false, true),
+        "fondos/gym_misty.jpeg"
+    );
+    assert_eq!(
+        combat_background_path(Some(NodeType::GymLeader), true, false),
+        "fondos/gym_blaine.jpeg"
+    );
+
+    // Fallbacks si no se especifica el tipo de nodo en el mapa
+    assert_eq!(
+        combat_background_path(None, true, false),
+        "fondos/gym_blaine.jpeg"
+    );
+    assert_eq!(
+        combat_background_path(None, false, true),
+        "fondos/gym_misty.jpeg"
+    );
+    assert_eq!(
+        combat_background_path(None, false, false),
+        "fondos/fondo_pelea.jpeg"
+    );
+}
+
+#[test]
+fn test_card_type_assets_exist_and_mapping() {
+    use slay_of_pokemon::card::{card_type_asset_path, Card};
+    use slay_of_pokemon::types::{ElementType, MoveCategory, RarityTier};
+
+    let manifest_dir = Path::new(env!("CARGO_MANIFEST_DIR"));
+    let expected_files = [
+        "cartas/acero.jpeg",
+        "cartas/agua.jpeg",
+        "cartas/electrico.jpeg",
+        "cartas/fuego.jpeg",
+        "cartas/insecto.jpeg",
+        "cartas/normal.jpeg",
+        "cartas/planta.jpeg",
+        "cartas/tierra.jpeg",
+    ];
+
+    for file_rel in expected_files {
+        let full_path = manifest_dir.join("assets").join(file_rel);
+        assert!(
+            full_path.exists(),
+            "El archivo de carta {:?} debe existir en assets/",
+            file_rel
+        );
+    }
+
+    // Comprobar que los tipos elementales tienen sus asignaciones correctas
+    assert_eq!(card_type_asset_path(ElementType::Fire), "cartas/fuego.jpeg");
+    assert_eq!(card_type_asset_path(ElementType::Water), "cartas/agua.jpeg");
+    assert_eq!(card_type_asset_path(ElementType::Grass), "cartas/planta.jpeg");
+    assert_eq!(card_type_asset_path(ElementType::Bug), "cartas/insecto.jpeg");
+    assert_eq!(card_type_asset_path(ElementType::Steel), "cartas/acero.jpeg");
+    assert_eq!(card_type_asset_path(ElementType::Ground), "cartas/tierra.jpeg");
+    assert_eq!(card_type_asset_path(ElementType::Electric), "cartas/electrico.jpeg");
+    assert_eq!(card_type_asset_path(ElementType::Normal), "cartas/normal.jpeg");
+
+    // Verificar que todas las variantes de ElementType apuntan a un asset existente
+    let all_elements = [
+        ElementType::Normal,
+        ElementType::Fire,
+        ElementType::Water,
+        ElementType::Grass,
+        ElementType::Electric,
+        ElementType::Ice,
+        ElementType::Fighting,
+        ElementType::Poison,
+        ElementType::Ground,
+        ElementType::Flying,
+        ElementType::Psychic,
+        ElementType::Bug,
+        ElementType::Rock,
+        ElementType::Ghost,
+        ElementType::Dragon,
+        ElementType::Dark,
+        ElementType::Steel,
+        ElementType::Fairy,
+    ];
+
+    for elem in all_elements {
+        let path = card_type_asset_path(elem);
+        let full = manifest_dir.join("assets").join(path);
+        assert!(
+            full.exists(),
+            "El asset asignado para {:?} ({}) no existe en assets/",
+            elem,
+            path
+        );
+
+        let card = Card::new("test", "Ataque Test", elem, MoveCategory::Physical, RarityTier::Common, 1, 1.0);
+        assert_eq!(card.asset_path(), path);
+    }
+}
+
+#[test]
+fn test_pokemon_level_progression_and_xp_scaling() {
+    use slay_of_pokemon::combat::calculate_exp_reward;
+    use slay_of_pokemon::pokemon::{create_pokemon_from_species, update_pokemon_stats_for_level};
+    use slay_of_pokemon::stats::PokemonStats;
+
+    // 1. Minijefes dan más XP que entrenadores, y líderes de nivel dan aún más
+    for lvl in [5, 10, 15, 20] {
+        let trainer_xp = calculate_exp_reward(false, false, lvl);
+        let miniboss_xp = calculate_exp_reward(false, true, lvl);
+        let boss_xp = calculate_exp_reward(true, false, lvl);
+
+        assert!(
+            miniboss_xp > trainer_xp,
+            "El minijefe en nivel {} ({}) debe dar más XP que el entrenador ({})",
+            lvl, miniboss_xp, trainer_xp
+        );
+        assert!(
+            boss_xp > miniboss_xp,
+            "El líder de nivel en nivel {} ({}) debe dar aún más XP que el minijefe ({})",
+            lvl, boss_xp, miniboss_xp
+        );
+    }
+
+    // 2. Mientras más nivel tenga, más XP requiere para subir (curva cuadrática progresiva)
+    let mut prev_req = 0;
+    for lvl in 1..=40 {
+        let req = PokemonStats::calc_exp_to_next_level(lvl);
+        assert!(
+            req > prev_req,
+            "El nivel {} debe requerir estrictamente más XP ({}) que el nivel anterior ({})",
+            lvl, req, prev_req
+        );
+        prev_req = req;
+    }
+
+    // Comprobar umbrales concretos
+    let req_5 = PokemonStats::calc_exp_to_next_level(5);
+    let req_15 = PokemonStats::calc_exp_to_next_level(15);
+    let req_30 = PokemonStats::calc_exp_to_next_level(30);
+    assert_eq!(req_5, 130);
+    assert_eq!(req_15, 610);
+    assert_eq!(req_30, 2080);
+    assert!(req_15 > req_5 * 4, "Nivel 15 requiere más de 4 veces la XP de nivel 5");
+    assert!(req_30 > req_15 * 3, "Nivel 30 requiere más de 3 veces la XP de nivel 15");
+
+    // 3. Simulación de combates y subida de nivel con persistencia de exceso de XP
+    let mut charmander = create_pokemon_from_species(4, 5).unwrap();
+    assert_eq!(charmander.level, 5);
+    assert_eq!(charmander.exp, 0);
+    let initial_hp = charmander.max_hp;
+    let initial_atk = charmander.atk;
+
+    // Victoria contra entrenador común (60 XP) -> Sigue en nivel 5
+    let trainer_xp = calculate_exp_reward(false, false, 5);
+    let (levels, _) = charmander.gain_exp(trainer_xp);
+    assert_eq!(levels, 0);
+    assert_eq!(charmander.level, 5);
+    assert_eq!(charmander.exp, 60);
+
+    // Victoria contra minijefe (150 XP) -> 60 + 150 = 210 XP >= 130 XP -> Sube a nivel 6 con 80 XP sobrantes
+    let miniboss_xp = calculate_exp_reward(false, true, 5);
+    let (levels, logs) = charmander.gain_exp(miniboss_xp);
+    assert_eq!(levels, 1);
+    assert_eq!(charmander.level, 6);
+    assert_eq!(charmander.exp, 80);
+    assert!(!logs.is_empty());
+
+    // Actualizar estadísticas al subir de nivel
+    update_pokemon_stats_for_level(&mut charmander);
+    assert!(charmander.max_hp > initial_hp, "Max HP debe aumentar al subir de nivel");
+    assert!(charmander.atk >= initial_atk, "Ataque debe aumentar o mantenerse");
 }

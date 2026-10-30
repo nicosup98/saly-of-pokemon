@@ -82,6 +82,11 @@ impl Card {
         })
     }
 
+    /// Retorna la ruta relativa del asset ilustrado de la carta según su tipo elemental
+    pub fn asset_path(&self) -> &'static str {
+        card_type_asset_path(self.element)
+    }
+
     /// Descripción formateada del efecto de la carta, indicando multiplicador, estado y probabilidad de acierto
     pub fn description(&self) -> String {
         let base = match self.category {
@@ -455,4 +460,44 @@ pub fn create_starter_deck(primary_type: ElementType, is_special: bool) -> Vec<C
     }
 
     deck
+}
+
+/// Todos los assets de plantillas de cartas disponibles para precarga
+pub const ALL_CARD_ASSETS: &[&str] = &[
+    "cartas/acero.jpeg",
+    "cartas/agua.jpeg",
+    "cartas/electrico.jpeg",
+    "cartas/fuego.jpeg",
+    "cartas/insecto.jpeg",
+    "cartas/normal.jpeg",
+    "cartas/planta.jpeg",
+    "cartas/tierra.jpeg",
+];
+
+/// Todos los fondos de situaciones de combate y servicios disponibles para precarga
+pub const ALL_SITUATION_BACKGROUNDS: &[&str] = &[
+    "fondos/centro_pokemon.jpeg",
+    "fondos/fondo_pelea.jpeg",
+    "fondos/gym_blaine.jpeg",
+    "fondos/gym_misty.jpeg",
+    "fondos/tienda_pokemon.jpeg",
+];
+
+/// Retorna la ruta relativa del asset ilustrado de la carta según su tipo elemental
+pub fn card_type_asset_path(element: ElementType) -> &'static str {
+    match element {
+        ElementType::Steel => "cartas/acero.jpeg",
+        ElementType::Water | ElementType::Ice => "cartas/agua.jpeg",
+        ElementType::Fire | ElementType::Dragon => "cartas/fuego.jpeg",
+        ElementType::Bug => "cartas/insecto.jpeg",
+        ElementType::Grass | ElementType::Poison => "cartas/planta.jpeg",
+        ElementType::Ground | ElementType::Rock | ElementType::Fighting => "cartas/tierra.jpeg",
+        ElementType::Electric => "cartas/electrico.jpeg",
+        ElementType::Normal
+        | ElementType::Psychic
+        | ElementType::Ghost
+        | ElementType::Dark
+        | ElementType::Flying
+        | ElementType::Fairy => "cartas/normal.jpeg",
+    }
 }

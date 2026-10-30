@@ -5,8 +5,8 @@ use serde::{Deserialize, Serialize};
 #[derive(States, Clone, Copy, PartialEq, Eq, Hash, Debug, Default)]
 pub enum AppState {
     #[default]
-    MainMenu,
     ProfileSelect,
+    MainMenu,
     StarterSelection,
     GachaponShop,
     MapNavigation,
@@ -46,6 +46,12 @@ pub struct CurrentRunState {
     pub selected_starter_id: u32,
     /// HP actual del Pokémon del jugador entre combates (`None` = HP completo, partida nueva).
     pub player_hp: Option<i32>,
+    /// Nivel persistente del Pokémon del jugador (`None` = Nivel inicial 5).
+    #[serde(default)]
+    pub player_level: Option<u32>,
+    /// EXP acumulada en el nivel actual (`None` = 0).
+    #[serde(default)]
+    pub player_exp: Option<u32>,
 }
 
 impl Default for CurrentRunState {
@@ -63,14 +69,21 @@ impl Default for CurrentRunState {
             battle_logs: Vec::new(),
             selected_starter_id: 4, // Charmander por defecto
             player_hp: None,
+            player_level: None,
+            player_exp: None,
         }
     }
 }
 
 impl CurrentRunState {
-    /// Nivel del Pokémon del jugador según el piso actual.
+    /// Nivel del Pokémon del jugador según su progreso acumulado en la partida (base Nv. 5)
     pub fn player_level(&self) -> u32 {
-        5 + (self.current_floor as u32).saturating_sub(1)
+        self.player_level.unwrap_or(5)
+    }
+
+    /// Experiencia acumulada en el nivel actual
+    pub fn player_exp(&self) -> u32 {
+        self.player_exp.unwrap_or(0)
     }
 
     pub fn add_log(&mut self, msg: impl Into<String>) {
