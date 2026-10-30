@@ -57,15 +57,26 @@ fn player_vitals(run_state: &CurrentRunState) -> (String, u32, i32) {
 fn setup_center_ui(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
+    preloaded: Option<Res<crate::ui::PreloadedAssets>>,
     run_state: Res<CurrentRunState>,
     mut center_state: ResMut<CenterState>,
 ) {
     center_state.action_taken = false;
+    let pre = preloaded.as_deref();
+    let srv = Some(&*asset_server);
 
     let (name, level, max_hp) = player_vitals(&run_state);
     let hp = run_state.player_hp.unwrap_or(max_hp).clamp(1, max_hp);
 
     let sprite_path = format!("sprites/pokemon/front/{}.png", run_state.selected_starter_id);
+    let bg_tex = pre
+        .and_then(|p| p.get_bg("fondos/centro_pokemon.jpeg"))
+        .unwrap_or_else(|| asset_server.load("fondos/centro_pokemon.jpeg"));
+    let top_bar_tex = crate::ui::load_ui_image(pre, srv, "ui/hud/hud_top_bar.png");
+    let hp_bar_bg_tex = crate::ui::load_ui_image(pre, srv, "ui/bars/hp_bar_bg.png");
+    let hp_fill_player_tex = crate::ui::load_ui_image(pre, srv, "ui/bars/hp_fill_player.png");
+    let btn_gold_tex = crate::ui::load_ui_image(pre, srv, "ui/buttons/btn_gold.png");
+    let btn_primary_tex = crate::ui::load_ui_image(pre, srv, "ui/buttons/btn_primary.png");
 
     commands
         .spawn((
@@ -85,7 +96,7 @@ fn setup_center_ui(
         .with_children(|root| {
             // Fondo temático del Centro Pokémon
             root.spawn((
-                ImageNode::new(asset_server.load("fondos/centro_pokemon.jpeg")),
+                ImageNode::new(bg_tex),
                 Node {
                     position_type: PositionType::Absolute,
                     left: Val::Px(0.0),
@@ -96,7 +107,7 @@ fn setup_center_ui(
                 },
             ));
 
-            // Tinte de contraste suave
+            // Tinte de contraste VectorCraft
             root.spawn((
                 Node {
                     position_type: PositionType::Absolute,
@@ -106,72 +117,116 @@ fn setup_center_ui(
                     bottom: Val::Px(0.0),
                     ..default()
                 },
-                BackgroundColor(Color::srgba(0.04, 0.08, 0.06, 0.40)),
+                BackgroundColor(Color::srgba(0.03, 0.05, 0.08, 0.45)),
             ));
-            // === CABECERA ===
-            root.spawn(Node {
-                width: Val::Percent(100.0),
-                height: Val::Px(60.0),
-                flex_direction: FlexDirection::Row,
-                justify_content: JustifyContent::SpaceBetween,
-                align_items: AlignItems::Center,
-                padding: UiRect::horizontal(Val::Px(16.0)),
-                border: UiRect::bottom(Val::Px(2.0)),
-                ..default()
-            })
-            .insert(BackgroundColor(Color::srgb(0.12, 0.20, 0.16)))
-            .insert(BorderColor(Color::srgb(0.35, 0.85, 0.55)))
-            .with_children(|header| {
-                header.spawn(Node {
+
+            // === CABECERA (`ui/hud/hud_top_bar.png`) ===
+            root.spawn((
+                Node {
+                    width: Val::Percent(100.0),
+                    height: Val::Px(64.0),
+                    position_type: PositionType::Relative,
                     flex_direction: FlexDirection::Row,
+                    justify_content: JustifyContent::SpaceBetween,
                     align_items: AlignItems::Center,
-                    column_gap: Val::Px(12.0),
+                    padding: UiRect::horizontal(Val::Px(18.0)),
+                    border: UiRect::all(Val::Px(2.0)),
+                    border_radius: BorderRadius::all(Val::Px(14.0)),
+                    overflow: Overflow::clip(),
                     ..default()
-                }).with_children(|left| {
-                    left.spawn((
-                        ImageNode::new(asset_server.load("sprites/trainers/nurse_front.png")),
+                },
+                BackgroundColor(Color::srgb(0.06, 0.09, 0.14)),
+                BorderColor(Color::srgb(0.20, 0.85, 0.48)),
+            ))
+            .with_children(|header| {
+                if let Some(ref tex) = top_bar_tex {
+                    header.spawn((
+                        ImageNode::new(tex.clone()),
                         Node {
-                            width: Val::Px(48.0),
-                            height: Val::Px(48.0),
+                            position_type: PositionType::Absolute,
+                            left: Val::Px(0.0),
+                            right: Val::Px(0.0),
+                            top: Val::Px(0.0),
+                            bottom: Val::Px(0.0),
                             ..default()
                         },
                     ));
-                    left.spawn(Node {
-                        flex_direction: FlexDirection::Column,
-                        row_gap: Val::Px(4.0),
+                }
+
+                header
+                    .spawn(Node {
+                        flex_direction: FlexDirection::Row,
+                        align_items: AlignItems::Center,
+                        column_gap: Val::Px(12.0),
                         ..default()
-                    }).with_children(|text_col| {
-                        text_col.spawn((
-                            Text::new("CENTRO POKÉMON - SALA DE RECUPERACIÓN"),
-                            TextFont::from_font_size(20.0),
-                            TextColor(Color::srgb(0.4, 0.95, 0.6)),
+                    })
+                    .with_children(|left| {
+                        left.spawn((
+                            ImageNode::new(asset_server.load("sprites/trainers/nurse_front.png")),
+                            Node {
+                                width: Val::Px(48.0),
+                                height: Val::Px(48.0),
+                                ..default()
+                            },
                         ));
-                        text_col.spawn((
-                            Text::new("Enfermera Joy: '¡Tu Pokémon se ve exhausto tras la batalla! Elige cómo deseas prepararlo.'"),
-                            TextFont::from_font_size(13.0),
-                            TextColor(Color::srgb(0.8, 0.85, 0.8)),
+                        left.spawn(Node {
+                            flex_direction: FlexDirection::Column,
+                            row_gap: Val::Px(4.0),
+                            ..default()
+                        })
+                        .with_children(|text_col| {
+                            text_col.spawn((
+                                Text::new("CENTRO POKÉMON - SALA DE RECUPERACIÓN"),
+                                TextFont::from_font_size(20.0),
+                                TextColor(Color::srgb(0.32, 0.96, 0.62)),
+                            ));
+                            text_col.spawn((
+                                Text::new("Enfermera Joy: '¡Tu Pokémon se ve exhausto tras la batalla! Elige cómo deseas prepararlo.'"),
+                                TextFont::from_font_size(13.0),
+                                TextColor(Color::srgb(0.78, 0.86, 0.92)),
+                            ));
+                        });
+                    });
+
+                header
+                    .spawn((
+                        Button,
+                        CenterContinueButton,
+                        Node {
+                            min_width: Val::Px(195.0),
+                            height: Val::Px(42.0),
+                            position_type: PositionType::Relative,
+                            padding: UiRect::horizontal(Val::Px(18.0)),
+                            justify_content: JustifyContent::Center,
+                            align_items: AlignItems::Center,
+                            border: UiRect::all(Val::Px(2.0)),
+                            border_radius: BorderRadius::all(Val::Px(10.0)),
+                            overflow: Overflow::clip(),
+                            ..default()
+                        },
+                        BackgroundColor(Color::srgb(0.18, 0.35, 0.25)),
+                        BorderColor(Color::srgb(0.95, 0.76, 0.30)),
+                    ))
+                    .with_children(|btn| {
+                        if let Some(ref tex) = btn_gold_tex {
+                            btn.spawn((
+                                ImageNode::new(tex.clone()),
+                                Node {
+                                    position_type: PositionType::Absolute,
+                                    left: Val::Px(0.0),
+                                    right: Val::Px(0.0),
+                                    top: Val::Px(0.0),
+                                    bottom: Val::Px(0.0),
+                                    ..default()
+                                },
+                            ));
+                        }
+                        btn.spawn((
+                            Text::new("CONTINUAR ASCENSO ->"),
+                            TextFont::from_font_size(13.5),
+                            TextColor(Color::srgb(0.15, 0.09, 0.02)),
                         ));
                     });
-                });
-
-                header.spawn((
-                    Button,
-                    CenterContinueButton,
-                    Node {
-                        height: Val::Px(38.0),
-                        padding: UiRect::horizontal(Val::Px(18.0)),
-                        justify_content: JustifyContent::Center,
-                        align_items: AlignItems::Center,
-                        border: UiRect::all(Val::Px(1.5)),
-                        ..default()
-                    },
-                    BackgroundColor(Color::srgb(0.18, 0.35, 0.25)),
-                    BorderColor(Color::srgb(0.4, 0.9, 0.6)),
-                )).with_child((
-                    Text::new("CONTINUAR ASCENSO ->"),
-                    TextFont::from_font_size(14.0),
-                    TextColor(Color::WHITE),
-                ));
             });
 
             // === PANEL CENTRAL: ESTADO DEL POKÉMON & 2 OPCIONES TÁCTICAS ===
@@ -183,269 +238,351 @@ fn setup_center_ui(
                 align_items: AlignItems::Stretch,
                 padding: UiRect::all(Val::Px(10.0)),
                 ..default()
-            }).with_children(|content| {
-
-                // COLUMNA IZQUIERDA: POKÉMON ACTUAL
-                content.spawn(Node {
-                    width: Val::Percent(26.0),
-                    flex_direction: FlexDirection::Column,
-                    justify_content: JustifyContent::SpaceBetween,
-                    align_items: AlignItems::Center,
-                    padding: UiRect::all(Val::Px(16.0)),
-                    border: UiRect::all(Val::Px(1.5)),
-                    ..default()
-                })
-                .insert(BackgroundColor(Color::srgb(0.11, 0.16, 0.14)))
-                .insert(BorderColor(Color::srgb(0.3, 0.6, 0.4)))
-                .with_children(|poke_panel| {
-                    poke_panel.spawn((
-                        Text::new(format!("{} (Nv. {})", name, level)),
-                        TextFont::from_font_size(18.0),
-                        TextColor(Color::srgb(0.9, 0.95, 0.9)),
-                    ));
-
-                    // Sprite del Pokémon
-                    let texture_handle = asset_server.load(&sprite_path);
-                    poke_panel.spawn((
-                        ImageNode::new(texture_handle),
+            })
+            .with_children(|content| {
+                // COLUMNA IZQUIERDA: POKÉMON ACTUAL (`ui/bars/hp_bar_bg.png` + `hp_fill_player.png`)
+                content
+                    .spawn((
                         Node {
-                            width: Val::Px(130.0),
-                            height: Val::Px(130.0),
-                            margin: UiRect::vertical(Val::Px(10.0)),
+                            width: Val::Percent(26.0),
+                            flex_direction: FlexDirection::Column,
+                            justify_content: JustifyContent::SpaceBetween,
+                            align_items: AlignItems::Center,
+                            padding: UiRect::all(Val::Px(18.0)),
+                            border: UiRect::all(Val::Px(2.0)),
+                            border_radius: BorderRadius::all(Val::Px(16.0)),
                             ..default()
                         },
-                    ));
+                        BackgroundColor(Color::srgba(0.06, 0.09, 0.14, 0.94)),
+                        BorderColor(Color::srgb(0.20, 0.85, 0.48)),
+                    ))
+                    .with_children(|poke_panel| {
+                        poke_panel.spawn((
+                            Text::new(format!("{} (Nv. {})", name, level)),
+                            TextFont::from_font_size(18.0),
+                            TextColor(Color::srgb(0.95, 0.76, 0.30)),
+                        ));
 
-                    // Barra de Vida
-                    let hp_ratio = (hp as f32 / max_hp as f32).clamp(0.0, 1.0);
-                    poke_panel.spawn(Node {
-                        width: Val::Percent(100.0),
-                        height: Val::Px(18.0),
-                        border: UiRect::all(Val::Px(1.0)),
-                        ..default()
-                    })
-                    .insert(BackgroundColor(Color::srgb(0.18, 0.18, 0.18)))
-                    .insert(BorderColor(Color::srgb(0.4, 0.4, 0.4)))
-                    .with_children(|bar_bg| {
-                        bar_bg.spawn((
-                            CenterHpBarFill,
+                        // Sprite del Pokémon
+                        let texture_handle = asset_server.load(&sprite_path);
+                        poke_panel.spawn((
+                            ImageNode::new(texture_handle),
                             Node {
-                                width: Val::Percent(hp_ratio * 100.0),
-                                height: Val::Percent(100.0),
+                                width: Val::Px(130.0),
+                                height: Val::Px(130.0),
+                                margin: UiRect::vertical(Val::Px(10.0)),
                                 ..default()
                             },
-                            BackgroundColor(Color::srgb(0.2, 0.8, 0.3)),
-                        ));
-                    });
-
-                    poke_panel.spawn((
-                        CenterHpText,
-                        Text::new(format!("HP: {} / {}", hp, max_hp)),
-                        TextFont::from_font_size(13.0),
-                        TextColor(Color::srgb(0.9, 0.9, 0.9)),
-                    ));
-
-                    poke_panel.spawn((
-                        Text::new(format!("Cartas en mazo: {}", run_state.player_deck.len())),
-                        TextFont::from_font_size(12.0),
-                        TextColor(Color::srgb(0.7, 0.8, 0.7)),
-                    ));
-                });
-
-                // COLUMNA DERECHA: LAS 2 OPCIONES (CURACIÓN O ENTRENAMIENTO)
-                content.spawn(Node {
-                    width: Val::Percent(70.0),
-                    flex_direction: FlexDirection::Column,
-                    row_gap: Val::Px(14.0),
-                    ..default()
-                }).with_children(|options_col| {
-
-                    // OPCIÓN 1: DESCANSAR (+35% HP)
-                    options_col.spawn(Node {
-                        width: Val::Percent(100.0),
-                        flex_direction: FlexDirection::Row,
-                        justify_content: JustifyContent::SpaceBetween,
-                        align_items: AlignItems::Center,
-                        padding: UiRect::all(Val::Px(16.0)),
-                        border: UiRect::all(Val::Px(1.5)),
-                        ..default()
-                    })
-                    .insert(BackgroundColor(Color::srgb(0.12, 0.18, 0.15)))
-                    .insert(BorderColor(Color::srgb(0.85, 0.4, 0.5)))
-                    .with_children(|rest_row| {
-                        rest_row.spawn(Node {
-                            flex_direction: FlexDirection::Column,
-                            row_gap: Val::Px(4.0),
-                            width: Val::Percent(70.0),
-                            ..default()
-                        }).with_children(|left| {
-                            left.spawn((
-                                Text::new("[+] OPCIÓN 1: DESCANSAR Y CURAR (+35% HP)"),
-                                TextFont::from_font_size(16.0),
-                                TextColor(Color::srgb(1.0, 0.6, 0.7)),
-                            ));
-                            left.spawn((
-                                Text::new("Tu Pokémon toma un baño termal y descansa en una camilla Silph, recuperando un 35% de su vida máxima."),
-                                TextFont::from_font_size(12.0),
-                                TextColor(Color::srgb(0.8, 0.8, 0.8)),
-                            ));
-                        });
-
-                        rest_row.spawn((
-                            Button,
-                            CenterHealButton,
-                            Node {
-                                width: Val::Px(150.0),
-                                height: Val::Px(42.0),
-                                justify_content: JustifyContent::Center,
-                                align_items: AlignItems::Center,
-                                border: UiRect::all(Val::Px(1.5)),
-                                ..default()
-                            },
-                            BackgroundColor(Color::srgb(0.75, 0.25, 0.40)),
-                            BorderColor(Color::srgb(1.0, 0.6, 0.7)),
-                        )).with_child((
-                            Text::new("DESCANSAR (+35%)"),
-                            TextFont::from_font_size(13.0),
-                            TextColor(Color::WHITE),
-                        ));
-                    });
-
-                    // OPCIÓN 2: ENTRENAR CARTA A '+' (Listado de cartas mejorables)
-                    options_col.spawn(Node {
-                        width: Val::Percent(100.0),
-                        flex_direction: FlexDirection::Column,
-                        row_gap: Val::Px(10.0),
-                        padding: UiRect::all(Val::Px(16.0)),
-                        border: UiRect::all(Val::Px(1.5)),
-                        ..default()
-                    })
-                    .insert(BackgroundColor(Color::srgb(0.12, 0.18, 0.15)))
-                    .insert(BorderColor(Color::srgb(0.3, 0.7, 0.9)))
-                    .with_children(|train_box| {
-                        train_box.spawn((
-                            Text::new("OPCIÓN 2: ENTRENAR MOVIMIENTO (MEJORAR A '+')"),
-                            TextFont::from_font_size(16.0),
-                            TextColor(Color::srgb(0.4, 0.85, 1.0)),
-                        ));
-                        train_box.spawn((
-                            Text::new("Selecciona una carta de tu mazo para aumentar permanentemente su daño, bloqueo o reducir su coste de energía:"),
-                            TextFont::from_font_size(12.0),
-                            TextColor(Color::srgb(0.8, 0.8, 0.8)),
                         ));
 
-                        // Fila de cartas entrenables (hasta 6 seleccionables)
-                        train_box.spawn(Node {
-                            width: Val::Percent(100.0),
-                            flex_direction: FlexDirection::Row,
-                            column_gap: Val::Px(10.0),
-                            flex_wrap: FlexWrap::Wrap,
-                            row_gap: Val::Px(8.0),
-                            ..default()
-                        }).with_children(|cards_flow| {
-                            let upgradeable: Vec<(usize, &crate::card::Card)> = run_state
-                                .player_deck
-                                .iter()
-                                .enumerate()
-                                .filter(|(_, c)| !c.upgraded)
-                                .take(6)
-                                .collect();
-
-                            if upgradeable.is_empty() {
-                                cards_flow.spawn((
-                                    Text::new("[COMPLETO] ¡Todas las cartas de tu mazo ya han sido mejoradas a su versión '+'!"),
-                                    TextFont::from_font_size(12.5),
-                                    TextColor(Color::srgb(1.0, 0.9, 0.4)),
-                                ));
-                            } else {
-                                for (idx, card) in upgradeable {
-                                    let col = element_color(card.element);
-
-                                    cards_flow.spawn((
-                                        Button,
-                                        CenterUpgradeCardButton(idx),
+                        // Barra de Vida VectorCraft (`hp_bar_bg.png` + `hp_fill_player.png`)
+                        let hp_ratio = (hp as f32 / max_hp as f32).clamp(0.0, 1.0);
+                        poke_panel
+                            .spawn((
+                                Node {
+                                    width: Val::Percent(100.0),
+                                    height: Val::Px(24.0),
+                                    position_type: PositionType::Relative,
+                                    padding: UiRect::axes(Val::Px(4.0), Val::Px(3.0)),
+                                    border_radius: BorderRadius::all(Val::Px(8.0)),
+                                    overflow: Overflow::clip(),
+                                    ..default()
+                                },
+                                BackgroundColor(Color::srgb(0.04, 0.06, 0.09)),
+                            ))
+                            .with_children(|bar_bg| {
+                                if let Some(ref bg_img) = hp_bar_bg_tex {
+                                    bar_bg.spawn((
+                                        ImageNode::new(bg_img.clone()),
                                         Node {
-                                            width: Val::Px(120.0),
-                                            height: Val::Px(160.0),
-                                            flex_direction: FlexDirection::Column,
-                                            justify_content: JustifyContent::SpaceBetween,
-                                            align_items: AlignItems::Center,
-                                            border: UiRect::all(Val::Px(1.5)),
-                                            border_radius: BorderRadius::all(Val::Px(6.0)),
+                                            position_type: PositionType::Absolute,
+                                            left: Val::Px(0.0),
+                                            right: Val::Px(0.0),
+                                            top: Val::Px(0.0),
+                                            bottom: Val::Px(0.0),
+                                            ..default()
+                                        },
+                                    ));
+                                }
+                                bar_bg
+                                    .spawn((
+                                        CenterHpBarFill,
+                                        Node {
+                                            width: Val::Percent(hp_ratio * 100.0),
+                                            height: Val::Percent(100.0),
+                                            position_type: PositionType::Relative,
+                                            border_radius: BorderRadius::all(Val::Px(5.0)),
                                             overflow: Overflow::clip(),
                                             ..default()
                                         },
-                                        UiTransform::default(),
-                                        GlobalZIndex(10),
-                                        CardHoverAnimation::new(col).with_lift(-12.0).with_scale(1.08),
-                                        BackgroundColor(Color::srgba(0.06, 0.08, 0.12, 0.2)),
-                                        BorderColor(col),
-                                    )).with_children(|c_btn| {
-                                        // Fondo ilustrado del tipo de carta
-                                        c_btn.spawn((
-                                            ImageNode::new(asset_server.load(card.asset_path())),
-                                            Node {
-                                                position_type: PositionType::Absolute,
-                                                left: Val::Px(0.0),
-                                                right: Val::Px(0.0),
-                                                top: Val::Px(0.0),
-                                                bottom: Val::Px(0.0),
-                                                ..default()
-                                            },
+                                        BackgroundColor(Color::srgb(0.20, 0.85, 0.45)),
+                                    ))
+                                    .with_children(|fill| {
+                                        if let Some(ref fill_img) = hp_fill_player_tex {
+                                            fill.spawn((
+                                                ImageNode::new(fill_img.clone()),
+                                                Node {
+                                                    width: Val::Percent(100.0),
+                                                    height: Val::Percent(100.0),
+                                                    ..default()
+                                                },
+                                            ));
+                                        }
+                                    });
+                            });
+
+                        poke_panel.spawn((
+                            CenterHpText,
+                            Text::new(format!("HP: {} / {}", hp, max_hp)),
+                            TextFont::from_font_size(14.0),
+                            TextColor(Color::srgb(0.32, 0.96, 0.62)),
+                        ));
+
+                        poke_panel.spawn((
+                            Text::new(format!("Cartas en mazo: {}", run_state.player_deck.len())),
+                            TextFont::from_font_size(12.0),
+                            TextColor(Color::srgb(0.72, 0.82, 0.92)),
+                        ));
+                    });
+
+                // COLUMNA DERECHA: LAS 2 OPCIONES (CURACIÓN O ENTRENAMIENTO)
+                content
+                    .spawn(Node {
+                        width: Val::Percent(70.0),
+                        flex_direction: FlexDirection::Column,
+                        row_gap: Val::Px(14.0),
+                        ..default()
+                    })
+                    .with_children(|options_col| {
+                        // OPCIÓN 1: DESCANSAR (+35% HP)
+                        options_col
+                            .spawn((
+                                Node {
+                                    width: Val::Percent(100.0),
+                                    flex_direction: FlexDirection::Row,
+                                    justify_content: JustifyContent::SpaceBetween,
+                                    align_items: AlignItems::Center,
+                                    padding: UiRect::all(Val::Px(16.0)),
+                                    border: UiRect::all(Val::Px(2.0)),
+                                    border_radius: BorderRadius::all(Val::Px(14.0)),
+                                    ..default()
+                                },
+                                BackgroundColor(Color::srgba(0.06, 0.09, 0.14, 0.94)),
+                                BorderColor(Color::srgb(1.0, 0.48, 0.24)),
+                            ))
+                            .with_children(|rest_row| {
+                                rest_row
+                                    .spawn(Node {
+                                        flex_direction: FlexDirection::Column,
+                                        row_gap: Val::Px(4.0),
+                                        width: Val::Percent(70.0),
+                                        ..default()
+                                    })
+                                    .with_children(|left| {
+                                        left.spawn((
+                                            Text::new("[+] OPCIÓN 1: DESCANSAR Y CURAR (+35% HP)"),
+                                            TextFont::from_font_size(16.0),
+                                            TextColor(Color::srgb(1.0, 0.58, 0.36)),
                                         ));
-
-                                        // Cabecera: Nombre y Coste (en el banner superior)
-                                        c_btn.spawn(Node {
-                                            width: Val::Percent(100.0),
-                                            height: Val::Px(26.0),
-                                            margin: UiRect::top(Val::Px(8.0)),
-                                            padding: UiRect::axes(Val::Px(10.0), Val::Px(2.0)),
-                                            flex_direction: FlexDirection::Row,
-                                            justify_content: JustifyContent::SpaceBetween,
-                                            align_items: AlignItems::Center,
-                                            ..default()
-                                        }).with_children(|h| {
-                                            h.spawn((
-                                                Text::new(card.display_name()),
-                                                TextFont::from_font_size(10.5),
-                                                TextColor(Color::WHITE),
-                                            ));
-                                            h.spawn((
-                                                Text::new(format!("{} EN", card.energy_cost)),
-                                                TextFont::from_font_size(10.5),
-                                                TextColor(Color::srgb(1.0, 0.85, 0.2)),
-                                            ));
-                                        });
-
-                                        // Espacio central para el arte elemental
-                                        c_btn.spawn(Node {
-                                            flex_grow: 1.0,
-                                            ..default()
-                                        });
-
-                                        // Botón ENTRENAR en banner inferior
-                                        c_btn.spawn((
-                                            Node {
-                                                width: Val::Percent(85.0),
-                                                height: Val::Px(24.0),
-                                                margin: UiRect::bottom(Val::Px(10.0)),
-                                                justify_content: JustifyContent::Center,
-                                                align_items: AlignItems::Center,
-                                                border_radius: BorderRadius::all(Val::Px(4.0)),
-                                                ..default()
-                                            },
-                                            BackgroundColor(Color::srgba(0.1, 0.4, 0.2, 0.85)),
-                                        )).with_child((
-                                            Text::new("ENTRENAR ->"),
-                                            TextFont::from_font_size(10.0),
-                                            TextColor(Color::srgb(0.9, 1.0, 0.9)),
+                                        left.spawn((
+                                            Text::new("Tu Pokémon toma un baño termal y descansa en una camilla Silph, recuperando un 35% de su vida máxima."),
+                                            TextFont::from_font_size(12.0),
+                                            TextColor(Color::srgb(0.78, 0.84, 0.92)),
                                         ));
                                     });
-                                }
-                            }
-                        });
+
+                                rest_row
+                                    .spawn((
+                                        Button,
+                                        CenterHealButton,
+                                        Node {
+                                            width: Val::Px(170.0),
+                                            height: Val::Px(46.0),
+                                            position_type: PositionType::Relative,
+                                            justify_content: JustifyContent::Center,
+                                            align_items: AlignItems::Center,
+                                            border: UiRect::all(Val::Px(2.0)),
+                                            border_radius: BorderRadius::all(Val::Px(10.0)),
+                                            overflow: Overflow::clip(),
+                                            ..default()
+                                        },
+                                        BackgroundColor(Color::srgb(0.85, 0.32, 0.16)),
+                                        BorderColor(Color::srgb(1.0, 0.48, 0.24)),
+                                    ))
+                                    .with_children(|btn| {
+                                        if let Some(ref tex) = btn_primary_tex {
+                                            btn.spawn((
+                                                ImageNode::new(tex.clone()),
+                                                Node {
+                                                    position_type: PositionType::Absolute,
+                                                    left: Val::Px(0.0),
+                                                    right: Val::Px(0.0),
+                                                    top: Val::Px(0.0),
+                                                    bottom: Val::Px(0.0),
+                                                    ..default()
+                                                },
+                                            ));
+                                        }
+                                        btn.spawn((
+                                            Text::new("DESCANSAR (+35%)"),
+                                            TextFont::from_font_size(13.0),
+                                            TextColor(Color::WHITE),
+                                        ));
+                                    });
+                            });
+
+                        // OPCIÓN 2: ENTRENAR CARTA A '+' (Listado de cartas mejorables)
+                        options_col
+                            .spawn((
+                                Node {
+                                    width: Val::Percent(100.0),
+                                    flex_direction: FlexDirection::Column,
+                                    row_gap: Val::Px(10.0),
+                                    padding: UiRect::all(Val::Px(16.0)),
+                                    border: UiRect::all(Val::Px(2.0)),
+                                    border_radius: BorderRadius::all(Val::Px(14.0)),
+                                    ..default()
+                                },
+                                BackgroundColor(Color::srgba(0.06, 0.09, 0.14, 0.94)),
+                                BorderColor(Color::srgb(0.22, 0.71, 1.0)),
+                            ))
+                            .with_children(|train_box| {
+                                train_box.spawn((
+                                    Text::new("OPCIÓN 2: ENTRENAR MOVIMIENTO (MEJORAR A '+')"),
+                                    TextFont::from_font_size(16.0),
+                                    TextColor(Color::srgb(0.35, 0.82, 1.0)),
+                                ));
+                                train_box.spawn((
+                                    Text::new("Selecciona una carta de tu mazo para aumentar permanentemente su daño, bloqueo o reducir su coste de energía:"),
+                                    TextFont::from_font_size(12.0),
+                                    TextColor(Color::srgb(0.78, 0.84, 0.92)),
+                                ));
+
+                                // Fila de cartas entrenables (hasta 6 seleccionables)
+                                train_box
+                                    .spawn(Node {
+                                        width: Val::Percent(100.0),
+                                        flex_direction: FlexDirection::Row,
+                                        column_gap: Val::Px(10.0),
+                                        flex_wrap: FlexWrap::Wrap,
+                                        row_gap: Val::Px(8.0),
+                                        ..default()
+                                    })
+                                    .with_children(|cards_flow| {
+                                        let upgradeable: Vec<(usize, &crate::card::Card)> = run_state
+                                            .player_deck
+                                            .iter()
+                                            .enumerate()
+                                            .filter(|(_, c)| !c.upgraded)
+                                            .take(6)
+                                            .collect();
+
+                                        if upgradeable.is_empty() {
+                                            cards_flow.spawn((
+                                                Text::new("[COMPLETO] ¡Todas las cartas de tu mazo ya han sido mejoradas a su versión '+'!"),
+                                                TextFont::from_font_size(12.5),
+                                                TextColor(Color::srgb(0.95, 0.76, 0.30)),
+                                            ));
+                                        } else {
+                                            for (idx, card) in upgradeable {
+                                                let col = element_color(card.element);
+                                                let card_tex = pre
+                                                    .and_then(|p| p.get_card(card.asset_path()))
+                                                    .unwrap_or_else(|| asset_server.load(card.asset_path()));
+
+                                                cards_flow
+                                                    .spawn((
+                                                        Button,
+                                                        CenterUpgradeCardButton(idx),
+                                                        Node {
+                                                            width: Val::Px(120.0),
+                                                            height: Val::Px(160.0),
+                                                            flex_direction: FlexDirection::Column,
+                                                            justify_content: JustifyContent::SpaceBetween,
+                                                            align_items: AlignItems::Center,
+                                                            border: UiRect::all(Val::Px(1.5)),
+                                                            border_radius: BorderRadius::all(Val::Px(6.0)),
+                                                            overflow: Overflow::clip(),
+                                                            ..default()
+                                                        },
+                                                        UiTransform::default(),
+                                                        GlobalZIndex(10),
+                                                        CardHoverAnimation::new(col)
+                                                            .with_lift(-12.0)
+                                                            .with_scale(1.08),
+                                                        BackgroundColor(Color::srgba(0.06, 0.08, 0.12, 0.2)),
+                                                        BorderColor(col),
+                                                    ))
+                                                    .with_children(|c_btn| {
+                                                        // Fondo ilustrado del tipo de carta
+                                                        c_btn.spawn((
+                                                            ImageNode::new(card_tex),
+                                                            Node {
+                                                                position_type: PositionType::Absolute,
+                                                                left: Val::Px(0.0),
+                                                                right: Val::Px(0.0),
+                                                                top: Val::Px(0.0),
+                                                                bottom: Val::Px(0.0),
+                                                                ..default()
+                                                            },
+                                                        ));
+
+                                                        // Cabecera: Nombre y Coste (en el banner superior)
+                                                        c_btn
+                                                            .spawn(Node {
+                                                                width: Val::Percent(100.0),
+                                                                height: Val::Px(26.0),
+                                                                margin: UiRect::top(Val::Px(8.0)),
+                                                                padding: UiRect::axes(Val::Px(10.0), Val::Px(2.0)),
+                                                                flex_direction: FlexDirection::Row,
+                                                                justify_content: JustifyContent::SpaceBetween,
+                                                                align_items: AlignItems::Center,
+                                                                ..default()
+                                                            })
+                                                            .with_children(|h| {
+                                                                h.spawn((
+                                                                    Text::new(card.display_name()),
+                                                                    TextFont::from_font_size(10.5),
+                                                                    TextColor(Color::WHITE),
+                                                                ));
+                                                                h.spawn((
+                                                                    Text::new(format!("{} EN", card.energy_cost)),
+                                                                    TextFont::from_font_size(10.5),
+                                                                    TextColor(Color::srgb(1.0, 0.85, 0.2)),
+                                                                ));
+                                                            });
+
+                                                        // Espacio central para el arte elemental
+                                                        c_btn.spawn(Node {
+                                                            flex_grow: 1.0,
+                                                            ..default()
+                                                        });
+
+                                                        // Botón ENTRENAR en banner inferior
+                                                        c_btn
+                                                            .spawn((
+                                                                Node {
+                                                                    width: Val::Percent(85.0),
+                                                                    height: Val::Px(24.0),
+                                                                    margin: UiRect::bottom(Val::Px(10.0)),
+                                                                    justify_content: JustifyContent::Center,
+                                                                    align_items: AlignItems::Center,
+                                                                    border_radius: BorderRadius::all(Val::Px(4.0)),
+                                                                    ..default()
+                                                                },
+                                                                BackgroundColor(Color::srgba(0.08, 0.14, 0.22, 0.92)),
+                                                            ))
+                                                            .with_child((
+                                                                Text::new("ENTRENAR ->"),
+                                                                TextFont::from_font_size(10.0),
+                                                                TextColor(Color::srgb(0.45, 0.92, 1.0)),
+                                                            ));
+                                                    });
+                                            }
+                                        }
+                                    });
+                            });
                     });
-                });
             });
 
             // === BARRA INFERIOR DE MENSAJES ===
@@ -453,7 +590,7 @@ fn setup_center_ui(
                 CenterStatusBanner,
                 Text::new("[INFO] Elige una opción: Descansar para recuperar vida o Entrenar para mejorar una carta a '+'."),
                 TextFont::from_font_size(13.0),
-                TextColor(Color::srgb(0.5, 0.85, 0.65)),
+                TextColor(Color::srgb(0.32, 0.96, 0.62)),
             ));
         });
 }

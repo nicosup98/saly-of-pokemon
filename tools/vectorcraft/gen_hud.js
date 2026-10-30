@@ -96,101 +96,6 @@ function drawTopBar(c) {
     ],
     stroke: null,
   });
-
-  // act badge
-  c.rect(40, 22, 110, 52, 12, {
-    fillGrad: [
-      { offset: 0, color: '#35260b' },
-      { offset: 1, color: '#171003' },
-    ],
-    stroke: C.gold,
-    strokeW: 1.4,
-  });
-  c.text(40, 26, 110, 13, 'ACTO', { size: 6.5, tracking: 220, color: '#d9b45a', justify: 'center' });
-  c.text(40, 38, 110, 30, '1', {
-    size: 21,
-    font: 'Noto Sans Black',
-    style: 'Regular',
-    color: '#ffe6a8',
-    justify: 'center',
-  });
-
-  // floor icon
-  c.circle(196, 48, 22, { fill: '#0a111c', stroke: '#2a3a55', strokeW: 1.2 });
-  c.line(188, 55, 196, 43, '#4aa8ff', 1.6, { cap: 'round' });
-  c.line(196, 43, 205, 52, '#4aa8ff', 1.6, { cap: 'round' });
-  c.circle(188, 55, 2.6, { fill: '#4aa8ff', stroke: null });
-  c.circle(196, 43, 2.6, { fill: '#cfeaff', stroke: null });
-  c.circle(205, 52, 2.6, { fill: '#4aa8ff', stroke: null });
-  c.text(228, 25, 120, 16, 'PISO', { size: 7, tracking: 200, color: '#7f93b0', justify: 'left' });
-  c.text(228, 39, 140, 24, '04 / 15', {
-    size: 16,
-    style: 'SemiBold',
-    tracking: 40,
-    color: C.text,
-    justify: 'left',
-  });
-
-  c.rect(352, 24, 1, 48, 0, { fill: '#2a3a55', opacity: 45, stroke: null });
-
-  // route title
-  c.text(390, 24, 380, 16, 'RUTA DEL ACTO', { size: 7, tracking: 230, color: '#7f93b0', justify: 'left' });
-  c.text(390, 38, 420, 26, 'BOSQUE VERDE', {
-    size: 15,
-    style: 'SemiBold',
-    tracking: 90,
-    color: C.text,
-    justify: 'left',
-  });
-  // route breadcrumbs
-  for (let i = 0; i < 4; i++) {
-    const bx = 640 + i * 22;
-    c.circle(bx, 52, i === 2 ? 4.2 : 2.8, {
-      fill: i <= 2 ? C.gold : '#3b4d6b',
-      stroke: null,
-      glow: i === 2 ? { opacity: 30, blur: 5, color: C.gold } : null,
-    });
-    if (i < 3) c.line(bx + 5, 52, bx + 17, 52, i < 2 ? C.gold : '#3b4d6b', 1.4, {});
-  }
-
-  // currency
-  coin(c, 1118, 48, 18);
-  c.text(1146, 27, 100, 26, '248', {
-    size: 17,
-    style: 'SemiBold',
-    tracking: 20,
-    color: '#ffe6a8',
-    justify: 'left',
-  });
-  c.text(1146, 52, 100, 14, 'FICHAS', { size: 6.5, tracking: 180, color: '#7f93b0', justify: 'left' });
-
-  // deck
-  cardIcon(c, 1262, 48, 24, '#4aa8ff');
-  c.text(1288, 27, 90, 26, '12', {
-    size: 17,
-    style: 'SemiBold',
-    tracking: 20,
-    color: C.text,
-    justify: 'left',
-  });
-  c.text(1288, 52, 90, 14, 'MAZO', { size: 6.5, tracking: 180, color: '#7f93b0', justify: 'left' });
-
-  // buttons
-  for (const [bx, icon] of [
-    [1442, 'gear'],
-    [1496, 'pause'],
-  ]) {
-    c.rect(bx, 25, 46, 46, 12, {
-      fillGrad: [
-        { offset: 0, color: '#1a2436' },
-        { offset: 1, color: '#090f19' },
-      ],
-      stroke: '#3b5374',
-      strokeW: 1.3,
-    });
-    if (icon === 'gear') gearIcon(c, bx + 23, 48, 8, '#c4d2e6', '#0a111c');
-    else pauseIcon(c, bx + 23, 48, 13, '#c4d2e6');
-  }
 }
 
 function drawEndTurn(c) {
@@ -217,29 +122,14 @@ function drawEndTurn(c) {
     ],
     stroke: null,
   });
-  c.circle(44, 49, 18, { fill: '#6d1d06', stroke: '#ffd7a6', strokeW: 1.4 });
-  hourglass(c, 44, 49, 15, '#ffe9c9');
-  c.text(72, 10, 196, 78, 'TERMINAR TURNO', {
-    size: 12.5,
-    tracking: 100,
-    color: '#fff4e4',
-    justify: 'left',
-  });
+  c.circle(38, 49, 17, { fill: '#6d1d06', stroke: '#ffd7a6', strokeW: 1.4 });
+  hourglass(c, 38, 49, 14, '#ffe9c9');
   c.path('M 268 43 L 275 49 L 268 55', {
     closed: false,
     fill: null,
     stroke: '#ffd7a6',
     strokeW: 2.2,
     strokeOpts: { cap: 'round', join: 'round' },
-  });
-
-  // key hint
-  c.rect(120, 92, 60, 17, 5, { fill: '#070b12', stroke: '#2a3a55', strokeW: 1 });
-  c.text(120, 92, 60, 17, 'ESPACIO', {
-    size: 6.5,
-    tracking: 80,
-    color: '#7f93b0',
-    justify: 'center',
   });
 }
 
@@ -333,25 +223,6 @@ function drawDeck(c, discard) {
     strokeW: 2,
     shadow: { opacity: 50, y: 3, blur: 6 },
   });
-  c.text(130, 134, 48, 48, discard ? '4' : '12', {
-    size: 19,
-    font: 'Noto Sans Black',
-    style: 'Regular',
-    color: discard ? '#ff9da7' : '#2a1a04',
-    justify: 'center',
-  });
-  c.text(20, 190, 160, 20, discard ? 'DESCARTE' : 'MAZO', {
-    size: 9,
-    tracking: 220,
-    color: discard ? '#b46772' : C.muted,
-    justify: 'center',
-  });
-  c.text(20, 204, 160, 14, discard ? 'PILA VACÍA' : 'ROBAR CARTA', {
-    size: 6.5,
-    tracking: 140,
-    color: discard ? '#7a4650' : '#5f7392',
-    justify: 'center',
-  });
 }
 
 function drawIntent(c) {
@@ -376,42 +247,16 @@ function drawIntent(c) {
     ],
     stroke: null,
   });
-  c.text(10, 24, 220, 16, 'INTENCIÓN', {
-    size: 7.5,
-    tracking: 240,
-    color: '#ff8a94',
-    justify: 'center',
-  });
-  c.sword(68, 100, 86, {
+  c.sword(48, 96, 62, {
     rotate: 45,
-    strokeW: 2.4,
+    strokeW: 2.0,
     fillGrad: [
       { offset: 0, color: '#ffe3e6' },
       { offset: 0.5, color: '#d9a4ab' },
       { offset: 1, color: '#8c4a54' },
     ],
     stroke: '#3a1118',
-  });
-  // impact spark
-  c.star(112, 66, 12, 3.5, 4, {
-    fill: '#ffd7a6',
-    stroke: null,
-    rotation: 45,
-    glow: { opacity: 35, blur: 6, color: C.orange },
-  });
-  c.text(112, 54, 106, 62, '12', {
-    size: 52,
-    font: 'Noto Sans Black',
-    style: 'Regular',
-    tracking: -20,
-    color: '#ffe9ec',
-    justify: 'right',
-  });
-  c.text(112, 112, 106, 16, 'DAÑO', {
-    size: 7.5,
-    tracking: 220,
-    color: '#ff8a94',
-    justify: 'right',
+    opacity: 28,
   });
   c.rect(30, 144, 180, 1, 0, {
     fillGrad: [
@@ -420,12 +265,6 @@ function drawIntent(c) {
       { offset: 1, color: '#7a2633', opacity: 0 },
     ],
     stroke: null,
-  });
-  c.text(10, 152, 220, 18, 'ATACARÁ ESTE TURNO', {
-    size: 7,
-    tracking: 160,
-    color: '#b46772',
-    justify: 'center',
   });
 }
 
@@ -463,20 +302,6 @@ function drawTurnBanner(c) {
       { offset: 1, color: '#ffffff', opacity: 0 },
     ],
     stroke: null,
-  });
-  c.text(80, 30, 400, 15, 'COMIENZA EL COMBATE', {
-    size: 6.5,
-    tracking: 230,
-    color: '#d9b45a',
-    justify: 'center',
-  });
-  c.text(80, 44, 400, 38, 'TURNO 3', {
-    size: 28,
-    font: 'Noto Sans Black',
-    style: 'Regular',
-    tracking: 40,
-    color: '#ffe6a8',
-    justify: 'center',
   });
   c.star(62, 60, 5, 2, 4, { fill: C.gold, stroke: null, rotation: 45 });
   c.star(498, 60, 5, 2, 4, { fill: C.gold, stroke: null, rotation: 45 });

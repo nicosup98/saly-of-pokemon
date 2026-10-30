@@ -419,14 +419,6 @@ doc
       stroke: '#9bf6ff',
       strokeW: 2,
     });
-    c.text(cx - 44, cy + 30, 88, 34, '3 / 3', {
-      size: 21,
-      style: 'SemiBold',
-      color: '#eaffff',
-      justify: 'center',
-      valign: 'center',
-      tracking: 30,
-    });
     // orbital dots
     for (let i = 0; i < 8; i++) {
       const a = (i * Math.PI * 2) / 8 - Math.PI / 2;
@@ -438,20 +430,12 @@ doc
         strokeW: 1,
       });
     }
-    c.text(20, 186, 160, 18, 'ENERGÍA', {
-      size: 10,
-      style: 'SemiBold',
-      color: C.muted,
-      tracking: 180,
-      justify: 'center',
-      valign: 'center',
-    });
   })
   .board('block_badge', 160, 180, (c) => {
     const cx = 80;
-    const cy = 78;
-    const w = 92;
-    const h = 108;
+    const cy = 90;
+    const w = 104;
+    const h = 122;
     const d = `M ${cx - w / 2} ${cy - h / 2 + 12}
       Q ${cx - w / 2} ${cy - h / 2} ${cx - w / 2 + 14} ${cy - h / 2}
       L ${cx + w / 2 - 14} ${cy - h / 2}
@@ -469,36 +453,12 @@ doc
       strokeW: 3,
       shadow: { opacity: 55, y: 6, blur: 12 },
     });
-    c.path(`M ${cx - 32} ${cy - 16} L ${cx} ${cy - 34} L ${cx + 32} ${cy - 16} L ${cx + 24} ${cy + 20} L ${cx} ${cy + 38} L ${cx - 24} ${cy + 20} Z`, {
+    c.path(`M ${cx - 34} ${cy - 18} L ${cx} ${cy - 38} L ${cx + 34} ${cy - 18} L ${cx + 26} ${cy + 22} L ${cx} ${cy + 42} L ${cx - 26} ${cy + 22} Z`, {
       fillGrad: [
         { offset: 0, color: '#ffffff', opacity: 0.4 },
         { offset: 1, color: '#ffffff', opacity: 0 },
       ],
       stroke: null,
-    });
-    c.text(cx - 50, cy - 18, 100, 44, '12', {
-      size: 32,
-      style: 'SemiBold',
-      color: '#ffffff',
-      justify: 'center',
-      valign: 'center',
-      tracking: 10,
-    });
-    c.text(cx - 50, cy + 24, 100, 18, 'DEF', {
-      size: 11,
-      style: 'SemiBold',
-      color: '#d9efff',
-      justify: 'center',
-      valign: 'center',
-      tracking: 200,
-    });
-    c.text(20, 160, 120, 18, 'BLOQUEO', {
-      size: 10,
-      style: 'SemiBold',
-      color: C.muted,
-      tracking: 180,
-      justify: 'center',
-      valign: 'center',
     });
   });
 

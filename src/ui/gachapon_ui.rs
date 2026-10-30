@@ -157,11 +157,19 @@ pub struct GachaponRarityParticle {
 fn setup_gachapon_ui(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
+    preloaded: Option<Res<crate::ui::PreloadedAssets>>,
     mut meta: ResMut<MetaProfile>,
     mut ui_state: ResMut<GachaponUiState>,
     mut anim: ResMut<GachaponAnimation>,
     run_state: Res<CurrentRunState>,
 ) {
+    let pre = preloaded.as_deref();
+    let srv = Some(&*asset_server);
+    let top_bar_tex = crate::ui::load_ui_image(pre, srv, "ui/hud/hud_top_bar.png");
+    let btn_gold_tex = crate::ui::load_ui_image(pre, srv, "ui/buttons/btn_gold.png");
+    let btn_primary_tex = crate::ui::load_ui_image(pre, srv, "ui/buttons/btn_primary.png");
+    let btn_secondary_tex = crate::ui::load_ui_image(pre, srv, "ui/buttons/btn_secondary.png");
+
     ui_state.selected_target = None;
     ui_state.fragments_slotted = 0;
     ui_state.last_pull_result = None;
@@ -172,7 +180,7 @@ fn setup_gachapon_ui(
 
     // Asegurar algunos fragmentos de prueba si no hay
     if meta.pokemon_fragments.is_empty() {
-        meta.pokemon_fragments.insert(7, 3);   // Squirtle
+        meta.pokemon_fragments.insert(7, 3); // Squirtle
         meta.pokemon_fragments.insert(123, 2); // Scyther
     }
 
@@ -188,93 +196,169 @@ fn setup_gachapon_ui(
                 padding: UiRect::all(Val::Px(16.0)),
                 ..default()
             },
-            BackgroundColor(Color::srgb(0.08, 0.06, 0.14)),
+            BackgroundColor(Color::srgb(0.03, 0.04, 0.07)),
         ))
         .with_children(|root| {
-            // === BARRA SUPERIOR ===
-            root.spawn(Node {
-                width: Val::Percent(100.0),
-                height: Val::Px(56.0),
-                flex_direction: FlexDirection::Row,
-                justify_content: JustifyContent::SpaceBetween,
-                align_items: AlignItems::Center,
-                padding: UiRect::horizontal(Val::Px(16.0)),
-                border: UiRect::bottom(Val::Px(2.0)),
-                ..default()
-            })
-            .insert(BackgroundColor(Color::srgb(0.14, 0.10, 0.22)))
-            .insert(BorderColor(Color::srgb(0.8, 0.35, 0.95)))
-            .with_children(|header| {
-                header.spawn(Node {
-                    flex_direction: FlexDirection::Column,
-                    row_gap: Val::Px(2.0),
+            // === BARRA SUPERIOR (`ui/hud/hud_top_bar.png`) ===
+            root.spawn((
+                Node {
+                    width: Val::Percent(100.0),
+                    height: Val::Px(60.0),
+                    position_type: PositionType::Relative,
+                    flex_direction: FlexDirection::Row,
+                    justify_content: JustifyContent::SpaceBetween,
+                    align_items: AlignItems::Center,
+                    padding: UiRect::horizontal(Val::Px(18.0)),
+                    border: UiRect::all(Val::Px(2.0)),
+                    border_radius: BorderRadius::all(Val::Px(14.0)),
+                    overflow: Overflow::clip(),
                     ..default()
-                }).with_children(|title_box| {
-                    title_box.spawn((
-                        Text::new("TIENDA GACHAPÓN DE SILPH S.A."),
-                        TextFont::from_font_size(22.0),
-                        TextColor(Color::srgb(0.9, 0.5, 1.0)),
+                },
+                BackgroundColor(Color::srgb(0.06, 0.09, 0.14)),
+                BorderColor(Color::srgb(0.61, 0.30, 1.0)),
+            ))
+            .with_children(|header| {
+                if let Some(ref tex) = top_bar_tex {
+                    header.spawn((
+                        ImageNode::new(tex.clone()),
+                        Node {
+                            position_type: PositionType::Absolute,
+                            left: Val::Px(0.0),
+                            right: Val::Px(0.0),
+                            top: Val::Px(0.0),
+                            bottom: Val::Px(0.0),
+                            ..default()
+                        },
                     ));
-                    title_box.spawn((
-                        Text::new("Desbloquea nuevos Pokémon iniciales y potencia tus tiradas con Fragmentos de Mini Jefe."),
-                        TextFont::from_font_size(12.0),
-                        TextColor(Color::srgb(0.75, 0.7, 0.85)),
-                    ));
-                });
+                }
+
+                header
+                    .spawn(Node {
+                        flex_direction: FlexDirection::Column,
+                        row_gap: Val::Px(2.0),
+                        ..default()
+                    })
+                    .with_children(|title_box| {
+                        title_box.spawn((
+                            Text::new("TIENDA GACHAPÓN DE SILPH S.A."),
+                            TextFont::from_font_size(22.0),
+                            TextColor(Color::srgb(0.95, 0.76, 0.30)),
+                        ));
+                        title_box.spawn((
+                            Text::new("Desbloquea nuevos Pokémon iniciales y potencia tus tiradas con Fragmentos de Mini Jefe."),
+                            TextFont::from_font_size(12.0),
+                            TextColor(Color::srgb(0.75, 0.82, 0.92)),
+                        ));
+                    });
 
                 // Fichas disponibles
-                header.spawn((
-                    GachaponTokensText,
-                    Text::new(format!("Fichas: {} Gachapón", meta.gachapon_tokens)),
-                    TextFont::from_font_size(18.0),
-                    TextColor(Color::srgb(1.0, 0.85, 0.2)),
-                ));
+                header
+                    .spawn((
+                        Node {
+                            padding: UiRect::axes(Val::Px(14.0), Val::Px(5.0)),
+                            border: UiRect::all(Val::Px(1.5)),
+                            border_radius: BorderRadius::all(Val::Px(10.0)),
+                            ..default()
+                        },
+                        BackgroundColor(Color::srgba(0.08, 0.12, 0.19, 0.95)),
+                        BorderColor(Color::srgb(0.95, 0.76, 0.30)),
+                    ))
+                    .with_child((
+                        GachaponTokensText,
+                        Text::new(format!("Fichas: {} Gachapón", meta.gachapon_tokens)),
+                        TextFont::from_font_size(18.0),
+                        TextColor(Color::srgb(0.95, 0.76, 0.30)),
+                    ));
 
                 // Acciones de cabecera
-                header.spawn(Node {
-                    flex_direction: FlexDirection::Row,
-                    column_gap: Val::Px(10.0),
-                    align_items: AlignItems::Center,
-                    ..default()
-                }).with_children(|actions| {
-                    actions.spawn((
-                        Button,
-                        GachaponToStarterSelectionButton,
-                        Node {
-                            height: Val::Px(36.0),
-                            padding: UiRect::horizontal(Val::Px(14.0)),
-                            justify_content: JustifyContent::Center,
-                            align_items: AlignItems::Center,
-                            border: UiRect::all(Val::Px(1.5)),
-                            ..default()
-                        },
-                        BackgroundColor(Color::srgb(0.20, 0.45, 0.65)),
-                        BorderColor(Color::srgb(0.4, 0.7, 0.9)),
-                    )).with_child((
-                        Text::new("ELEGIR POKÉMON ->"),
-                        TextFont::from_font_size(13.0),
-                        TextColor(Color::WHITE),
-                    ));
+                header
+                    .spawn(Node {
+                        flex_direction: FlexDirection::Row,
+                        column_gap: Val::Px(10.0),
+                        align_items: AlignItems::Center,
+                        ..default()
+                    })
+                    .with_children(|actions| {
+                        actions
+                            .spawn((
+                                Button,
+                                GachaponToStarterSelectionButton,
+                                Node {
+                                    min_width: Val::Px(165.0),
+                                    height: Val::Px(38.0),
+                                    position_type: PositionType::Relative,
+                                    padding: UiRect::horizontal(Val::Px(14.0)),
+                                    justify_content: JustifyContent::Center,
+                                    align_items: AlignItems::Center,
+                                    border: UiRect::all(Val::Px(1.5)),
+                                    border_radius: BorderRadius::all(Val::Px(10.0)),
+                                    overflow: Overflow::clip(),
+                                    ..default()
+                                },
+                                BackgroundColor(Color::srgb(0.20, 0.45, 0.65)),
+                                BorderColor(Color::srgb(0.95, 0.76, 0.30)),
+                            ))
+                            .with_children(|btn| {
+                                if let Some(ref tex) = btn_gold_tex {
+                                    btn.spawn((
+                                        ImageNode::new(tex.clone()),
+                                        Node {
+                                            position_type: PositionType::Absolute,
+                                            left: Val::Px(0.0),
+                                            right: Val::Px(0.0),
+                                            top: Val::Px(0.0),
+                                            bottom: Val::Px(0.0),
+                                            ..default()
+                                        },
+                                    ));
+                                }
+                                btn.spawn((
+                                    Text::new("ELEGIR POKÉMON ->"),
+                                    TextFont::from_font_size(12.5),
+                                    TextColor(Color::srgb(0.15, 0.09, 0.02)),
+                                ));
+                            });
 
-                    actions.spawn((
-                        Button,
-                        GachaponExitButton,
-                        Node {
-                            height: Val::Px(36.0),
-                            padding: UiRect::horizontal(Val::Px(16.0)),
-                            justify_content: JustifyContent::Center,
-                            align_items: AlignItems::Center,
-                            border: UiRect::all(Val::Px(1.5)),
-                            ..default()
-                        },
-                        BackgroundColor(Color::srgb(0.25, 0.18, 0.35)),
-                        BorderColor(Color::srgb(0.7, 0.4, 0.9)),
-                    )).with_child((
-                        Text::new("VOLVER ->"),
-                        TextFont::from_font_size(13.0),
-                        TextColor(Color::WHITE),
-                    ));
-                });
+                        actions
+                            .spawn((
+                                Button,
+                                GachaponExitButton,
+                                Node {
+                                    min_width: Val::Px(120.0),
+                                    height: Val::Px(38.0),
+                                    position_type: PositionType::Relative,
+                                    padding: UiRect::horizontal(Val::Px(14.0)),
+                                    justify_content: JustifyContent::Center,
+                                    align_items: AlignItems::Center,
+                                    border: UiRect::all(Val::Px(1.5)),
+                                    border_radius: BorderRadius::all(Val::Px(10.0)),
+                                    overflow: Overflow::clip(),
+                                    ..default()
+                                },
+                                BackgroundColor(Color::srgb(0.14, 0.19, 0.28)),
+                                BorderColor(Color::srgb(0.29, 0.69, 1.0)),
+                            ))
+                            .with_children(|btn| {
+                                if let Some(ref tex) = btn_secondary_tex {
+                                    btn.spawn((
+                                        ImageNode::new(tex.clone()),
+                                        Node {
+                                            position_type: PositionType::Absolute,
+                                            left: Val::Px(0.0),
+                                            right: Val::Px(0.0),
+                                            top: Val::Px(0.0),
+                                            bottom: Val::Px(0.0),
+                                            ..default()
+                                        },
+                                    ));
+                                }
+                                btn.spawn((
+                                    Text::new("VOLVER ->"),
+                                    TextFont::from_font_size(12.5),
+                                    TextColor(Color::WHITE),
+                                ));
+                            });
+                    });
             });
 
             // === CONTENIDO PRINCIPAL: MÁQUINA DE CÁPSULAS Y RECOMPENSA ===
@@ -287,410 +371,516 @@ fn setup_gachapon_ui(
                 align_items: AlignItems::Stretch,
                 padding: UiRect::all(Val::Px(10.0)),
                 ..default()
-            }).with_children(|content| {
-
+            })
+            .with_children(|content| {
                 // COLUMNA IZQUIERDA: RANURAS DE FRAGMENTOS (RATE-UP FOCALIZADO)
-                content.spawn(Node {
-                    width: Val::Percent(42.0),
-                    flex_direction: FlexDirection::Column,
-                    justify_content: JustifyContent::SpaceBetween,
-                    padding: UiRect::all(Val::Px(14.0)),
-                    border: UiRect::all(Val::Px(1.5)),
-                    ..default()
-                })
-                .insert(BackgroundColor(Color::srgb(0.12, 0.10, 0.18)))
-                .insert(BorderColor(Color::srgb(0.5, 0.3, 0.7)))
-                .with_children(|frag_col| {
-                    frag_col.spawn(Node {
-                        flex_direction: FlexDirection::Column,
-                        row_gap: Val::Px(6.0),
-                        ..default()
-                    }).with_children(|f_header| {
-                        f_header.spawn((
-                            Text::new("[*] RANURAS DE FRAGMENTOS (RATE-UP)"),
-                            TextFont::from_font_size(16.0),
-                            TextColor(Color::srgb(0.85, 0.6, 1.0)),
-                        ));
-                        f_header.spawn((
-                            Text::new("Inserta hasta 3 fragmentos para potenciar la probabilidad de conseguir una especie específica:"),
-                            TextFont::from_font_size(11.5),
-                            TextColor(Color::srgb(0.75, 0.75, 0.8)),
-                        ));
-                    });
-
-                    // Lista de Fragmentos disponibles
-                    frag_col.spawn(Node {
-                        flex_direction: FlexDirection::Column,
-                        row_gap: Val::Px(8.0),
-                        margin: UiRect::vertical(Val::Px(10.0)),
-                        ..default()
-                    }).with_children(|frag_list| {
-                        for (&spec_id, &count) in meta.pokemon_fragments.iter() {
-                            let name = get_species_data(spec_id)
-                                .map(|d| d.name)
-                                .unwrap_or_else(|| "Pokémon".to_string());
-
-                            frag_list.spawn(Node {
-                                width: Val::Percent(100.0),
-                                height: Val::Px(42.0),
-                                flex_direction: FlexDirection::Row,
-                                justify_content: JustifyContent::SpaceBetween,
-                                align_items: AlignItems::Center,
-                                padding: UiRect::horizontal(Val::Px(10.0)),
-                                border: UiRect::all(Val::Px(1.0)),
+                content
+                    .spawn((
+                        Node {
+                            width: Val::Percent(42.0),
+                            flex_direction: FlexDirection::Column,
+                            justify_content: JustifyContent::SpaceBetween,
+                            padding: UiRect::all(Val::Px(16.0)),
+                            border: UiRect::all(Val::Px(2.0)),
+                            border_radius: BorderRadius::all(Val::Px(16.0)),
+                            ..default()
+                        },
+                        BackgroundColor(Color::srgba(0.06, 0.09, 0.14, 0.94)),
+                        BorderColor(Color::srgb(0.61, 0.30, 1.0)),
+                    ))
+                    .with_children(|frag_col| {
+                        frag_col
+                            .spawn(Node {
+                                flex_direction: FlexDirection::Column,
+                                row_gap: Val::Px(6.0),
                                 ..default()
                             })
-                            .insert(BackgroundColor(Color::srgb(0.16, 0.14, 0.24)))
-                            .insert(BorderColor(Color::srgb(0.4, 0.3, 0.6)))
-                            .with_children(|row| {
-                                row.spawn((
-                                    Text::new(format!("[FRAG] {} (Disponibles: {})", name, count)),
-                                    TextFont::from_font_size(13.0),
-                                    TextColor(Color::WHITE),
+                            .with_children(|f_header| {
+                                f_header.spawn((
+                                    Text::new("[*] RANURAS DE FRAGMENTOS (RATE-UP)"),
+                                    TextFont::from_font_size(16.0),
+                                    TextColor(Color::srgb(0.95, 0.76, 0.30)),
                                 ));
-
-                                row.spawn((
-                                    Button,
-                                    GachaponSlotFragmentButton(spec_id),
-                                    Node {
-                                        width: Val::Px(100.0),
-                                        height: Val::Px(28.0),
-                                        justify_content: JustifyContent::Center,
-                                        align_items: AlignItems::Center,
-                                        ..default()
-                                    },
-                                    BackgroundColor(Color::srgb(0.4, 0.25, 0.65)),
-                                )).with_child((
-                                    Text::new("+1 INSERTAR"),
-                                    TextFont::from_font_size(11.0),
-                                    TextColor(Color::WHITE),
+                                f_header.spawn((
+                                    Text::new("Inserta hasta 3 fragmentos para potenciar la probabilidad de conseguir una especie específica:"),
+                                    TextFont::from_font_size(11.5),
+                                    TextColor(Color::srgb(0.75, 0.82, 0.92)),
                                 ));
                             });
-                        }
-                    });
 
-                    // Indicador de Probabilidad en Tiempo Real
-                    frag_col.spawn(Node {
-                        width: Val::Percent(100.0),
-                        padding: UiRect::all(Val::Px(10.0)),
-                        border: UiRect::all(Val::Px(1.0)),
-                        flex_direction: FlexDirection::Column,
-                        row_gap: Val::Px(4.0),
-                        ..default()
-                    })
-                    .insert(BackgroundColor(Color::srgb(0.18, 0.14, 0.26)))
-                    .insert(BorderColor(Color::srgb(0.7, 0.5, 0.9)))
-                    .with_children(|odds_box| {
-                        odds_box.spawn((
-                            GachaponOddsText,
-                            Text::new("[RATE] Probabilidad Focalizada: 0 Fragmentos insertados (Tirada General: 12% Raro, 4.5% Exótico)."),
-                            TextFont::from_font_size(12.0),
-                            TextColor(Color::srgb(1.0, 0.9, 0.4)),
-                        ));
-                    });
-
-                    // Botones de Tirada
-                    frag_col.spawn(Node {
-                        width: Val::Percent(100.0),
-                        flex_direction: FlexDirection::Row,
-                        column_gap: Val::Px(12.0),
-                        justify_content: JustifyContent::SpaceBetween,
-                        ..default()
-                    }).with_children(|pull_buttons| {
-                        pull_buttons.spawn((
-                            Button,
-                            GachaponSinglePullButton,
-                            Node {
-                                width: Val::Percent(48.0),
-                                height: Val::Px(44.0),
-                                justify_content: JustifyContent::Center,
-                                align_items: AlignItems::Center,
-                                border: UiRect::all(Val::Px(1.5)),
-                                ..default()
-                            },
-                            BackgroundColor(Color::srgb(0.20, 0.60, 0.40)),
-                            BorderColor(Color::srgb(0.4, 0.9, 0.6)),
-                        )).with_child((
-                            Text::new("TIRADA SIMPLE\n(100 Fichas)"),
-                            TextFont::from_font_size(12.0),
-                            TextColor(Color::WHITE),
-                        ));
-
-                        pull_buttons.spawn((
-                            Button,
-                            GachaponMultiPullButton,
-                            Node {
-                                width: Val::Percent(48.0),
-                                height: Val::Px(44.0),
-                                justify_content: JustifyContent::Center,
-                                align_items: AlignItems::Center,
-                                border: UiRect::all(Val::Px(1.5)),
-                                ..default()
-                            },
-                            BackgroundColor(Color::srgb(0.65, 0.30, 0.70)),
-                            BorderColor(Color::srgb(0.9, 0.5, 1.0)),
-                        )).with_child((
-                            Text::new("PACK x10 PULLS\n(900 Fichas)"),
-                            TextFont::from_font_size(12.0),
-                            TextColor(Color::WHITE),
-                        ));
-                    });
-                });
-
-                // COLUMNA DERECHA: APARADOR DE RECOMPENSA Y ANIMACIÓN ESPECTACULAR
-                content.spawn((
-                    GachaponRewardCard,
-                    Node {
-                        width: Val::Percent(54.0),
-                        flex_direction: FlexDirection::Column,
-                        justify_content: JustifyContent::SpaceBetween,
-                        align_items: AlignItems::Center,
-                        padding: UiRect::all(Val::Px(14.0)),
-                        border: UiRect::all(Val::Px(2.0)),
-                        border_radius: BorderRadius::all(Val::Px(12.0)),
-                        ..default()
-                    },
-                    UiTransform::default(),
-                    BackgroundColor(Color::srgb(0.12, 0.10, 0.18)),
-                    BorderColor(Color::srgb(0.6, 0.4, 0.8)),
-                ))
-                .with_children(|reward_panel| {
-                    // Encabezado dinámico de la animación
-                    reward_panel.spawn((
-                        GachaponRewardHeader,
-                        Text::new("[*] CÁPSULA OBTENIDA"),
-                        TextFont::from_font_size(17.0),
-                        TextColor(Color::srgb(1.0, 0.85, 0.3)),
-                    ));
-
-                    // Escenario de Animación de la Cápsula y el Pokémon
-                    reward_panel.spawn((
-                        GachaponStageArea,
-                        Node {
-                            width: Val::Px(300.0),
-                            height: Val::Px(155.0),
-                            position_type: PositionType::Relative,
-                            justify_content: JustifyContent::Center,
-                            align_items: AlignItems::Center,
-                            overflow: Overflow::clip(),
-                            ..default()
-                        },
-                    ))
-                    .with_children(|stage| {
-                        // Resplandor de Aura tras la cápsula o Pokémon
-                        stage.spawn((
-                            GachaponAuraGlow,
-                            Node {
-                                width: Val::Px(140.0),
-                                height: Val::Px(140.0),
-                                border_radius: BorderRadius::all(Val::Px(70.0)),
-                                position_type: PositionType::Absolute,
-                                ..default()
-                            },
-                            UiTransform::default(),
-                            BackgroundColor(Color::srgba(0.8, 0.5, 1.0, 0.15)),
-                            Visibility::Inherited,
-                        ));
-
-                        // La Cápsula Pokéball animada (visible al girar)
-                        stage.spawn((
-                            GachaponCapsuleOrb,
-                            Node {
-                                width: Val::Px(84.0),
-                                height: Val::Px(84.0),
-                                border_radius: BorderRadius::all(Val::Px(42.0)),
-                                border: UiRect::all(Val::Px(3.0)),
+                        // Lista de Fragmentos disponibles
+                        frag_col
+                            .spawn(Node {
                                 flex_direction: FlexDirection::Column,
-                                justify_content: JustifyContent::SpaceBetween,
-                                align_items: AlignItems::Center,
-                                overflow: Overflow::clip(),
-                                position_type: PositionType::Absolute,
-                                ..default()
-                            },
-                            UiTransform::default(),
-                            BackgroundColor(Color::srgb(0.12, 0.12, 0.16)),
-                            BorderColor(Color::srgb(0.3, 0.3, 0.4)),
-                            Visibility::Inherited,
-                        ))
-                        .with_children(|ball| {
-                            // Mitad superior roja / coloreada
-                            ball.spawn((
-                                GachaponCapsuleTopHalf,
-                                Node {
-                                    width: Val::Percent(100.0),
-                                    height: Val::Px(39.0),
-                                    ..default()
-                                },
-                                BackgroundColor(Color::srgb(0.85, 0.22, 0.22)),
-                            ));
-                            // Junta central con botón
-                            ball.spawn((
-                                Node {
-                                    width: Val::Percent(100.0),
-                                    height: Val::Px(6.0),
-                                    justify_content: JustifyContent::Center,
-                                    align_items: AlignItems::Center,
-                                    ..default()
-                                },
-                                BackgroundColor(Color::srgb(0.15, 0.15, 0.2)),
-                            )).with_child((
-                                GachaponCapsuleButton,
-                                Node {
-                                    width: Val::Px(16.0),
-                                    height: Val::Px(16.0),
-                                    border_radius: BorderRadius::all(Val::Px(8.0)),
-                                    border: UiRect::all(Val::Px(2.0)),
-                                    margin: UiRect::all(Val::Px(-5.0)),
-                                    ..default()
-                                },
-                                BackgroundColor(Color::WHITE),
-                                BorderColor(Color::srgb(0.2, 0.2, 0.25)),
-                            ));
-                            // Mitad inferior blanca
-                            ball.spawn(Node {
-                                width: Val::Percent(100.0),
-                                height: Val::Px(39.0),
+                                row_gap: Val::Px(8.0),
+                                margin: UiRect::vertical(Val::Px(10.0)),
                                 ..default()
                             })
-                            .insert(BackgroundColor(Color::srgb(0.92, 0.92, 0.96)));
-                        });
+                            .with_children(|frag_list| {
+                                for (&spec_id, &count) in meta.pokemon_fragments.iter() {
+                                    let name = get_species_data(spec_id)
+                                        .map(|d| d.name)
+                                        .unwrap_or_else(|| "Pokémon".to_string());
 
-                        // Sprite de Recompensa del Pokémon (inicialmente oculto)
-                        let placeholder_texture = asset_server.load("sprites/pokemon/front/4.png");
-                        stage.spawn((
-                            GachaponRewardSprite,
-                            ImageNode::new(placeholder_texture),
-                            Node {
-                                width: Val::Px(130.0),
-                                height: Val::Px(130.0),
-                                position_type: PositionType::Absolute,
+                                    frag_list
+                                        .spawn((
+                                            Node {
+                                                width: Val::Percent(100.0),
+                                                height: Val::Px(42.0),
+                                                flex_direction: FlexDirection::Row,
+                                                justify_content: JustifyContent::SpaceBetween,
+                                                align_items: AlignItems::Center,
+                                                padding: UiRect::horizontal(Val::Px(12.0)),
+                                                border: UiRect::all(Val::Px(1.5)),
+                                                border_radius: BorderRadius::all(Val::Px(8.0)),
+                                                ..default()
+                                            },
+                                            BackgroundColor(Color::srgb(0.09, 0.13, 0.20)),
+                                            BorderColor(Color::srgb(0.22, 0.32, 0.48)),
+                                        ))
+                                        .with_children(|row| {
+                                            row.spawn((
+                                                Text::new(format!(
+                                                    "[FRAG] {} (Disponibles: {})",
+                                                    name, count
+                                                )),
+                                                TextFont::from_font_size(13.0),
+                                                TextColor(Color::WHITE),
+                                            ));
+
+                                            row.spawn((
+                                                Button,
+                                                GachaponSlotFragmentButton(spec_id),
+                                                Node {
+                                                    width: Val::Px(108.0),
+                                                    height: Val::Px(28.0),
+                                                    position_type: PositionType::Relative,
+                                                    justify_content: JustifyContent::Center,
+                                                    align_items: AlignItems::Center,
+                                                    border_radius: BorderRadius::all(Val::Px(6.0)),
+                                                    overflow: Overflow::clip(),
+                                                    ..default()
+                                                },
+                                                BackgroundColor(Color::srgb(0.4, 0.25, 0.65)),
+                                            ))
+                                            .with_children(|btn| {
+                                                if let Some(ref tex) = btn_secondary_tex {
+                                                    btn.spawn((
+                                                        ImageNode::new(tex.clone()),
+                                                        Node {
+                                                            position_type: PositionType::Absolute,
+                                                            left: Val::Px(0.0),
+                                                            right: Val::Px(0.0),
+                                                            top: Val::Px(0.0),
+                                                            bottom: Val::Px(0.0),
+                                                            ..default()
+                                                        },
+                                                    ));
+                                                }
+                                                btn.spawn((
+                                                    Text::new("+1 INSERTAR"),
+                                                    TextFont::from_font_size(11.0),
+                                                    TextColor(Color::WHITE),
+                                                ));
+                                            });
+                                        });
+                                }
+                            });
+
+                        // Indicador de Probabilidad en Tiempo Real
+                        frag_col
+                            .spawn((
+                                Node {
+                                    width: Val::Percent(100.0),
+                                    padding: UiRect::all(Val::Px(10.0)),
+                                    border: UiRect::all(Val::Px(1.5)),
+                                    border_radius: BorderRadius::all(Val::Px(8.0)),
+                                    flex_direction: FlexDirection::Column,
+                                    row_gap: Val::Px(4.0),
+                                    ..default()
+                                },
+                                BackgroundColor(Color::srgb(0.09, 0.13, 0.20)),
+                                BorderColor(Color::srgb(0.61, 0.30, 1.0)),
+                            ))
+                            .with_children(|odds_box| {
+                                odds_box.spawn((
+                                    GachaponOddsText,
+                                    Text::new("[RATE] Probabilidad Focalizada: 0 Fragmentos insertados (Tirada General: 12% Raro, 4.5% Exótico)."),
+                                    TextFont::from_font_size(12.0),
+                                    TextColor(Color::srgb(0.95, 0.76, 0.30)),
+                                ));
+                            });
+
+                        // Botones de Tirada (`btn_primary.png` y `btn_gold.png`)
+                        frag_col
+                            .spawn(Node {
+                                width: Val::Percent(100.0),
+                                flex_direction: FlexDirection::Row,
+                                column_gap: Val::Px(12.0),
+                                justify_content: JustifyContent::SpaceBetween,
                                 ..default()
-                            },
-                            UiTransform::default(),
-                            Visibility::Hidden,
-                        ));
+                            })
+                            .with_children(|pull_buttons| {
+                                pull_buttons
+                                    .spawn((
+                                        Button,
+                                        GachaponSinglePullButton,
+                                        Node {
+                                            width: Val::Percent(48.0),
+                                            height: Val::Px(46.0),
+                                            position_type: PositionType::Relative,
+                                            justify_content: JustifyContent::Center,
+                                            align_items: AlignItems::Center,
+                                            border: UiRect::all(Val::Px(2.0)),
+                                            border_radius: BorderRadius::all(Val::Px(10.0)),
+                                            overflow: Overflow::clip(),
+                                            ..default()
+                                        },
+                                        BackgroundColor(Color::srgb(0.85, 0.38, 0.16)),
+                                        BorderColor(Color::srgb(1.0, 0.48, 0.24)),
+                                    ))
+                                    .with_children(|btn| {
+                                        if let Some(ref tex) = btn_primary_tex {
+                                            btn.spawn((
+                                                ImageNode::new(tex.clone()),
+                                                Node {
+                                                    position_type: PositionType::Absolute,
+                                                    left: Val::Px(0.0),
+                                                    right: Val::Px(0.0),
+                                                    top: Val::Px(0.0),
+                                                    bottom: Val::Px(0.0),
+                                                    ..default()
+                                                },
+                                            ));
+                                        }
+                                        btn.spawn((
+                                            Text::new("TIRADA SIMPLE (100)"),
+                                            TextFont::from_font_size(12.0),
+                                            TextColor(Color::WHITE),
+                                        ));
+                                    });
+
+                                pull_buttons
+                                    .spawn((
+                                        Button,
+                                        GachaponMultiPullButton,
+                                        Node {
+                                            width: Val::Percent(48.0),
+                                            height: Val::Px(46.0),
+                                            position_type: PositionType::Relative,
+                                            justify_content: JustifyContent::Center,
+                                            align_items: AlignItems::Center,
+                                            border: UiRect::all(Val::Px(2.0)),
+                                            border_radius: BorderRadius::all(Val::Px(10.0)),
+                                            overflow: Overflow::clip(),
+                                            ..default()
+                                        },
+                                        BackgroundColor(Color::srgb(0.65, 0.45, 0.15)),
+                                        BorderColor(Color::srgb(0.95, 0.76, 0.30)),
+                                    ))
+                                    .with_children(|btn| {
+                                        if let Some(ref tex) = btn_gold_tex {
+                                            btn.spawn((
+                                                ImageNode::new(tex.clone()),
+                                                Node {
+                                                    position_type: PositionType::Absolute,
+                                                    left: Val::Px(0.0),
+                                                    right: Val::Px(0.0),
+                                                    top: Val::Px(0.0),
+                                                    bottom: Val::Px(0.0),
+                                                    ..default()
+                                                },
+                                            ));
+                                        }
+                                        btn.spawn((
+                                            Text::new("PACK x10 (900)"),
+                                            TextFont::from_font_size(12.0),
+                                            TextColor(Color::srgb(0.15, 0.09, 0.02)),
+                                        ));
+                                    });
+                            });
                     });
 
-                    // Insignia de Rareza y Botón de Saltar
-                    reward_panel.spawn(Node {
-                        flex_direction: FlexDirection::Row,
-                        column_gap: Val::Px(8.0),
-                        align_items: AlignItems::Center,
-                        ..default()
-                    }).with_children(|badge_row| {
-                        badge_row.spawn((
-                            GachaponRarityBadge,
-                            Text::new("CÁPSULA LISTA"),
-                            TextFont::from_font_size(12.5),
-                            TextColor(Color::srgb(0.7, 0.75, 0.85)),
-                        ));
-
-                        badge_row.spawn((
-                            Button,
-                            GachaponSkipButton,
-                            Node {
-                                padding: UiRect::axes(Val::Px(8.0), Val::Px(2.0)),
-                                border: UiRect::all(Val::Px(1.0)),
-                                border_radius: BorderRadius::all(Val::Px(4.0)),
-                                ..default()
-                            },
-                            BackgroundColor(Color::srgb(0.25, 0.22, 0.32)),
-                            BorderColor(Color::srgb(0.5, 0.45, 0.65)),
-                            Visibility::Hidden,
-                        )).with_child((
-                            Text::new("SALTAR >>"),
-                            TextFont::from_font_size(10.0),
-                            TextColor(Color::srgb(0.9, 0.85, 1.0)),
-                        ));
-                    });
-
-                    // Nombre y Detalle del Pokémon obtenido
-                    reward_panel.spawn((
-                        GachaponRewardName,
-                        Text::new("¡Gira la palanca para revelar tu Pokémon!"),
-                        TextFont::from_font_size(15.0),
-                        TextColor(Color::WHITE),
-                    ));
-
-                    // Bandeja de resultados para el Pack x10
-                    reward_panel.spawn((
-                        GachaponMultiTray,
+                // COLUMNA DERECHA: APARADOR DE RECOMPENSA Y ANIMACIÓN ESPECTACULAR
+                content
+                    .spawn((
+                        GachaponRewardCard,
                         Node {
-                            width: Val::Percent(100.0),
-                            flex_direction: FlexDirection::Row,
-                            flex_wrap: FlexWrap::Wrap,
-                            column_gap: Val::Px(6.0),
-                            row_gap: Val::Px(4.0),
-                            justify_content: JustifyContent::Center,
-                            min_height: Val::Px(20.0),
+                            width: Val::Percent(54.0),
+                            flex_direction: FlexDirection::Column,
+                            justify_content: JustifyContent::SpaceBetween,
+                            align_items: AlignItems::Center,
+                            padding: UiRect::all(Val::Px(16.0)),
+                            border: UiRect::all(Val::Px(2.5)),
+                            border_radius: BorderRadius::all(Val::Px(16.0)),
                             ..default()
                         },
-                    ));
-
-                    // Colección Desbloqueada
-                    reward_panel.spawn(Node {
-                        width: Val::Percent(100.0),
-                        flex_direction: FlexDirection::Column,
-                        row_gap: Val::Px(6.0),
-                        padding: UiRect::all(Val::Px(8.0)),
-                        border: UiRect::all(Val::Px(1.0)),
-                        ..default()
-                    })
-                    .insert(BackgroundColor(Color::srgb(0.16, 0.14, 0.22)))
-                    .insert(BorderColor(Color::srgb(0.35, 0.3, 0.5)))
-                    .with_children(|col_box| {
-                        col_box.spawn((
-                            Text::new(format!("[COLECCIÓN] Tu Colección Desbloqueada ({} Pokémon) - Haz clic para seleccionar:", meta.unlocked_pokemon.len())),
-                            TextFont::from_font_size(13.0),
-                            TextColor(Color::srgb(0.8, 0.85, 1.0)),
+                        UiTransform::default(),
+                        BackgroundColor(Color::srgba(0.06, 0.09, 0.14, 0.94)),
+                        BorderColor(Color::srgb(0.95, 0.76, 0.30)),
+                    ))
+                    .with_children(|reward_panel| {
+                        // Encabezado dinámico de la animación
+                        reward_panel.spawn((
+                            GachaponRewardHeader,
+                            Text::new("[*] CÁPSULA OBTENIDA"),
+                            TextFont::from_font_size(17.0),
+                            TextColor(Color::srgb(0.95, 0.76, 0.30)),
                         ));
 
-                        col_box.spawn(Node {
-                            flex_direction: FlexDirection::Row,
-                            column_gap: Val::Px(8.0),
-                            row_gap: Val::Px(8.0),
-                            flex_wrap: FlexWrap::Wrap,
-                            ..default()
-                        }).with_children(|icons_row| {
-                            for &id in meta.unlocked_pokemon.iter() {
-                                let name = get_species_data(id).map(|d| d.name).unwrap_or_else(|| "?".to_string());
-                                let is_active = run_state.selected_starter_id == id;
-                                let border_color = if is_active {
-                                    Color::srgb(1.0, 0.85, 0.2)
-                                } else {
-                                    Color::srgb(0.5, 0.4, 0.7)
-                                };
-                                let bg_color = if is_active {
-                                    Color::srgb(0.35, 0.28, 0.15)
-                                } else {
-                                    Color::srgb(0.22, 0.20, 0.32)
-                                };
-                                let label = if is_active {
-                                    format!("#{} {} [ACTIVO]", id, name)
-                                } else {
-                                    format!("#{} {}", id, name)
-                                };
-
-                                icons_row.spawn((
-                                    Button,
-                                    GachaponSelectPokemonBadgeButton(id),
+                        // Escenario de Animación de la Cápsula y el Pokémon
+                        reward_panel
+                            .spawn((
+                                GachaponStageArea,
+                                Node {
+                                    width: Val::Px(300.0),
+                                    height: Val::Px(155.0),
+                                    position_type: PositionType::Relative,
+                                    justify_content: JustifyContent::Center,
+                                    align_items: AlignItems::Center,
+                                    overflow: Overflow::clip(),
+                                    ..default()
+                                },
+                            ))
+                            .with_children(|stage| {
+                                // Resplandor de Aura tras la cápsula o Pokémon
+                                stage.spawn((
+                                    GachaponAuraGlow,
                                     Node {
-                                        padding: UiRect::axes(Val::Px(8.0), Val::Px(4.0)),
-                                        border: UiRect::all(Val::Px(1.5)),
+                                        width: Val::Px(140.0),
+                                        height: Val::Px(140.0),
+                                        border_radius: BorderRadius::all(Val::Px(70.0)),
+                                        position_type: PositionType::Absolute,
                                         ..default()
                                     },
-                                    BackgroundColor(bg_color),
-                                    BorderColor(border_color),
-                                ))
-                                .with_child((
-                                    Text::new(label),
-                                    TextFont::from_font_size(11.0),
-                                    TextColor(if is_active { Color::srgb(1.0, 0.9, 0.4) } else { Color::WHITE }),
+                                    UiTransform::default(),
+                                    BackgroundColor(Color::srgba(0.8, 0.5, 1.0, 0.15)),
+                                    Visibility::Inherited,
                                 ));
-                            }
-                        });
+
+                                // La Cápsula Pokéball animada (visible al girar)
+                                stage
+                                    .spawn((
+                                        GachaponCapsuleOrb,
+                                        Node {
+                                            width: Val::Px(84.0),
+                                            height: Val::Px(84.0),
+                                            border_radius: BorderRadius::all(Val::Px(42.0)),
+                                            border: UiRect::all(Val::Px(3.0)),
+                                            flex_direction: FlexDirection::Column,
+                                            justify_content: JustifyContent::SpaceBetween,
+                                            align_items: AlignItems::Center,
+                                            overflow: Overflow::clip(),
+                                            position_type: PositionType::Absolute,
+                                            ..default()
+                                        },
+                                        UiTransform::default(),
+                                        BackgroundColor(Color::srgb(0.12, 0.12, 0.16)),
+                                        BorderColor(Color::srgb(0.3, 0.3, 0.4)),
+                                        Visibility::Inherited,
+                                    ))
+                                    .with_children(|ball| {
+                                        // Mitad superior roja / coloreada
+                                        ball.spawn((
+                                            GachaponCapsuleTopHalf,
+                                            Node {
+                                                width: Val::Percent(100.0),
+                                                height: Val::Px(39.0),
+                                                ..default()
+                                            },
+                                            BackgroundColor(Color::srgb(0.85, 0.22, 0.22)),
+                                        ));
+                                        // Junta central con botón
+                                        ball.spawn((
+                                            Node {
+                                                width: Val::Percent(100.0),
+                                                height: Val::Px(6.0),
+                                                justify_content: JustifyContent::Center,
+                                                align_items: AlignItems::Center,
+                                                ..default()
+                                            },
+                                            BackgroundColor(Color::srgb(0.15, 0.15, 0.2)),
+                                        ))
+                                        .with_child((
+                                            GachaponCapsuleButton,
+                                            Node {
+                                                width: Val::Px(16.0),
+                                                height: Val::Px(16.0),
+                                                border_radius: BorderRadius::all(Val::Px(8.0)),
+                                                border: UiRect::all(Val::Px(2.0)),
+                                                margin: UiRect::all(Val::Px(-5.0)),
+                                                ..default()
+                                            },
+                                            BackgroundColor(Color::WHITE),
+                                            BorderColor(Color::srgb(0.2, 0.2, 0.25)),
+                                        ));
+                                        // Mitad inferior blanca
+                                        ball.spawn(Node {
+                                            width: Val::Percent(100.0),
+                                            height: Val::Px(39.0),
+                                            ..default()
+                                        })
+                                        .insert(BackgroundColor(Color::srgb(0.92, 0.92, 0.96)));
+                                    });
+
+                                // Sprite de Recompensa del Pokémon (inicialmente oculto)
+                                let placeholder_texture =
+                                    asset_server.load("sprites/pokemon/front/4.png");
+                                stage.spawn((
+                                    GachaponRewardSprite,
+                                    ImageNode::new(placeholder_texture),
+                                    Node {
+                                        width: Val::Px(130.0),
+                                        height: Val::Px(130.0),
+                                        position_type: PositionType::Absolute,
+                                        ..default()
+                                    },
+                                    UiTransform::default(),
+                                    Visibility::Hidden,
+                                ));
+                            });
+
+                        // Insignia de Rareza y Botón de Saltar
+                        reward_panel
+                            .spawn(Node {
+                                flex_direction: FlexDirection::Row,
+                                column_gap: Val::Px(8.0),
+                                align_items: AlignItems::Center,
+                                ..default()
+                            })
+                            .with_children(|badge_row| {
+                                badge_row.spawn((
+                                    GachaponRarityBadge,
+                                    Text::new("CÁPSULA LISTA"),
+                                    TextFont::from_font_size(12.5),
+                                    TextColor(Color::srgb(0.7, 0.75, 0.85)),
+                                ));
+
+                                badge_row
+                                    .spawn((
+                                        Button,
+                                        GachaponSkipButton,
+                                        Node {
+                                            padding: UiRect::axes(Val::Px(8.0), Val::Px(2.0)),
+                                            border: UiRect::all(Val::Px(1.0)),
+                                            border_radius: BorderRadius::all(Val::Px(4.0)),
+                                            ..default()
+                                        },
+                                        BackgroundColor(Color::srgb(0.25, 0.22, 0.32)),
+                                        BorderColor(Color::srgb(0.5, 0.45, 0.65)),
+                                        Visibility::Hidden,
+                                    ))
+                                    .with_child((
+                                        Text::new("SALTAR >>"),
+                                        TextFont::from_font_size(10.0),
+                                        TextColor(Color::srgb(0.9, 0.85, 1.0)),
+                                    ));
+                            });
+
+                        // Nombre y Detalle del Pokémon obtenido
+                        reward_panel.spawn((
+                            GachaponRewardName,
+                            Text::new("¡Gira la palanca para revelar tu Pokémon!"),
+                            TextFont::from_font_size(15.0),
+                            TextColor(Color::WHITE),
+                        ));
+
+                        // Bandeja de resultados para el Pack x10
+                        reward_panel.spawn((
+                            GachaponMultiTray,
+                            Node {
+                                width: Val::Percent(100.0),
+                                flex_direction: FlexDirection::Row,
+                                flex_wrap: FlexWrap::Wrap,
+                                column_gap: Val::Px(6.0),
+                                row_gap: Val::Px(4.0),
+                                justify_content: JustifyContent::Center,
+                                min_height: Val::Px(20.0),
+                                ..default()
+                            },
+                        ));
+
+                        // Colección Desbloqueada
+                        reward_panel
+                            .spawn((
+                                Node {
+                                    width: Val::Percent(100.0),
+                                    flex_direction: FlexDirection::Column,
+                                    row_gap: Val::Px(6.0),
+                                    padding: UiRect::all(Val::Px(10.0)),
+                                    border: UiRect::all(Val::Px(1.5)),
+                                    border_radius: BorderRadius::all(Val::Px(10.0)),
+                                    ..default()
+                                },
+                                BackgroundColor(Color::srgb(0.09, 0.13, 0.20)),
+                                BorderColor(Color::srgb(0.22, 0.32, 0.48)),
+                            ))
+                            .with_children(|col_box| {
+                                col_box.spawn((
+                                    Text::new(format!(
+                                        "[COLECCIÓN] Tu Colección Desbloqueada ({} Pokémon) - Haz clic para seleccionar:",
+                                        meta.unlocked_pokemon.len()
+                                    )),
+                                    TextFont::from_font_size(13.0),
+                                    TextColor(Color::srgb(0.75, 0.84, 0.96)),
+                                ));
+
+                                col_box
+                                    .spawn(Node {
+                                        flex_direction: FlexDirection::Row,
+                                        column_gap: Val::Px(8.0),
+                                        row_gap: Val::Px(8.0),
+                                        flex_wrap: FlexWrap::Wrap,
+                                        ..default()
+                                    })
+                                    .with_children(|icons_row| {
+                                        for &id in meta.unlocked_pokemon.iter() {
+                                            let name = get_species_data(id)
+                                                .map(|d| d.name)
+                                                .unwrap_or_else(|| "?".to_string());
+                                            let is_active = run_state.selected_starter_id == id;
+                                            let border_color = if is_active {
+                                                Color::srgb(0.95, 0.76, 0.30)
+                                            } else {
+                                                Color::srgb(0.29, 0.69, 1.0)
+                                            };
+                                            let bg_color = if is_active {
+                                                Color::srgb(0.35, 0.28, 0.15)
+                                            } else {
+                                                Color::srgb(0.14, 0.19, 0.28)
+                                            };
+                                            let label = if is_active {
+                                                format!("#{} {} [ACTIVO]", id, name)
+                                            } else {
+                                                format!("#{} {}", id, name)
+                                            };
+
+                                            icons_row
+                                                .spawn((
+                                                    Button,
+                                                    GachaponSelectPokemonBadgeButton(id),
+                                                    Node {
+                                                        padding: UiRect::axes(Val::Px(10.0), Val::Px(4.0)),
+                                                        border: UiRect::all(Val::Px(1.5)),
+                                                        border_radius: BorderRadius::all(Val::Px(6.0)),
+                                                        ..default()
+                                                    },
+                                                    BackgroundColor(bg_color),
+                                                    BorderColor(border_color),
+                                                ))
+                                                .with_child((
+                                                    Text::new(label),
+                                                    TextFont::from_font_size(11.0),
+                                                    TextColor(if is_active {
+                                                        Color::srgb(0.95, 0.76, 0.30)
+                                                    } else {
+                                                        Color::WHITE
+                                                    }),
+                                                ));
+                                        }
+                                    });
+                            });
                     });
-                });
             });
 
             // === BARRA INFERIOR DE MENSAJES ===
@@ -698,7 +888,7 @@ fn setup_gachapon_ui(
                 GachaponStatusText,
                 Text::new("[INFO] Las fichas gachapón se ganan superando pisos, Mini Jefes y Líderes de Gimnasio en cada run."),
                 TextFont::from_font_size(13.0),
-                TextColor(Color::srgb(0.7, 0.65, 0.85)),
+                TextColor(Color::srgb(0.68, 0.76, 0.88)),
             ));
         });
 }

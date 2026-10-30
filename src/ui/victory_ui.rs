@@ -67,14 +67,20 @@ pub struct VictoryCardContainer;
 fn setup_victory_ui(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
+    preloaded: Option<Res<crate::ui::PreloadedAssets>>,
     victory_data: Option<Res<CombatVictoryData>>,
     run_state: Res<CurrentRunState>,
 ) {
+    let pre = preloaded.as_deref();
+    let srv = Some(&*asset_server);
     let victory = victory_data.map(|v| v.clone()).unwrap_or_default();
 
     // Sprite frontal del Pokémon del jugador para la celebración
     let sprite_path = PokemonSprite::new(victory.player_species_id, false).relative_path();
     let sprite_handle: Handle<Image> = asset_server.load(sprite_path);
+    let banner_tex = crate::ui::load_ui_image(pre, srv, "ui/hud/hud_turn_banner.png");
+    let btn_gold_tex = crate::ui::load_ui_image(pre, srv, "ui/buttons/btn_gold.png");
+    let btn_secondary_tex = crate::ui::load_ui_image(pre, srv, "ui/buttons/btn_secondary.png");
 
     commands
         .spawn((
@@ -85,45 +91,71 @@ fn setup_victory_ui(
                 flex_direction: FlexDirection::Column,
                 justify_content: JustifyContent::SpaceBetween,
                 align_items: AlignItems::Center,
-                padding: UiRect::axes(Val::Px(32.0), Val::Px(20.0)),
+                padding: UiRect::axes(Val::Px(32.0), Val::Px(18.0)),
                 ..default()
             },
-            BackgroundColor(Color::srgb(0.06, 0.07, 0.11)),
+            BackgroundColor(Color::srgb(0.03, 0.04, 0.07)),
         ))
         .with_children(|root| {
             // ========================================================
-            // CABECERA SUPERIOR: BANNER DE VICTORIA
+            // CABECERA SUPERIOR: BANNER DE VICTORIA (`ui/hud/hud_turn_banner.png`)
             // ========================================================
             root.spawn((
                 VictoryGlowBanner { elapsed: 0.0 },
                 Node {
+                    min_width: Val::Px(540.0),
+                    min_height: Val::Px(78.0),
+                    position_type: PositionType::Relative,
                     flex_direction: FlexDirection::Column,
+                    justify_content: JustifyContent::Center,
                     align_items: AlignItems::Center,
-                    padding: UiRect::axes(Val::Px(24.0), Val::Px(10.0)),
-                    border: UiRect::all(Val::Px(2.0)),
+                    padding: UiRect::axes(Val::Px(28.0), Val::Px(12.0)),
                     ..default()
                 },
-                BackgroundColor(Color::srgb(0.12, 0.14, 0.22)),
-                BorderColor(Color::srgb(1.0, 0.85, 0.2)),
             ))
             .with_children(|banner| {
-                banner.spawn((
-                    Text::new("* ¡VICTORIA SOBRE EL ENTRENADOR! *"),
-                    TextFont::from_font_size(26.0),
-                    TextColor(Color::srgb(1.0, 0.86, 0.2)),
-                ));
-                let sub_title = if victory.is_boss {
-                    format!("¡Has vencido al Líder de Gimnasio {}!", victory.enemy_trainer_name)
-                } else if victory.is_mini_boss {
-                    format!("¡Has derrotado al {} salvaje!", victory.enemy_name)
-                } else {
-                    format!("¡Has superado al {}!", victory.enemy_trainer_name)
-                };
-                banner.spawn((
-                    Text::new(sub_title),
-                    TextFont::from_font_size(14.0),
-                    TextColor(Color::srgb(0.85, 0.88, 0.95)),
-                ));
+                if let Some(ref tex) = banner_tex {
+                    banner.spawn((
+                        ImageNode::new(tex.clone()),
+                        Node {
+                            position_type: PositionType::Absolute,
+                            left: Val::Px(0.0),
+                            right: Val::Px(0.0),
+                            top: Val::Px(0.0),
+                            bottom: Val::Px(0.0),
+                            ..default()
+                        },
+                    ));
+                }
+                banner
+                    .spawn(Node {
+                        flex_direction: FlexDirection::Column,
+                        align_items: AlignItems::Center,
+                        row_gap: Val::Px(2.0),
+                        ..default()
+                    })
+                    .with_children(|inner| {
+                        inner.spawn((
+                            Text::new("* ¡VICTORIA SOBRE EL ENTRENADOR! *"),
+                            TextFont::from_font_size(21.0),
+                            TextColor(Color::srgb(0.95, 0.76, 0.30)),
+                        ));
+                        let sub_title = if victory.is_boss {
+                            format!(
+                                "¡Has vencido al Líder de Gimnasio {}!",
+                                victory.enemy_trainer_name
+                            )
+                        } else if victory.is_mini_boss {
+                            format!("¡Has derrotado al {} salvaje!", victory.enemy_name)
+                        } else {
+                            format!("¡Has superado al {}!", victory.enemy_trainer_name)
+                        };
+                        inner.spawn((
+                            Text::new(sub_title),
+                            TextFont::from_font_size(12.5),
+                            TextColor(Color::srgb(0.82, 0.88, 0.96)),
+                        ));
+                    });
             });
 
             // ========================================================
@@ -134,25 +166,28 @@ fn setup_victory_ui(
                 flex_direction: FlexDirection::Row,
                 justify_content: JustifyContent::SpaceEvenly,
                 align_items: AlignItems::Center,
-                margin: UiRect::axes(Val::Px(0.0), Val::Px(8.0)),
+                margin: UiRect::axes(Val::Px(0.0), Val::Px(6.0)),
                 ..default()
             })
             .with_children(|mid_row| {
                 // COLUMNA IZQUIERDA: PEDESTAL CON ANIMACIÓN DE VICTORIA DEL POKÉMON
                 mid_row
-                    .spawn(Node {
-                        width: Val::Px(320.0),
-                        height: Val::Px(230.0),
-                        flex_direction: FlexDirection::Column,
-                        align_items: AlignItems::Center,
-                        justify_content: JustifyContent::Center,
-                        border: UiRect::all(Val::Px(2.0)),
-                        padding: UiRect::all(Val::Px(12.0)),
-                        position_type: PositionType::Relative,
-                        ..default()
-                    })
-                    .insert(BackgroundColor(Color::srgb(0.09, 0.11, 0.17)))
-                    .insert(BorderColor(Color::srgb(0.3, 0.6, 0.9)))
+                    .spawn((
+                        Node {
+                            width: Val::Px(320.0),
+                            height: Val::Px(224.0),
+                            flex_direction: FlexDirection::Column,
+                            align_items: AlignItems::Center,
+                            justify_content: JustifyContent::Center,
+                            border: UiRect::all(Val::Px(2.0)),
+                            border_radius: BorderRadius::all(Val::Px(16.0)),
+                            padding: UiRect::all(Val::Px(12.0)),
+                            position_type: PositionType::Relative,
+                            ..default()
+                        },
+                        BackgroundColor(Color::srgba(0.06, 0.09, 0.14, 0.94)),
+                        BorderColor(Color::srgb(0.22, 0.71, 1.0)),
+                    ))
                     .with_children(|pedestal| {
                         // Partículas de estrellas de victoria orbitando
                         for i in 0..6 {
@@ -187,79 +222,93 @@ fn setup_victory_ui(
                         }
 
                         // Fila con Entrenador Red y su Pokémon celebrando juntos
-                        pedestal.spawn(Node {
-                            flex_direction: FlexDirection::Row,
-                            align_items: AlignItems::FlexEnd,
-                            justify_content: JustifyContent::Center,
-                            column_gap: Val::Px(12.0),
-                            ..default()
-                        }).with_children(|pair| {
-                            // Sprite animado del Entrenador Red
-                            pair.spawn((
-                                VictoryCelebrationSprite {
-                                    base_y: 0.0,
-                                    elapsed: 0.2,
-                                },
-                                UiTransform::default(),
-                                ImageNode::new(asset_server.load("sprites/trainers/player_front.png")),
-                                Node {
-                                    width: Val::Px(64.0),
-                                    height: Val::Px(64.0),
-                                    margin: UiRect::bottom(Val::Px(10.0)),
-                                    ..default()
-                                },
-                            ));
+                        pedestal
+                            .spawn(Node {
+                                flex_direction: FlexDirection::Row,
+                                align_items: AlignItems::FlexEnd,
+                                justify_content: JustifyContent::Center,
+                                column_gap: Val::Px(12.0),
+                                ..default()
+                            })
+                            .with_children(|pair| {
+                                // Sprite animado del Entrenador Red
+                                pair.spawn((
+                                    VictoryCelebrationSprite {
+                                        base_y: 0.0,
+                                        elapsed: 0.2,
+                                    },
+                                    UiTransform::default(),
+                                    ImageNode::new(
+                                        asset_server.load("sprites/trainers/player_front.png"),
+                                    ),
+                                    Node {
+                                        width: Val::Px(64.0),
+                                        height: Val::Px(64.0),
+                                        margin: UiRect::bottom(Val::Px(10.0)),
+                                        ..default()
+                                    },
+                                ));
 
-                            // Sprite animado del Pokémon del jugador
-                            pair.spawn((
-                                VictoryCelebrationSprite {
-                                    base_y: 0.0,
-                                    elapsed: 0.0,
-                                },
-                                UiTransform::default(),
-                                ImageNode::new(sprite_handle),
-                                Node {
-                                    width: Val::Px(110.0),
-                                    height: Val::Px(110.0),
-                                    ..default()
-                                },
-                            ));
-                        });
+                                // Sprite animado del Pokémon del jugador
+                                pair.spawn((
+                                    VictoryCelebrationSprite {
+                                        base_y: 0.0,
+                                        elapsed: 0.0,
+                                    },
+                                    UiTransform::default(),
+                                    ImageNode::new(sprite_handle),
+                                    Node {
+                                        width: Val::Px(110.0),
+                                        height: Val::Px(110.0),
+                                        ..default()
+                                    },
+                                ));
+                            });
 
                         // Placa identificativa del Entrenador y su Pokémon
-                        pedestal.spawn(Node {
-                            margin: UiRect::top(Val::Px(8.0)),
-                            padding: UiRect::axes(Val::Px(12.0), Val::Px(4.0)),
-                            border: UiRect::all(Val::Px(1.0)),
-                            ..default()
-                        })
-                        .insert(BackgroundColor(Color::srgb(0.15, 0.20, 0.30)))
-                        .insert(BorderColor(Color::srgb(1.0, 0.85, 0.2)))
-                        .with_child((
-                            Text::new(format!("Entrenador Red & {} (Nv. {})", victory.player_name, victory.player_level)),
-                            TextFont::from_font_size(13.0),
-                            TextColor(Color::srgb(1.0, 0.9, 0.4)),
-                        ));
+                        pedestal
+                            .spawn((
+                                Node {
+                                    margin: UiRect::top(Val::Px(8.0)),
+                                    padding: UiRect::axes(Val::Px(12.0), Val::Px(4.0)),
+                                    border: UiRect::all(Val::Px(1.5)),
+                                    border_radius: BorderRadius::all(Val::Px(8.0)),
+                                    ..default()
+                                },
+                                BackgroundColor(Color::srgb(0.10, 0.14, 0.22)),
+                                BorderColor(Color::srgb(0.95, 0.76, 0.30)),
+                            ))
+                            .with_child((
+                                Text::new(format!(
+                                    "Entrenador Red & {} (Nv. {})",
+                                    victory.player_name, victory.player_level
+                                )),
+                                TextFont::from_font_size(13.0),
+                                TextColor(Color::srgb(0.95, 0.76, 0.30)),
+                            ));
                     });
 
                 // COLUMNA DERECHA: DESGLOSE DE RECOMPENSAS
                 mid_row
-                    .spawn(Node {
-                        width: Val::Px(560.0),
-                        height: Val::Px(230.0),
-                        flex_direction: FlexDirection::Column,
-                        justify_content: JustifyContent::SpaceEvenly,
-                        padding: UiRect::all(Val::Px(16.0)),
-                        border: UiRect::all(Val::Px(2.0)),
-                        ..default()
-                    })
-                    .insert(BackgroundColor(Color::srgb(0.09, 0.11, 0.17)))
-                    .insert(BorderColor(Color::srgb(0.4, 0.7, 0.4)))
+                    .spawn((
+                        Node {
+                            width: Val::Px(560.0),
+                            height: Val::Px(224.0),
+                            flex_direction: FlexDirection::Column,
+                            justify_content: JustifyContent::SpaceEvenly,
+                            padding: UiRect::all(Val::Px(16.0)),
+                            border: UiRect::all(Val::Px(2.0)),
+                            border_radius: BorderRadius::all(Val::Px(16.0)),
+                            ..default()
+                        },
+                        BackgroundColor(Color::srgba(0.06, 0.09, 0.14, 0.94)),
+                        BorderColor(Color::srgb(0.20, 0.85, 0.48)),
+                    ))
                     .with_children(|rewards_box| {
                         rewards_box.spawn((
                             Text::new("DESGLOSE DE RECOMPENSAS:"),
                             TextFont::from_font_size(15.0),
-                            TextColor(Color::srgb(1.0, 0.85, 0.2)),
+                            TextColor(Color::srgb(0.95, 0.76, 0.30)),
                         ));
 
                         // Fila de EXP
@@ -273,10 +322,11 @@ fn setup_victory_ui(
                             .with_children(|r| {
                                 r.spawn((
                                     Node {
-                                        padding: UiRect::axes(Val::Px(6.0), Val::Px(2.0)),
+                                        padding: UiRect::axes(Val::Px(8.0), Val::Px(2.0)),
+                                        border_radius: BorderRadius::all(Val::Px(4.0)),
                                         ..default()
                                     },
-                                    BackgroundColor(Color::srgb(0.2, 0.65, 0.3)),
+                                    BackgroundColor(Color::srgb(0.20, 0.65, 0.35)),
                                 ))
                                 .with_child((
                                     Text::new("[ EXP ]"),
@@ -319,15 +369,16 @@ fn setup_victory_ui(
                             .with_children(|r| {
                                 r.spawn((
                                     Node {
-                                        padding: UiRect::axes(Val::Px(6.0), Val::Px(2.0)),
+                                        padding: UiRect::axes(Val::Px(8.0), Val::Px(2.0)),
+                                        border_radius: BorderRadius::all(Val::Px(4.0)),
                                         ..default()
                                     },
-                                    BackgroundColor(Color::srgb(0.85, 0.70, 0.15)),
+                                    BackgroundColor(Color::srgb(0.95, 0.76, 0.30)),
                                 ))
                                 .with_child((
                                     Text::new("[ P$ ]"),
                                     TextFont::from_font_size(11.0),
-                                    TextColor(Color::srgb(0.1, 0.1, 0.1)),
+                                    TextColor(Color::srgb(0.06, 0.08, 0.12)),
                                 ));
                                 r.spawn((
                                     Text::new(format!(
@@ -350,10 +401,11 @@ fn setup_victory_ui(
                             .with_children(|r| {
                                 r.spawn((
                                     Node {
-                                        padding: UiRect::axes(Val::Px(6.0), Val::Px(2.0)),
+                                        padding: UiRect::axes(Val::Px(8.0), Val::Px(2.0)),
+                                        border_radius: BorderRadius::all(Val::Px(4.0)),
                                         ..default()
                                     },
-                                    BackgroundColor(Color::srgb(0.25, 0.55, 0.85)),
+                                    BackgroundColor(Color::srgb(0.22, 0.71, 1.0)),
                                 ))
                                 .with_child((
                                     Text::new("[ FICHAS ]"),
@@ -382,10 +434,11 @@ fn setup_victory_ui(
                                 .with_children(|r| {
                                     r.spawn((
                                         Node {
-                                            padding: UiRect::axes(Val::Px(6.0), Val::Px(2.0)),
+                                            padding: UiRect::axes(Val::Px(8.0), Val::Px(2.0)),
+                                            border_radius: BorderRadius::all(Val::Px(4.0)),
                                             ..default()
                                         },
-                                        BackgroundColor(Color::srgb(0.65, 0.35, 0.85)),
+                                        BackgroundColor(Color::srgb(0.61, 0.30, 1.0)),
                                     ))
                                     .with_child((
                                         Text::new("[ FRAGMENTO ]"),
@@ -411,10 +464,11 @@ fn setup_victory_ui(
                                 .with_children(|r| {
                                     r.spawn((
                                         Node {
-                                            padding: UiRect::axes(Val::Px(6.0), Val::Px(2.0)),
+                                            padding: UiRect::axes(Val::Px(8.0), Val::Px(2.0)),
+                                            border_radius: BorderRadius::all(Val::Px(4.0)),
                                             ..default()
                                         },
-                                        BackgroundColor(Color::srgb(0.95, 0.45, 0.15)),
+                                        BackgroundColor(Color::srgb(1.0, 0.48, 0.24)),
                                     ))
                                     .with_child((
                                         Text::new("[ MEDALLA ]"),
@@ -424,7 +478,7 @@ fn setup_victory_ui(
                                     r.spawn((
                                         Text::new(format!("¡Conseguida: {}!", badge)),
                                         TextFont::from_font_size(13.0),
-                                        TextColor(Color::srgb(1.0, 0.85, 0.3)),
+                                        TextColor(Color::srgb(0.95, 0.76, 0.30)),
                                     ));
                                 });
                         }
@@ -440,7 +494,8 @@ fn setup_victory_ui(
                                 .with_children(|r| {
                                     r.spawn((
                                         Node {
-                                            padding: UiRect::axes(Val::Px(6.0), Val::Px(2.0)),
+                                            padding: UiRect::axes(Val::Px(8.0), Val::Px(2.0)),
+                                            border_radius: BorderRadius::all(Val::Px(4.0)),
                                             ..default()
                                         },
                                         BackgroundColor(Color::srgb(0.95, 0.35, 0.2)),
@@ -467,7 +522,7 @@ fn setup_victory_ui(
                 flex_direction: FlexDirection::Column,
                 align_items: AlignItems::Center,
                 width: Val::Percent(100.0),
-                margin: UiRect::axes(Val::Px(0.0), Val::Px(6.0)),
+                margin: UiRect::axes(Val::Px(0.0), Val::Px(4.0)),
                 ..default()
             })
             .with_children(|draft_section| {
@@ -475,7 +530,7 @@ fn setup_victory_ui(
                     VictoryCardFeedbackText,
                     Text::new("RECOMPENSA DE CARTA: ELIGE UNA PARA AÑADIR A TU MAZO"),
                     TextFont::from_font_size(14.0),
-                    TextColor(Color::srgb(1.0, 0.85, 0.2)),
+                    TextColor(Color::srgb(0.95, 0.76, 0.30)),
                 ));
 
                 // Contenedor de las 3 cartas
@@ -487,7 +542,7 @@ fn setup_victory_ui(
                             justify_content: JustifyContent::Center,
                             align_items: AlignItems::Center,
                             column_gap: Val::Px(20.0),
-                            margin: UiRect::axes(Val::Px(0.0), Val::Px(8.0)),
+                            margin: UiRect::axes(Val::Px(0.0), Val::Px(6.0)),
                             ..default()
                         },
                     ))
@@ -495,6 +550,9 @@ fn setup_victory_ui(
                         for (i, card) in victory.reward_cards.iter().enumerate() {
                             let border_col = element_color(card.element);
                             let desc = card.description();
+                            let card_tex = pre
+                                .and_then(|p| p.get_card(card.asset_path()))
+                                .unwrap_or_else(|| asset_server.load(card.asset_path()));
 
                             cards_row
                                 .spawn((
@@ -507,20 +565,22 @@ fn setup_victory_ui(
                                         justify_content: JustifyContent::SpaceBetween,
                                         align_items: AlignItems::Center,
                                         border: UiRect::all(Val::Px(2.0)),
-                                        border_radius: BorderRadius::all(Val::Px(6.0)),
+                                        border_radius: BorderRadius::all(Val::Px(8.0)),
                                         overflow: Overflow::clip(),
                                         ..default()
                                     },
                                     UiTransform::default(),
                                     GlobalZIndex(10),
-                                    CardHoverAnimation::new(border_col).with_lift(-16.0).with_scale(1.08),
+                                    CardHoverAnimation::new(border_col)
+                                        .with_lift(-16.0)
+                                        .with_scale(1.08),
                                     BackgroundColor(Color::srgba(0.06, 0.08, 0.12, 0.2)),
                                     BorderColor(border_col),
                                 ))
                                 .with_children(|c_box| {
                                     // Fondo con el asset ilustrado del tipo de carta
                                     c_box.spawn((
-                                        ImageNode::new(asset_server.load(card.asset_path())),
+                                        ImageNode::new(card_tex),
                                         Node {
                                             position_type: PositionType::Absolute,
                                             left: Val::Px(0.0),
@@ -563,61 +623,88 @@ fn setup_victory_ui(
                                     });
 
                                     // Descripción en banner inferior
-                                    c_box.spawn(Node {
-                                        width: Val::Percent(86.0),
-                                        min_height: Val::Px(36.0),
-                                        margin: UiRect::bottom(Val::Px(14.0)),
-                                        padding: UiRect::new(Val::Px(8.0), Val::Px(26.0), Val::Px(4.0), Val::Px(4.0)),
-                                        justify_content: JustifyContent::Center,
-                                        align_items: AlignItems::FlexStart,
-                                        ..default()
-                                    }).with_child((
-                                        Text::new(desc),
-                                        TextFont::from_font_size(9.5),
-                                        TextColor(Color::srgb(0.95, 0.95, 0.95)),
-                                    ));
+                                    c_box
+                                        .spawn(Node {
+                                            width: Val::Percent(86.0),
+                                            min_height: Val::Px(36.0),
+                                            margin: UiRect::bottom(Val::Px(14.0)),
+                                            padding: UiRect::new(
+                                                Val::Px(8.0),
+                                                Val::Px(26.0),
+                                                Val::Px(4.0),
+                                                Val::Px(4.0),
+                                            ),
+                                            justify_content: JustifyContent::Center,
+                                            align_items: AlignItems::FlexStart,
+                                            ..default()
+                                        })
+                                        .with_child((
+                                            Text::new(desc),
+                                            TextFont::from_font_size(9.5),
+                                            TextColor(Color::srgb(0.95, 0.95, 0.95)),
+                                        ));
                                 });
                         }
                     });
 
-                // Botón para saltar la carta si no desea diluir su mazo
+                // Botón para saltar la carta (`ui/buttons/btn_secondary.png`)
                 draft_section
                     .spawn((
                         Button,
                         VictorySkipCardButton,
                         Node {
-                            padding: UiRect::axes(Val::Px(12.0), Val::Px(4.0)),
+                            min_width: Val::Px(230.0),
+                            height: Val::Px(34.0),
+                            position_type: PositionType::Relative,
+                            padding: UiRect::axes(Val::Px(14.0), Val::Px(4.0)),
                             margin: UiRect::top(Val::Px(2.0)),
                             justify_content: JustifyContent::Center,
                             align_items: AlignItems::Center,
-                            border: UiRect::all(Val::Px(1.0)),
+                            border: UiRect::all(Val::Px(1.5)),
+                            border_radius: BorderRadius::all(Val::Px(8.0)),
+                            overflow: Overflow::clip(),
                             ..default()
                         },
-                        BackgroundColor(Color::srgb(0.18, 0.20, 0.26)),
-                        BorderColor(Color::srgb(0.4, 0.45, 0.55)),
+                        BackgroundColor(Color::srgb(0.14, 0.19, 0.28)),
+                        BorderColor(Color::srgb(0.29, 0.69, 1.0)),
                     ))
-                    .with_child((
-                        Text::new("SALTAR RECOMPENSA DE CARTA"),
-                        TextFont::from_font_size(11.0),
-                        TextColor(Color::srgb(0.75, 0.78, 0.85)),
-                    ));
+                    .with_children(|btn| {
+                        if let Some(ref tex) = btn_secondary_tex {
+                            btn.spawn((
+                                ImageNode::new(tex.clone()),
+                                Node {
+                                    position_type: PositionType::Absolute,
+                                    left: Val::Px(0.0),
+                                    right: Val::Px(0.0),
+                                    top: Val::Px(0.0),
+                                    bottom: Val::Px(0.0),
+                                    ..default()
+                                },
+                            ));
+                        }
+                        btn.spawn((
+                            Text::new("SALTAR RECOMPENSA DE CARTA"),
+                            TextFont::from_font_size(11.0),
+                            TextColor(Color::srgb(0.82, 0.88, 0.96)),
+                        ));
+                    });
             });
 
             // ========================================================
-            // BOTÓN PRINCIPAL DE CONTINUAR AL MAPA
+            // BOTÓN PRINCIPAL DE CONTINUAR AL MAPA (`ui/buttons/btn_gold.png`)
             // ========================================================
             let is_run_completed = run_state.current_floor > 45;
             let (btn_text, btn_bg, btn_border) = if is_run_completed {
                 (
                     "VER SALÓN DE LA FAMA (LIGA CONQUISTADA)",
                     Color::srgb(0.8, 0.65, 0.1),
-                    Color::srgb(1.0, 0.85, 0.3),
+                    Color::srgb(0.95, 0.76, 0.30),
                 )
             } else {
                 (
                     "CONTINUAR AL MAPA",
                     Color::srgb(0.18, 0.48, 0.28),
-                    Color::srgb(0.35, 0.80, 0.45),
+                    Color::srgb(0.95, 0.76, 0.30),
                 )
             };
 
@@ -625,22 +712,40 @@ fn setup_victory_ui(
                 Button,
                 VictoryContinueButton,
                 Node {
-                    width: Val::Px(280.0),
-                    height: Val::Px(44.0),
+                    width: Val::Px(290.0),
+                    height: Val::Px(46.0),
+                    position_type: PositionType::Relative,
                     justify_content: JustifyContent::Center,
                     align_items: AlignItems::Center,
                     border: UiRect::all(Val::Px(2.0)),
+                    border_radius: BorderRadius::all(Val::Px(12.0)),
                     margin: UiRect::top(Val::Px(4.0)),
+                    overflow: Overflow::clip(),
                     ..default()
                 },
                 BackgroundColor(btn_bg),
                 BorderColor(btn_border),
             ))
-            .with_child((
-                Text::new(btn_text),
-                TextFont::from_font_size(14.0),
-                TextColor(Color::WHITE),
-            ));
+            .with_children(|btn| {
+                if let Some(ref tex) = btn_gold_tex {
+                    btn.spawn((
+                        ImageNode::new(tex.clone()),
+                        Node {
+                            position_type: PositionType::Absolute,
+                            left: Val::Px(0.0),
+                            right: Val::Px(0.0),
+                            top: Val::Px(0.0),
+                            bottom: Val::Px(0.0),
+                            ..default()
+                        },
+                    ));
+                }
+                btn.spawn((
+                    Text::new(btn_text),
+                    TextFont::from_font_size(14.0),
+                    TextColor(Color::srgb(0.15, 0.09, 0.02)),
+                ));
+            });
         });
 }
 

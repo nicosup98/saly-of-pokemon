@@ -4,7 +4,7 @@ use crate::save::{self, ActiveSaveSlot, SaveNotificationEvent, TOTAL_SLOTS};
 use crate::ui::{BorderColor, Button, CleanupUi};
 use crate::ui::transition_ui::TransitionToEvent;
 use bevy_tweening::{
-    lens::{TextColorLens, UiBackgroundColorLens, UiTransformScaleLens, UiTransformTranslationPxLens},
+    lens::{UiBackgroundColorLens, UiTransformScaleLens},
     AnimTarget, RepeatCount, RepeatStrategy, Tween, TweenAnim,
 };
 
@@ -65,12 +65,22 @@ pub struct MenuQuickProfileText(pub u8);
 fn setup_main_menu(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
+    preloaded: Option<Res<crate::ui::PreloadedAssets>>,
     meta: Res<MetaProfile>,
     run_state: Res<CurrentRunState>,
     active_slot: Option<Res<ActiveSaveSlot>>,
 ) {
+    let pre = preloaded.as_deref();
+    let srv = Some(&*asset_server);
     let current_slot = active_slot.as_ref().map(|s| s.0).unwrap_or(1);
     let profiles = save::list_profiles();
+
+    let menu_bg_tex = crate::ui::load_ui_image(pre, srv, "ui/menus/menu_main.png");
+    let btn_gold_tex = crate::ui::load_ui_image(pre, srv, "ui/buttons/btn_gold.png");
+    let btn_primary_tex = crate::ui::load_ui_image(pre, srv, "ui/buttons/btn_primary.png");
+    let btn_secondary_tex = crate::ui::load_ui_image(pre, srv, "ui/buttons/btn_secondary.png");
+    let hp_bg_tex = crate::ui::load_ui_image(pre, srv, "ui/bars/hp_bar_bg.png");
+    let hp_fill_tex = crate::ui::load_ui_image(pre, srv, "ui/bars/hp_fill_player.png");
 
     commands
         .spawn((
@@ -78,22 +88,34 @@ fn setup_main_menu(
             Node {
                 width: Val::Percent(100.0),
                 height: Val::Percent(100.0),
-                flex_direction: FlexDirection::Column,
-                justify_content: JustifyContent::SpaceBetween,
-                align_items: AlignItems::Center,
-                padding: UiRect::all(Val::Px(22.0)),
+                position_type: PositionType::Relative,
                 overflow: Overflow::clip(),
                 ..default()
             },
-            BackgroundColor(Color::srgba(0.06, 0.07, 0.12, 0.88)),
+            BackgroundColor(Color::srgb(0.03, 0.04, 0.07)),
         ))
         .with_children(|root| {
+            // Fondo principal VectorCraft (`ui/menus/menu_main.png` 1280x720) sin velo opaco ni menú viejo superpuesto
+            if let Some(tex) = menu_bg_tex {
+                root.spawn((
+                    ImageNode::new(tex),
+                    Node {
+                        position_type: PositionType::Absolute,
+                        left: Val::Px(0.0),
+                        right: Val::Px(0.0),
+                        top: Val::Px(0.0),
+                        bottom: Val::Px(0.0),
+                        ..default()
+                    },
+                ));
+            }
+
             // === CAPA DE PARTÍCULAS ANIMADAS DEL MENÚ (BRASAS Y DESTELLOS) ===
             for i in 0..28 {
                 let fi = i as f32;
                 let x_pct = (fi * 17.3 + 5.0) % 94.0 + 3.0;
                 let y_pct = (fi * 23.7 + 7.0) % 92.0 + 4.0;
-                let size = 6.0 + (i % 4) as f32 * 4.0;
+                let size = 5.0 + (i % 4) as f32 * 3.0;
                 let speed_y = 6.0 + (i % 5) as f32 * 2.5;
                 let sway_amp = 1.2 + (i % 3) as f32 * 0.9;
                 let sway_freq = 1.2 + (i % 4) as f32 * 0.45;
@@ -101,16 +123,16 @@ fn setup_main_menu(
 
                 let (col_start, col_end) = match i % 3 {
                     0 => (
-                        Color::srgba(1.0, 0.45, 0.15, 0.75),
-                        Color::srgba(1.0, 0.85, 0.25, 0.25),
+                        Color::srgba(1.0, 0.48, 0.24, 0.65),
+                        Color::srgba(0.95, 0.76, 0.30, 0.20),
                     ),
                     1 => (
-                        Color::srgba(1.0, 0.85, 0.25, 0.70),
-                        Color::srgba(0.95, 0.35, 0.15, 0.20),
+                        Color::srgba(0.95, 0.76, 0.30, 0.60),
+                        Color::srgba(1.0, 0.36, 0.20, 0.18),
                     ),
                     _ => (
-                        Color::srgba(0.30, 0.75, 1.0, 0.65),
-                        Color::srgba(0.65, 0.40, 1.0, 0.20),
+                        Color::srgba(0.22, 0.71, 1.0, 0.55),
+                        Color::srgba(0.61, 0.30, 1.0, 0.18),
                     ),
                 };
 
@@ -167,338 +189,339 @@ fn setup_main_menu(
                 });
             }
 
-            // === CABECERA Y SELECTOR RÁPIDO DE PERFIL ===
+            // === SELECTOR RÁPIDO DE PERFILES EN LA ESQUINA SUPERIOR IZQUIERDA ===
+            root.spawn((
+                Node {
+                    position_type: PositionType::Absolute,
+                    left: Val::Percent(6.4),
+                    top: Val::Percent(5.0),
+                    flex_direction: FlexDirection::Row,
+                    align_items: AlignItems::Center,
+                    column_gap: Val::Px(8.0),
+                    padding: UiRect::axes(Val::Px(12.0), Val::Px(6.0)),
+                    border: UiRect::all(Val::Px(1.5)),
+                    border_radius: BorderRadius::all(Val::Px(10.0)),
+                    ..default()
+                },
+                BackgroundColor(Color::srgba(0.06, 0.09, 0.14, 0.88)),
+                BorderColor(Color::srgb(0.23, 0.33, 0.45)),
+            ))
+            .with_children(|prof_bar| {
+                prof_bar.spawn((
+                    Text::new("PERFIL:"),
+                    TextFont::from_font_size(11.5),
+                    TextColor(Color::srgb(0.95, 0.76, 0.30)),
+                ));
+
+                for slot in 1..=TOTAL_SLOTS {
+                    let is_active = slot == current_slot;
+                    let summary = profiles[(slot - 1) as usize].as_ref();
+                    let label = if let Some(s) = summary {
+                        if is_active {
+                            format!("* PERFIL {} [ACTIVO] (Piso {})", slot, s.current_floor)
+                        } else {
+                            format!("PERFIL {} (Piso {})", slot, s.current_floor)
+                        }
+                    } else if is_active {
+                        format!("* PERFIL {} [ACTIVO - NUEVO]", slot)
+                    } else {
+                        format!("PERFIL {} [VACÍO]", slot)
+                    };
+
+                    let (bg, border) = if is_active {
+                        (
+                            Color::srgb(0.22, 0.42, 0.28),
+                            Color::srgb(0.95, 0.76, 0.30),
+                        )
+                    } else {
+                        (
+                            Color::srgb(0.11, 0.16, 0.24),
+                            Color::srgb(0.22, 0.34, 0.50),
+                        )
+                    };
+
+                    prof_bar
+                        .spawn((
+                            Button,
+                            MenuButtonAction::QuickSelectProfile(slot),
+                            MenuQuickProfileButton(slot),
+                            Node {
+                                padding: UiRect::axes(Val::Px(10.0), Val::Px(4.0)),
+                                justify_content: JustifyContent::Center,
+                                align_items: AlignItems::Center,
+                                border: UiRect::all(Val::Px(1.5)),
+                                border_radius: BorderRadius::all(Val::Px(6.0)),
+                                ..default()
+                            },
+                            UiTransform::default(),
+                            BackgroundColor(bg),
+                            BorderColor(border),
+                        ))
+                        .with_child((
+                            MenuQuickProfileText(slot),
+                            Text::new(label),
+                            TextFont::from_font_size(10.5),
+                            TextColor(Color::WHITE),
+                        ));
+                }
+            });
+
+            // === COLUMNA IZQUIERDA DE BOTONES VECTORCRAFT (BAJO EL TÍTULO DE `menu_main.png`) ===
             root.spawn(Node {
-                width: Val::Percent(100.0),
+                position_type: PositionType::Absolute,
+                left: Val::Percent(6.4),
+                top: Val::Percent(54.0),
+                width: Val::Percent(35.0),
                 flex_direction: FlexDirection::Column,
-                align_items: AlignItems::Center,
                 row_gap: Val::Px(8.0),
                 ..default()
             })
-            .with_children(|title_box| {
-                // Título Principal animado con bevy_tweening
-                title_box
-                    .spawn((
-                        Text::new("SLAY OF POKÉMON"),
-                        TextFont::from_font_size(40.0),
-                        TextColor(Color::srgb(1.0, 0.45, 0.18)),
-                        UiTransform::default(),
-                    ))
-                    .with_children(|t| {
-                        let tid = t.target_entity();
-                        let col_tween = Tween::new(
-                            EaseFunction::SineInOut,
-                            std::time::Duration::from_millis(1400),
-                            TextColorLens {
-                                start: Color::srgb(1.0, 0.42, 0.15),
-                                end: Color::srgb(1.0, 0.88, 0.25),
+            .with_children(|btn_col| {
+                let options: [(MenuButtonAction, &str, Color, Option<Handle<Image>>); 5] = [
+                    (
+                        MenuButtonAction::StartRun,
+                        "INICIAR / CONTINUAR RUN",
+                        Color::srgb(0.15, 0.09, 0.02),
+                        btn_gold_tex.clone(),
+                    ),
+                    (
+                        MenuButtonAction::SelectStarter,
+                        "CAMBIAR POKÉMON INICIAL",
+                        Color::WHITE,
+                        btn_primary_tex.clone(),
+                    ),
+                    (
+                        MenuButtonAction::Gachapon,
+                        "TIENDA GACHAPÓN Y COLECCIÓN",
+                        Color::WHITE,
+                        btn_primary_tex.clone(),
+                    ),
+                    (
+                        MenuButtonAction::SaveCurrentGame,
+                        "GUARDAR PARTIDA ACTUAL",
+                        Color::srgb(0.92, 0.95, 1.0),
+                        btn_secondary_tex.clone(),
+                    ),
+                    (
+                        MenuButtonAction::Profiles,
+                        "GESTIONAR PERFILES (3 RANURAS)",
+                        Color::srgb(0.92, 0.95, 1.0),
+                        btn_secondary_tex.clone(),
+                    ),
+                ];
+
+                for (action, label, text_col, btn_tex) in options {
+                    btn_col
+                        .spawn((
+                            Button,
+                            action,
+                            Node {
+                                width: Val::Percent(100.0),
+                                height: Val::Px(46.0),
+                                position_type: PositionType::Relative,
+                                justify_content: JustifyContent::Center,
+                                align_items: AlignItems::Center,
+                                ..default()
                             },
-                        )
-                        .with_repeat(RepeatCount::Infinite, RepeatStrategy::MirroredRepeat);
-                        t.spawn((
-                            TweenAnim::new(col_tween),
-                            AnimTarget::component::<TextColor>(tid),
-                        ));
-
-                        let scale_tween = Tween::new(
-                            EaseFunction::SineInOut,
-                            std::time::Duration::from_millis(1800),
-                            UiTransformScaleLens {
-                                start: Vec2::splat(0.98),
-                                end: Vec2::splat(1.05),
-                            },
-                        )
-                        .with_repeat(RepeatCount::Infinite, RepeatStrategy::MirroredRepeat);
-                        t.spawn((
-                            TweenAnim::new(scale_tween),
-                            AnimTarget::component::<UiTransform>(tid),
-                        ));
-                    });
-
-                title_box.spawn((
-                    Text::new("ROGUELIKE DECKBUILDER RPG (RUST + BEVY ENGINE)"),
-                    TextFont::from_font_size(14.0),
-                    TextColor(Color::srgb(0.8, 0.85, 0.95)),
-                ));
-
-                title_box.spawn((
-                    MenuMetaInfoLabel,
-                    Text::new(format!(
-                        "Perfil Activo: #{} | Fichas Gachapón: {} | Saldo en Run: {} P$ | Acto {} - Piso {}",
-                        current_slot,
-                        meta.gachapon_tokens,
-                        run_state.poke_dollars,
-                        run_state.current_act,
-                        run_state.current_floor
-                    )),
-                    TextFont::from_font_size(13.5),
-                    TextColor(Color::srgb(1.0, 0.85, 0.3)),
-                ));
-
-                // Barra de Selección Rápida de los 3 Perfiles en el propio Menú
-                title_box
-                    .spawn((
-                        Node {
-                            flex_direction: FlexDirection::Row,
-                            align_items: AlignItems::Center,
-                            justify_content: JustifyContent::Center,
-                            column_gap: Val::Px(10.0),
-                            padding: UiRect::axes(Val::Px(14.0), Val::Px(6.0)),
-                            border: UiRect::all(Val::Px(1.5)),
-                            border_radius: BorderRadius::all(Val::Px(8.0)),
-                            ..default()
-                        },
-                        BackgroundColor(Color::srgba(0.10, 0.12, 0.18, 0.92)),
-                        BorderColor(Color::srgb(0.30, 0.45, 0.65)),
-                    ))
-                    .with_children(|prof_bar| {
-                        prof_bar.spawn((
-                            Text::new("ESCOGER PERFIL:"),
-                            TextFont::from_font_size(12.5),
-                            TextColor(Color::srgb(0.75, 0.85, 1.0)),
-                        ));
-
-                        for slot in 1..=TOTAL_SLOTS {
-                            let is_active = slot == current_slot;
-                            let summary = profiles[(slot - 1) as usize].as_ref();
-                            let label = if let Some(s) = summary {
-                                if is_active {
-                                    format!(
-                                        "* PERFIL {} [ACTIVO] (Piso {})",
-                                        slot, s.current_floor
-                                    )
-                                } else {
-                                    format!("PERFIL {} (Piso {})", slot, s.current_floor)
-                                }
-                            } else if is_active {
-                                format!("* PERFIL {} [ACTIVO - NUEVO]", slot)
-                            } else {
-                                format!("PERFIL {} [VACÍO]", slot)
-                            };
-
-                            let (bg, border) = if is_active {
-                                (
-                                    Color::srgb(0.22, 0.42, 0.28),
-                                    Color::srgb(1.0, 0.85, 0.25),
-                                )
-                            } else {
-                                (
-                                    Color::srgb(0.15, 0.18, 0.26),
-                                    Color::srgb(0.35, 0.50, 0.70),
-                                )
-                            };
-
-                            prof_bar
-                                .spawn((
-                                    Button,
-                                    MenuButtonAction::QuickSelectProfile(slot),
-                                    MenuQuickProfileButton(slot),
+                            UiTransform::default(),
+                            BackgroundColor(Color::NONE),
+                        ))
+                        .with_children(|btn| {
+                            if let Some(tex) = btn_tex {
+                                btn.spawn((
+                                    ImageNode::new(tex),
                                     Node {
-                                        padding: UiRect::axes(Val::Px(12.0), Val::Px(6.0)),
-                                        justify_content: JustifyContent::Center,
-                                        align_items: AlignItems::Center,
-                                        border: UiRect::all(Val::Px(2.0)),
-                                        border_radius: BorderRadius::all(Val::Px(6.0)),
+                                        position_type: PositionType::Absolute,
+                                        left: Val::Px(0.0),
+                                        right: Val::Px(0.0),
+                                        top: Val::Px(0.0),
+                                        bottom: Val::Px(0.0),
                                         ..default()
                                     },
-                                    UiTransform::default(),
-                                    BackgroundColor(bg),
-                                    BorderColor(border),
-                                ))
-                                .with_child((
-                                    MenuQuickProfileText(slot),
-                                    Text::new(label),
-                                    TextFont::from_font_size(11.5),
-                                    TextColor(Color::WHITE),
                                 ));
-                        }
-                    });
+                            }
+                            btn.spawn((
+                                Text::new(label),
+                                TextFont::from_font_size(14.0),
+                                TextColor(text_col),
+                            ));
+                        });
+                }
             });
 
-            // === ZONA CENTRAL CON SPRITE ANIMADO DEL STARTER Y BOTONES ===
+            // === PANEL DERECHO (`EQUIPO ACTIVO` EN `menu_main.png`: X=60.9%, Y=14.4%, W=34.2%, H=72.2%) ===
             root.spawn(Node {
-                width: Val::Percent(90.0),
-                flex_direction: FlexDirection::Row,
-                justify_content: JustifyContent::SpaceEvenly,
+                position_type: PositionType::Absolute,
+                left: Val::Percent(60.9),
+                top: Val::Percent(14.4),
+                width: Val::Percent(34.2),
+                height: Val::Percent(72.2),
+                flex_direction: FlexDirection::Column,
+                justify_content: JustifyContent::SpaceBetween,
                 align_items: AlignItems::Center,
+                padding: UiRect::axes(Val::Px(26.0), Val::Px(20.0)),
                 ..default()
             })
-            .with_children(|center| {
-                // Pedestal animado del Entrenador y Compañero Pokémon
-                center
-                    .spawn((
-                        Node {
-                            flex_direction: FlexDirection::Column,
-                            align_items: AlignItems::Center,
-                            row_gap: Val::Px(12.0),
-                            padding: UiRect::all(Val::Px(22.0)),
-                            border: UiRect::all(Val::Px(2.0)),
-                            border_radius: BorderRadius::all(Val::Px(14.0)),
-                            ..default()
-                        },
-                        UiTransform::default(),
-                        BackgroundColor(Color::srgba(0.11, 0.13, 0.20, 0.90)),
-                        BorderColor(Color::srgb(0.95, 0.55, 0.20)),
-                    ))
-                    .with_children(|sprite_col| {
-                        let card_id = sprite_col.target_entity();
-                        // Animación de levitación suave del pedestal con bevy_tweening
-                        let float_tween = Tween::new(
-                            EaseFunction::SineInOut,
-                            std::time::Duration::from_millis(1600),
-                            UiTransformTranslationPxLens {
-                                start: Vec2::new(0.0, -7.0),
-                                end: Vec2::new(0.0, 7.0),
-                            },
-                        )
-                        .with_repeat(RepeatCount::Infinite, RepeatStrategy::MirroredRepeat);
-                        sprite_col.spawn((
-                            TweenAnim::new(float_tween),
-                            AnimTarget::component::<UiTransform>(card_id),
-                        ));
+            .with_children(|team_panel| {
+                // Cabecera superior derecha del panel ("ACTIVO #X")
+                team_panel
+                    .spawn(Node {
+                        width: Val::Percent(100.0),
+                        flex_direction: FlexDirection::Row,
+                        justify_content: JustifyContent::FlexEnd,
+                        ..default()
+                    })
+                    .with_child((
+                        Text::new(format!("RANURA #{}", current_slot)),
+                        TextFont::from_font_size(12.0),
+                        TextColor(Color::srgb(0.95, 0.76, 0.30)),
+                    ));
 
-                        let sprite_path = format!(
-                            "sprites/pokemon/front/{}.png",
-                            run_state.selected_starter_id
-                        );
-                        sprite_col
-                            .spawn(Node {
-                                flex_direction: FlexDirection::Row,
-                                align_items: AlignItems::FlexEnd,
-                                justify_content: JustifyContent::Center,
-                                column_gap: Val::Px(16.0),
+                // Escenario central con Entrenador Red y el Pokémon Inicial animado sobre el pedestal de `menu_main.png`
+                let sprite_path = format!(
+                    "sprites/pokemon/front/{}.png",
+                    run_state.selected_starter_id
+                );
+                team_panel
+                    .spawn(Node {
+                        width: Val::Percent(100.0),
+                        height: Val::Percent(48.0),
+                        flex_direction: FlexDirection::Row,
+                        align_items: AlignItems::Center,
+                        justify_content: JustifyContent::Center,
+                        column_gap: Val::Px(14.0),
+                        ..default()
+                    })
+                    .with_children(|pair| {
+                        pair.spawn((
+                            ImageNode::new(asset_server.load("sprites/trainers/player_front.png")),
+                            Node {
+                                width: Val::Px(72.0),
+                                height: Val::Px(72.0),
+                                margin: UiRect::top(Val::Px(24.0)),
                                 ..default()
-                            })
-                            .with_children(|pair| {
-                                pair.spawn((
-                                    ImageNode::new(
-                                        asset_server.load("sprites/trainers/player_front.png"),
-                                    ),
-                                    Node {
-                                        width: Val::Px(76.0),
-                                        height: Val::Px(76.0),
-                                        margin: UiRect::bottom(Val::Px(10.0)),
-                                        ..default()
-                                    },
-                                ));
-                                pair.spawn((
-                                    MenuStarterSprite,
-                                    ImageNode::new(asset_server.load(&sprite_path)),
-                                    Node {
-                                        width: Val::Px(150.0),
-                                        height: Val::Px(150.0),
-                                        ..default()
-                                    },
-                                    UiTransform::default(),
-                                ))
-                                .with_children(|pkmn| {
-                                    let pid = pkmn.target_entity();
-                                    let breathe = Tween::new(
-                                        EaseFunction::SineInOut,
-                                        std::time::Duration::from_millis(1100),
-                                        UiTransformScaleLens {
-                                            start: Vec2::splat(0.95),
-                                            end: Vec2::splat(1.07),
-                                        },
-                                    )
-                                    .with_repeat(
-                                        RepeatCount::Infinite,
-                                        RepeatStrategy::MirroredRepeat,
-                                    );
-                                    pkmn.spawn((
-                                        TweenAnim::new(breathe),
-                                        AnimTarget::component::<UiTransform>(pid),
-                                    ));
-                                });
-                            });
+                            },
+                        ));
+                        pair.spawn((
+                            MenuStarterSprite,
+                            ImageNode::new(asset_server.load(&sprite_path)),
+                            Node {
+                                width: Val::Px(148.0),
+                                height: Val::Px(148.0),
+                                ..default()
+                            },
+                            UiTransform::default(),
+                        ))
+                        .with_children(|pkmn| {
+                            let pid = pkmn.target_entity();
+                            let breathe = Tween::new(
+                                EaseFunction::SineInOut,
+                                std::time::Duration::from_millis(1100),
+                                UiTransformScaleLens {
+                                    start: Vec2::splat(0.95),
+                                    end: Vec2::splat(1.07),
+                                },
+                            )
+                            .with_repeat(RepeatCount::Infinite, RepeatStrategy::MirroredRepeat);
+                            pkmn.spawn((
+                                TweenAnim::new(breathe),
+                                AnimTarget::component::<UiTransform>(pid),
+                            ));
+                        });
+                    });
 
-                        let current_name =
-                            crate::pokemon::get_species_data(run_state.selected_starter_id)
-                                .map(|s| s.name)
-                                .unwrap_or_else(|| "Charmander".to_string());
-                        sprite_col.spawn((
+                // Datos dinámicos del Pokémon y del Perfil Activo en la parte inferior del panel
+                let current_name = crate::pokemon::get_species_data(run_state.selected_starter_id)
+                    .map(|s| s.name)
+                    .unwrap_or_else(|| "Charmander".to_string());
+
+                team_panel
+                    .spawn(Node {
+                        width: Val::Percent(100.0),
+                        flex_direction: FlexDirection::Column,
+                        row_gap: Val::Px(8.0),
+                        ..default()
+                    })
+                    .with_children(|stats| {
+                        stats.spawn((
                             MenuTeamInfoLabel,
                             Text::new(format!(
                                 "Equipo: Entrenador Red y {} (#{}) | Perfil Activo: #{}",
                                 current_name, run_state.selected_starter_id, current_slot
                             )),
-                            TextFont::from_font_size(14.0),
-                            TextColor(Color::srgb(1.0, 0.78, 0.4)),
+                            TextFont::from_font_size(14.5),
+                            TextColor(Color::srgb(0.93, 0.95, 1.0)),
                         ));
-                    });
 
-                // Menú de Botones de Navegación y Guardado
-                center
-                    .spawn(Node {
-                        width: Val::Px(380.0),
-                        flex_direction: FlexDirection::Column,
-                        row_gap: Val::Px(10.0),
-                        ..default()
-                    })
-                    .with_children(|btn_col| {
-                        let options = [
-                            (
-                                MenuButtonAction::StartRun,
-                                "INICIAR / CONTINUAR RUTA (MAPA)",
-                                Color::srgb(0.20, 0.60, 0.92),
-                            ),
-                            (
-                                MenuButtonAction::SelectStarter,
-                                "SELECCIONAR POKÉMON INICIAL",
-                                Color::srgb(0.90, 0.55, 0.20),
-                            ),
-                            (
-                                MenuButtonAction::Gachapon,
-                                "TIENDA GACHAPÓN Y COLECCIÓN",
-                                Color::srgb(0.70, 0.32, 0.88),
-                            ),
-                            (
-                                MenuButtonAction::SaveCurrentGame,
-                                "GUARDAR PARTIDA EN PERFIL ACTIVO",
-                                Color::srgb(0.25, 0.85, 0.45),
-                            ),
-                            (
-                                MenuButtonAction::Profiles,
-                                "GESTIONAR LOS 3 PERFILES DE GUARDADO",
-                                Color::srgb(0.35, 0.75, 0.65),
-                            ),
-                        ];
-
-                        for (action, label, col) in options {
-                            btn_col
-                                .spawn((
-                                    Button,
-                                    action,
+                        // Barra de vida VectorCraft (`hp_bar_bg.png` + `hp_fill_player.png`)
+                        let player_lvl = run_state.player_level();
+                        let max_hp = crate::pokemon::get_species_data(run_state.selected_starter_id)
+                            .map(|d| (d.base_hp as i32 * 2) + (player_lvl as i32 * 4))
+                            .unwrap_or(110)
+                            .max(1);
+                        let cur_hp = run_state.player_hp.unwrap_or(max_hp).clamp(0, max_hp);
+                        let hp_pct = (cur_hp as f32 / max_hp as f32 * 100.0).clamp(0.0, 100.0);
+                        stats
+                            .spawn(Node {
+                                width: Val::Percent(100.0),
+                                height: Val::Px(20.0),
+                                position_type: PositionType::Relative,
+                                align_items: AlignItems::Center,
+                                padding: UiRect::axes(Val::Px(6.0), Val::Px(3.0)),
+                                overflow: Overflow::clip(),
+                                ..default()
+                            })
+                            .with_children(|bar| {
+                                if let Some(ref bg) = hp_bg_tex {
+                                    bar.spawn((
+                                        ImageNode::new(bg.clone()),
+                                        Node {
+                                            position_type: PositionType::Absolute,
+                                            left: Val::Px(0.0),
+                                            right: Val::Px(0.0),
+                                            top: Val::Px(0.0),
+                                            bottom: Val::Px(0.0),
+                                            ..default()
+                                        },
+                                    ));
+                                }
+                                let mut fill = bar.spawn((
                                     Node {
-                                        width: Val::Percent(100.0),
-                                        height: Val::Px(44.0),
-                                        justify_content: JustifyContent::Center,
-                                        align_items: AlignItems::Center,
-                                        border: UiRect::all(Val::Px(2.0)),
-                                        border_radius: BorderRadius::all(Val::Px(8.0)),
+                                        width: Val::Percent(hp_pct),
+                                        height: Val::Percent(100.0),
                                         ..default()
                                     },
-                                    UiTransform::default(),
-                                    BackgroundColor(Color::srgb(0.14, 0.16, 0.23)),
-                                    BorderColor(col),
-                                ))
-                                .with_child((
-                                    Text::new(label),
-                                    TextFont::from_font_size(14.0),
-                                    TextColor(Color::WHITE),
+                                    BackgroundColor(Color::srgb(0.27, 0.83, 0.49)),
                                 ));
-                        }
+                                if let Some(ref ft) = hp_fill_tex {
+                                    fill.insert(ImageNode::new(ft.clone()));
+                                }
+                            });
+
+                        stats.spawn((
+                            Text::new(format!(
+                                "HP {} / {} · NV. {}",
+                                cur_hp, max_hp, player_lvl
+                            )),
+                            TextFont::from_font_size(11.5),
+                            TextColor(Color::srgb(0.58, 0.64, 0.75)),
+                        ));
+
+                        stats.spawn((
+                            MenuMetaInfoLabel,
+                            Text::new(format!(
+                                "Perfil Activo: #{} | Fichas Gachapón: {} | Saldo en Run: {} P$ | Acto {} - Piso {}",
+                                current_slot,
+                                meta.gachapon_tokens,
+                                run_state.poke_dollars,
+                                run_state.current_act,
+                                run_state.current_floor
+                            )),
+                            TextFont::from_font_size(12.0),
+                            TextColor(Color::srgb(0.95, 0.76, 0.30)),
+                        ));
                     });
             });
-
-            // === PIE DE PÁGINA ===
-            root.spawn((
-                Text::new(
-                    "Puedes cambiar entre los 3 Perfiles arriba o pulsar 'GUARDAR PARTIDA' en cualquier momento.",
-                ),
-                TextFont::from_font_size(12.0),
-                TextColor(Color::srgb(0.65, 0.7, 0.8)),
-            ));
         });
 }
 
@@ -693,29 +716,36 @@ fn animate_menu_buttons_hover(
 ) {
     let current_slot = active_slot.as_ref().map(|s| s.0).unwrap_or(1);
     for (interaction, action, mut bg, mut transform) in q_btns.iter_mut() {
+        let is_quick = matches!(action, MenuButtonAction::QuickSelectProfile(_));
         let is_quick_active = matches!(action, MenuButtonAction::QuickSelectProfile(s) if *s == current_slot);
         match *interaction {
             Interaction::Hovered => {
                 transform.scale = Vec2::splat(1.04);
-                bg.0 = if is_quick_active {
-                    Color::srgb(0.28, 0.52, 0.35)
-                } else {
-                    Color::srgb(0.22, 0.26, 0.36)
-                };
+                if is_quick {
+                    bg.0 = if is_quick_active {
+                        Color::srgb(0.28, 0.52, 0.35)
+                    } else {
+                        Color::srgb(0.22, 0.26, 0.36)
+                    };
+                }
             }
             Interaction::Pressed => {
                 transform.scale = Vec2::splat(0.97);
-                bg.0 = Color::srgb(0.30, 0.38, 0.52);
+                if is_quick {
+                    bg.0 = Color::srgb(0.30, 0.38, 0.52);
+                }
             }
             Interaction::None => {
                 transform.scale = Vec2::ONE;
-                bg.0 = if is_quick_active {
-                    Color::srgb(0.22, 0.42, 0.28)
-                } else if matches!(action, MenuButtonAction::QuickSelectProfile(_)) {
-                    Color::srgb(0.15, 0.18, 0.26)
+                if is_quick {
+                    bg.0 = if is_quick_active {
+                        Color::srgb(0.22, 0.42, 0.28)
+                    } else {
+                        Color::srgb(0.11, 0.16, 0.24)
+                    };
                 } else {
-                    Color::srgb(0.14, 0.16, 0.23)
-                };
+                    bg.0 = Color::NONE;
+                }
             }
         }
     }

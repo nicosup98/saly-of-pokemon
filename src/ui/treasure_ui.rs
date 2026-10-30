@@ -112,7 +112,19 @@ fn roll_treasure(mut reward: ResMut<TreasureReward>, mut run_state: ResMut<Curre
     };
 }
 
-fn setup_treasure_ui(mut commands: Commands, reward: Res<TreasureReward>, run_state: Res<CurrentRunState>) {
+fn setup_treasure_ui(
+    mut commands: Commands,
+    asset_server: Option<Res<AssetServer>>,
+    preloaded: Option<Res<crate::ui::PreloadedAssets>>,
+    reward: Res<TreasureReward>,
+    run_state: Res<CurrentRunState>,
+) {
+    let pre = preloaded.as_deref();
+    let srv = asset_server.as_deref();
+    let banner_tex = crate::ui::load_ui_image(pre, srv, "ui/hud/hud_turn_banner.png");
+    let treasure_icon_tex = crate::ui::load_ui_image(pre, srv, "ui/nodes/node_treasure.png");
+    let btn_gold_tex = crate::ui::load_ui_image(pre, srv, "ui/buttons/btn_gold.png");
+
     commands
         .spawn((
             CleanupUi,
@@ -122,32 +134,69 @@ fn setup_treasure_ui(mut commands: Commands, reward: Res<TreasureReward>, run_st
                 flex_direction: FlexDirection::Column,
                 justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
-                row_gap: Val::Px(18.0),
+                row_gap: Val::Px(20.0),
                 ..default()
             },
-            BackgroundColor(Color::srgb(0.09, 0.08, 0.05)),
+            BackgroundColor(Color::srgb(0.03, 0.04, 0.07)),
         ))
         .with_children(|root| {
-            root.spawn((
-                Text::new("CÁPSULA DE SUMINISTROS DE SILPH S.A."),
-                TextFont::from_font_size(26.0),
-                TextColor(Color::srgb(1.0, 0.85, 0.3)),
-            ));
+            // Cabecera con `ui/hud/hud_turn_banner.png`
+            root.spawn(Node {
+                min_width: Val::Px(540.0),
+                min_height: Val::Px(74.0),
+                position_type: PositionType::Relative,
+                justify_content: JustifyContent::Center,
+                align_items: AlignItems::Center,
+                padding: UiRect::axes(Val::Px(24.0), Val::Px(10.0)),
+                ..default()
+            })
+            .with_children(|banner| {
+                if let Some(ref tex) = banner_tex {
+                    banner.spawn((
+                        ImageNode::new(tex.clone()),
+                        Node {
+                            position_type: PositionType::Absolute,
+                            left: Val::Px(0.0),
+                            right: Val::Px(0.0),
+                            top: Val::Px(0.0),
+                            bottom: Val::Px(0.0),
+                            ..default()
+                        },
+                    ));
+                }
+                banner.spawn((
+                    Text::new("CÁPSULA DE SUMINISTROS DE SILPH S.A."),
+                    TextFont::from_font_size(22.0),
+                    TextColor(Color::srgb(0.95, 0.76, 0.30)),
+                ));
+            });
 
             root.spawn((
                 Node {
-                    width: Val::Px(520.0),
+                    width: Val::Px(540.0),
                     flex_direction: FlexDirection::Column,
                     align_items: AlignItems::Center,
                     row_gap: Val::Px(12.0),
                     padding: UiRect::all(Val::Px(24.0)),
-                    border: UiRect::all(Val::Px(3.0)),
+                    border: UiRect::all(Val::Px(2.5)),
+                    border_radius: BorderRadius::all(Val::Px(18.0)),
                     ..default()
                 },
-                BackgroundColor(Color::srgb(0.14, 0.12, 0.08)),
+                BackgroundColor(Color::srgba(0.06, 0.09, 0.14, 0.95)),
                 BorderColor(reward.chest_color),
             ))
             .with_children(|panel| {
+                if let Some(ref icon_tex) = treasure_icon_tex {
+                    panel.spawn((
+                        ImageNode::new(icon_tex.clone()),
+                        Node {
+                            width: Val::Px(120.0),
+                            height: Val::Px(120.0),
+                            ..default()
+                        },
+                    ));
+                }
+
                 panel.spawn((
                     Text::new(reward.chest_name.clone()),
                     TextFont::from_font_size(22.0),
@@ -161,7 +210,7 @@ fn setup_treasure_ui(mut commands: Commands, reward: Res<TreasureReward>, run_st
                         "Sin Poké-Dólares esta vez".to_string()
                     }),
                     TextFont::from_font_size(18.0),
-                    TextColor(Color::srgb(1.0, 0.85, 0.2)),
+                    TextColor(Color::srgb(0.95, 0.76, 0.30)),
                 ));
 
                 match &reward.relic {
@@ -169,12 +218,12 @@ fn setup_treasure_ui(mut commands: Commands, reward: Res<TreasureReward>, run_st
                         panel.spawn((
                             Text::new(format!("Reliquia: {}", r.name)),
                             TextFont::from_font_size(20.0),
-                            TextColor(Color::srgb(0.45, 0.85, 1.0)),
+                            TextColor(Color::srgb(0.35, 0.82, 1.0)),
                         ));
                         panel.spawn((
                             Text::new(r.description.clone()),
                             TextFont::from_font_size(13.0),
-                            TextColor(Color::srgb(0.8, 0.8, 0.8)),
+                            TextColor(Color::srgb(0.82, 0.86, 0.94)),
                             Node {
                                 width: Val::Px(450.0),
                                 ..default()
@@ -193,7 +242,7 @@ fn setup_treasure_ui(mut commands: Commands, reward: Res<TreasureReward>, run_st
                 panel.spawn((
                     Text::new(format!("Saldo actual: {} P$", run_state.poke_dollars)),
                     TextFont::from_font_size(14.0),
-                    TextColor(Color::srgb(0.7, 0.7, 0.7)),
+                    TextColor(Color::srgb(0.7, 0.78, 0.88)),
                 ));
             });
 
@@ -201,20 +250,39 @@ fn setup_treasure_ui(mut commands: Commands, reward: Res<TreasureReward>, run_st
                 Button,
                 TreasureContinueButton,
                 Node {
-                    width: Val::Px(220.0),
-                    height: Val::Px(44.0),
+                    width: Val::Px(250.0),
+                    height: Val::Px(48.0),
+                    position_type: PositionType::Relative,
                     justify_content: JustifyContent::Center,
                     align_items: AlignItems::Center,
                     border: UiRect::all(Val::Px(2.0)),
+                    border_radius: BorderRadius::all(Val::Px(12.0)),
+                    overflow: Overflow::clip(),
                     ..default()
                 },
                 BackgroundColor(Color::srgb(0.2, 0.5, 0.3)),
-                BorderColor(Color::srgb(0.4, 0.9, 0.6)),
-            )).with_child((
-                Text::new("CONTINUAR ASCENSO ->"),
-                TextFont::from_font_size(15.0),
-                TextColor(Color::WHITE),
-            ));
+                BorderColor(Color::srgb(0.95, 0.76, 0.30)),
+            ))
+            .with_children(|btn| {
+                if let Some(ref tex) = btn_gold_tex {
+                    btn.spawn((
+                        ImageNode::new(tex.clone()),
+                        Node {
+                            position_type: PositionType::Absolute,
+                            left: Val::Px(0.0),
+                            right: Val::Px(0.0),
+                            top: Val::Px(0.0),
+                            bottom: Val::Px(0.0),
+                            ..default()
+                        },
+                    ));
+                }
+                btn.spawn((
+                    Text::new("CONTINUAR ASCENSO ->"),
+                    TextFont::from_font_size(15.0),
+                    TextColor(Color::srgb(0.15, 0.09, 0.02)),
+                ));
+            });
         });
 }
 

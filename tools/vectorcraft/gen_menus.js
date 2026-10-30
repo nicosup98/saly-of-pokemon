@@ -232,24 +232,13 @@ function drawMainMenu(c) {
     justify: 'left',
   });
 
-  menuButton(c, 82, 400, 430, 58, { tone: 'gold', label: 'INICIAR RUN', icon: 'pokeball', note: 'NUEVO' });
-  menuButton(c, 82, 470, 430, 58, { tone: 'dark', label: 'CONTINUAR', icon: 'play', note: 'PISO 04' });
-  menuButton(c, 82, 540, 430, 58, { tone: 'dark', label: 'OPCIONES', icon: 'gear', note: 'AUDIO · VÍDEO' });
-  menuButton(c, 82, 610, 430, 58, { tone: 'danger', label: 'SALIR', icon: 'exit', note: 'CERRAR JUEGO' });
-
-  // ---- team panel -----------------------------------------------------
+  // ---- team panel (clean frame + stage for dynamic Bevy sprites/stats) ----
   c.panel(780, 104, 438, 520, 28, { accent: '#3b5374', borderW: 2.2, shadow: { opacity: 65, y: 14, blur: 26 } });
   c.text(812, 124, 300, 24, 'EQUIPO ACTIVO', {
     size: 11,
     tracking: 210,
     color: C.muted,
     justify: 'left',
-  });
-  c.text(1100, 122, 86, 26, '3 / 6', {
-    size: 12,
-    tracking: 120,
-    color: C.gold,
-    justify: 'right',
   });
 
   // stage
@@ -281,40 +270,9 @@ function drawMainMenu(c) {
     strokeW: 1.2,
   });
   c.ellipse(889, 350, 220, 22, { fill: '#000000', opacity: 35, stroke: null });
-  // sprite
-  c.image(SPRITE_PIKA, 919, 200, 160, 160);
-  // nameplate / stats
-  c.text(824, 426, 220, 28, 'PIKACHU', {
-    size: 18,
-    tracking: 40,
-    color: C.text,
-    justify: 'left',
-  });
-  c.text(1004, 428, 168, 24, 'Nv. 18 · ELÉCTRICO', {
-    size: 9.5,
-    style: 'Medium',
-    tracking: 60,
-    color: C.muted,
-    justify: 'right',
-  });
-  c.rect(824, 458, 348, 9, 4.5, { fill: '#070b12', stroke: '#2a3a55', strokeW: 1 });
-  c.rect(826, 460, 244, 5, 2.5, {
-    fillGrad: [
-      { offset: 0, color: '#7dffb0' },
-      { offset: 1, color: '#2fae61' },
-    ],
-    stroke: null,
-  });
-  c.text(824, 472, 348, 18, 'HP 84 / 120', {
-    size: 8.5,
-    style: 'Medium',
-    tracking: 80,
-    color: C.muted,
-    justify: 'right',
-  });
 
-  // divider
-  c.rect(824, 500, 348, 1, 0, {
+  // divider inside team panel
+  c.rect(824, 514, 348, 1, 0, {
     fillGrad: [
       { offset: 0, color: '#3b5374', opacity: 0 },
       { offset: 0.5, color: '#3b5374', opacity: 0.6 },
@@ -323,70 +281,14 @@ function drawMainMenu(c) {
     stroke: null,
   });
 
-  // Charizard mini row
-  c.circle(848, 538, 26, { fill: '#0a111c', stroke: '#3b5374', strokeW: 1.5 });
-  c.image(SPRITE_CHAR, 822, 512, 52, 52);
-  c.text(886, 514, 190, 22, 'CHARIZARD', {
-    size: 12,
-    tracking: 60,
-    color: C.text,
-    justify: 'left',
-  });
-  c.text(886, 535, 120, 18, 'Nv. 16 · FUEGO', {
-    size: 8,
-    style: 'Medium',
-    tracking: 50,
-    color: C.muted,
-    justify: 'left',
-  });
-  c.rect(886, 554, 190, 6, 3, { fill: '#070b12', stroke: null });
-  c.rect(887, 555, 150, 4, 2, {
-    fillGrad: [
-      { offset: 0, color: '#ffb08a' },
-      { offset: 1, color: '#d9472f' },
-    ],
-    stroke: null,
-  });
-  c.text(1084, 550, 88, 18, '42 / 52', {
-    size: 8,
-    style: 'Medium',
-    tracking: 60,
-    color: C.muted,
-    justify: 'right',
-  });
-
-  // add slot
-  c.circle(848, 590, 14, { fill: null, stroke: '#3b5374', strokeW: 1.2, opacity: 60 });
-  c.text(838, 580, 20, 20, '+', { size: 16, color: '#8fa3c0', justify: 'center' });
-  c.text(872, 578, 230, 24, 'AÑADIR AL EQUIPO', {
-    size: 9,
-    tracking: 120,
-    color: C.muted,
-    justify: 'left',
-  });
-  c.text(1080, 578, 92, 24, '3 ESPACIOS', {
-    size: 7.5,
-    style: 'Medium',
-    tracking: 80,
-    color: '#5f7392',
-    justify: 'right',
-  });
-
   // footer
   c.rect(82, 686, 1136, 1, 0, { fill: '#3b5374', opacity: 18, stroke: null });
-  c.text(82, 694, 500, 18, 'v0.1.0 · BUILD 2026.10 · PROTOTIPO', {
+  c.text(82, 694, 500, 18, 'v0.1.0 · BUILD 2026.10 · VECTORCRAFT UI', {
     size: 8,
     style: 'Medium',
     tracking: 100,
     color: '#5f7392',
     justify: 'left',
-  });
-  c.text(720, 694, 498, 18, 'PERFIL: ASH · FICHAS 120 · ACTO 1', {
-    size: 8,
-    style: 'Medium',
-    tracking: 100,
-    color: '#5f7392',
-    justify: 'right',
   });
 }
 

@@ -14,7 +14,17 @@ fn visit_dirs(base: &Path, dir: &Path, files: &mut Vec<(String, PathBuf)>) {
             } else if path.is_file() {
                 if let Ok(rel) = path.strip_prefix(base) {
                     let rel_str = rel.to_string_lossy().replace('\\', "/");
-                    files.push((rel_str, path));
+                    // Incluir únicamente archivos de recursos de ejecución (imágenes y fuentes)
+                    // y excluir archivos fuente VectorCraft, SVGs, comandos y vistas previas de documentación.
+                    let is_runtime_ext = rel_str.ends_with(".png")
+                        || rel_str.ends_with(".jpeg")
+                        || rel_str.ends_with(".jpg")
+                        || rel_str.ends_with(".ttf");
+                    let is_doc_preview = rel_str == "ui/preview_kit.png"
+                        || rel_str == "ui/preview_combat.png";
+                    if is_runtime_ext && !is_doc_preview {
+                        files.push((rel_str, path));
+                    }
                 }
             }
         }

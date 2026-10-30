@@ -13,7 +13,7 @@ pub mod transition_ui;
 
 use std::collections::HashMap;
 use bevy::prelude::*;
-use crate::card::{ALL_CARD_ASSETS, ALL_SITUATION_BACKGROUNDS};
+use crate::card::{ALL_CARD_ASSETS, ALL_SITUATION_BACKGROUNDS, ALL_UI_KIT_ASSETS};
 use crate::save::{ActiveSaveSlot, SaveNotificationEvent};
 use bevy_tweening::{
     lens::{UiBackgroundColorLens, UiTransformScaleLens},
@@ -25,6 +25,7 @@ use bevy_tweening::{
 pub struct PreloadedAssets {
     pub card_textures: HashMap<&'static str, Handle<Image>>,
     pub background_textures: HashMap<&'static str, Handle<Image>>,
+    pub ui_textures: HashMap<&'static str, Handle<Image>>,
     pub font: Option<Handle<Font>>,
 }
 
@@ -36,9 +37,39 @@ impl PreloadedAssets {
     pub fn get_bg(&self, path: &str) -> Option<Handle<Image>> {
         self.background_textures.get(path).cloned()
     }
+
+    pub fn get_ui(&self, path: &str) -> Option<Handle<Image>> {
+        self.ui_textures.get(path).cloned()
+    }
 }
 
-/// Sistema de Startup que precarga en segundo plano todas las plantillas de cartas y fondos comunes
+/// Obtiene un `Handle<Image>` del kit de UI desde `PreloadedAssets` o haciendo fallback a `AssetServer`
+pub fn load_ui_image(
+    preloaded: Option<&PreloadedAssets>,
+    asset_server: Option<&AssetServer>,
+    path: &'static str,
+) -> Option<Handle<Image>> {
+    if let Some(handle) = preloaded.and_then(|p| p.get_ui(path)) {
+        Some(handle)
+    } else {
+        asset_server.map(|s| s.load(path))
+    }
+}
+
+/// Retorna la ruta del icono de nodo del kit UI VectorCraft según el `NodeType`
+pub fn node_ui_asset_path(node_type: crate::map::generator::NodeType) -> &'static str {
+    use crate::map::generator::NodeType;
+    match node_type {
+        NodeType::Enemy => "ui/nodes/node_battle.png",
+        NodeType::MiniBoss => "ui/nodes/node_elite.png",
+        NodeType::Shop => "ui/nodes/node_shop.png",
+        NodeType::PokemonCenter => "ui/nodes/node_center.png",
+        NodeType::Treasure => "ui/nodes/node_treasure.png",
+        NodeType::GymLeader => "ui/nodes/node_gym.png",
+    }
+}
+
+/// Sistema de Startup que precarga en segundo plano todas las plantillas de cartas, fondos y kit de UI
 pub fn preload_common_assets(
     asset_server: Option<Res<AssetServer>>,
     mut preloaded: ResMut<PreloadedAssets>,
@@ -51,6 +82,10 @@ pub fn preload_common_assets(
 
     for &path in ALL_SITUATION_BACKGROUNDS {
         preloaded.background_textures.insert(path, asset_server.load(path));
+    }
+
+    for &path in ALL_UI_KIT_ASSETS {
+        preloaded.ui_textures.insert(path, asset_server.load(path));
     }
 
     preloaded.font = Some(asset_server.load("fonts/FiraSans-Bold.ttf"));
@@ -222,7 +257,10 @@ pub fn update_preload_loading_screen(
         trans.rotation = Rot2::radians(time.elapsed_secs() * 5.0);
     }
 
-    let total = preloaded.card_textures.len() + preloaded.background_textures.len() + if preloaded.font.is_some() { 1 } else { 0 };
+    let total = preloaded.card_textures.len()
+        + preloaded.background_textures.len()
+        + preloaded.ui_textures.len()
+        + if preloaded.font.is_some() { 1 } else { 0 };
     progress.total = total;
 
     // Si no hay asset server (entorno headless/tests) o total es 0, finaliza de inmediato
@@ -252,6 +290,15 @@ pub fn update_preload_loading_screen(
     }
 
     for (&path, handle) in &preloaded.background_textures {
+        let state = asset_server.get_load_state(handle.id());
+        if matches!(state, Some(LoadState::Loaded | LoadState::Failed(_))) {
+            loaded += 1;
+        } else {
+            current_loading = format!("Cargando: {}", path);
+        }
+    }
+
+    for (&path, handle) in &preloaded.ui_textures {
         let state = asset_server.get_load_state(handle.id());
         if matches!(state, Some(LoadState::Loaded | LoadState::Failed(_))) {
             loaded += 1;

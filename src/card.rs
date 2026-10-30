@@ -483,6 +483,48 @@ pub const ALL_SITUATION_BACKGROUNDS: &[&str] = &[
     "fondos/tienda_pokemon.jpeg",
 ];
 
+/// Todos los recursos de la nueva interfaz gráfica VectorCraft (`assets/ui/`) para precarga
+pub const ALL_UI_KIT_ASSETS: &[&str] = &[
+    // Botones
+    "ui/buttons/btn_primary.png",
+    "ui/buttons/btn_primary_hover.png",
+    "ui/buttons/btn_primary_pressed.png",
+    "ui/buttons/btn_secondary.png",
+    "ui/buttons/btn_danger.png",
+    "ui/buttons/btn_gold.png",
+    "ui/buttons/btn_disabled.png",
+    "ui/buttons/btn_icon.png",
+    // Barras y medidores
+    "ui/bars/hp_bar_bg.png",
+    "ui/bars/hp_fill_player.png",
+    "ui/bars/hp_fill_enemy.png",
+    "ui/bars/hp_fill_boss.png",
+    "ui/bars/hp_player.png",
+    "ui/bars/hp_enemy.png",
+    "ui/bars/hp_boss.png",
+    "ui/bars/energy_orb.png",
+    "ui/bars/block_badge.png",
+    // Nodos del mapa
+    "ui/nodes/node_battle.png",
+    "ui/nodes/node_elite.png",
+    "ui/nodes/node_shop.png",
+    "ui/nodes/node_center.png",
+    "ui/nodes/node_treasure.png",
+    "ui/nodes/node_gym.png",
+    "ui/nodes/map_path.png",
+    // HUD de combate y cabeceras
+    "ui/hud/hud_top_bar.png",
+    "ui/hud/hud_end_turn.png",
+    "ui/hud/hud_deck_draw.png",
+    "ui/hud/hud_deck_discard.png",
+    "ui/hud/hud_intent.png",
+    "ui/hud/hud_turn_banner.png",
+    // Menús y modales
+    "ui/menus/menu_main.png",
+    "ui/menus/menu_pause.png",
+    "ui/menus/menu_settings.png",
+];
+
 /// Retorna la ruta relativa del asset ilustrado de la carta según su tipo elemental
 pub fn card_type_asset_path(element: ElementType) -> &'static str {
     match element {

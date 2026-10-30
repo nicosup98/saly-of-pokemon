@@ -166,11 +166,14 @@ pub fn combat_background_path(
 fn setup_combat_ui(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
+    preloaded: Option<Res<crate::ui::PreloadedAssets>>,
     run_state: Res<CurrentRunState>,
     map: Option<Res<crate::map::CurrentMap>>,
     q_player: Query<(&PokemonStats, &PokemonSprite, Option<&crate::pokemon::TrainerSprite>), With<PlayerPokemon>>,
     q_enemy: Query<(&PokemonStats, &PokemonSprite, Option<&crate::pokemon::TrainerSprite>, Option<&crate::combat::ai::EnemyAI>), With<EnemyPokemon>>,
 ) {
+    let pre = preloaded.as_deref();
+    let srv = Some(&*asset_server);
     let (player_stats, player_sprite, player_trainer) = q_player
         .single()
         .map(|(s, sp, t)| {
@@ -214,6 +217,28 @@ fn setup_combat_ui(
 
     let node_type = map.as_ref().map(|m| m.node_type_at(run_state.current_floor, m.current_path_index));
     let bg_path = combat_background_path(node_type, is_boss, is_mini_boss);
+    let bg_tex = pre
+        .and_then(|p| p.get_bg(bg_path))
+        .unwrap_or_else(|| asset_server.load(bg_path));
+
+    let top_bar_tex = crate::ui::load_ui_image(pre, srv, "ui/hud/hud_top_bar.png");
+    let hp_bar_bg_tex = crate::ui::load_ui_image(pre, srv, "ui/bars/hp_bar_bg.png");
+    let hp_fill_player_tex = crate::ui::load_ui_image(pre, srv, "ui/bars/hp_fill_player.png");
+    let enemy_fill_path = if is_boss || is_mini_boss {
+        "ui/bars/hp_fill_boss.png"
+    } else {
+        "ui/bars/hp_fill_enemy.png"
+    };
+    let hp_fill_enemy_tex = crate::ui::load_ui_image(pre, srv, enemy_fill_path);
+    let block_badge_tex = crate::ui::load_ui_image(pre, srv, "ui/bars/block_badge.png");
+    let hud_intent_tex = crate::ui::load_ui_image(pre, srv, "ui/hud/hud_intent.png");
+    let hud_turn_banner_tex = crate::ui::load_ui_image(pre, srv, "ui/hud/hud_turn_banner.png");
+    let hud_deck_draw_tex = crate::ui::load_ui_image(pre, srv, "ui/hud/hud_deck_draw.png");
+    let hud_deck_discard_tex = crate::ui::load_ui_image(pre, srv, "ui/hud/hud_deck_discard.png");
+    let energy_orb_tex = crate::ui::load_ui_image(pre, srv, "ui/bars/energy_orb.png");
+    let hud_end_turn_tex = crate::ui::load_ui_image(pre, srv, "ui/hud/hud_end_turn.png");
+    let btn_secondary_tex = crate::ui::load_ui_image(pre, srv, "ui/buttons/btn_secondary.png");
+    let btn_disabled_tex = crate::ui::load_ui_image(pre, srv, "ui/buttons/btn_disabled.png");
 
     // Contenedor principal que abarca toda la pantalla (1280x720)
     commands
@@ -234,7 +259,7 @@ fn setup_combat_ui(
         .with_children(|root| {
             // Fondo contextual de la situación de combate (Común, Mini Jefe o Líder de Gimnasio)
             root.spawn((
-                ImageNode::new(asset_server.load(bg_path)),
+                ImageNode::new(bg_tex),
                 Node {
                     position_type: PositionType::Absolute,
                     left: Val::Px(0.0),
@@ -245,7 +270,7 @@ fn setup_combat_ui(
                 },
             ));
 
-            // Filtro de tinte suave para asegurar alto contraste de la interfaz
+            // Filtro de tinte suave para asegurar alto contraste de la interfaz VectorCraft
             root.spawn((
                 Node {
                     position_type: PositionType::Absolute,
@@ -255,87 +280,183 @@ fn setup_combat_ui(
                     bottom: Val::Px(0.0),
                     ..default()
                 },
-                BackgroundColor(Color::srgba(0.04, 0.05, 0.08, 0.45)),
+                BackgroundColor(Color::srgba(0.03, 0.04, 0.07, 0.48)),
             ));
+
             // ==========================================
-            // 1. BARRA SUPERIOR (Sección 9.1 GDD)
+            // 1. BARRA SUPERIOR (`ui/hud/hud_top_bar.png`)
             // ==========================================
             root.spawn((
                 Node {
                     width: Val::Percent(100.0),
-                    height: Val::Px(50.0),
+                    height: Val::Px(56.0),
+                    position_type: PositionType::Relative,
                     flex_direction: FlexDirection::Row,
                     justify_content: JustifyContent::SpaceBetween,
                     align_items: AlignItems::Center,
-                    padding: UiRect::axes(Val::Px(16.0), Val::Px(8.0)),
-                    border: UiRect::all(Val::Px(1.0)),
+                    padding: UiRect::axes(Val::Px(20.0), Val::Px(6.0)),
+                    border: UiRect::all(Val::Px(2.0)),
+                    border_radius: BorderRadius::all(Val::Px(14.0)),
+                    overflow: Overflow::clip(),
                     ..default()
                 },
-                BackgroundColor(Color::srgb(0.12, 0.14, 0.18)),
-                BorderColor(Color::srgb(0.25, 0.28, 0.35)),
+                BackgroundColor(Color::srgb(0.06, 0.09, 0.14)),
+                BorderColor(Color::srgb(0.16, 0.23, 0.33)),
             ))
             .with_children(|top_bar| {
-                // Izquierda: Nombre, Nivel y Dinero
-                top_bar.spawn(Node {
-                    flex_direction: FlexDirection::Row,
-                    align_items: AlignItems::Center,
-                    column_gap: Val::Px(16.0),
-                    ..default()
-                }).with_children(|left| {
-                    left.spawn((
-                        Text::new(format!("{} (Nv. {})", player_stats.name, player_stats.level)),
-                        TextFont::from_font_size(18.0),
-                        TextColor(Color::srgb(0.95, 0.95, 0.95)),
+                if let Some(ref tex) = top_bar_tex {
+                    top_bar.spawn((
+                        ImageNode::new(tex.clone()),
+                        Node {
+                            position_type: PositionType::Absolute,
+                            left: Val::Px(0.0),
+                            right: Val::Px(0.0),
+                            top: Val::Px(0.0),
+                            bottom: Val::Px(0.0),
+                            ..default()
+                        },
                     ));
-                    left.spawn((
-                        Text::new(format!("P$ {}", run_state.poke_dollars)),
-                        TextFont::from_font_size(18.0),
-                        TextColor(Color::srgb(1.0, 0.85, 0.2)),
-                    ));
-                });
+                }
 
-                // Centro: Cinturón de Consumibles (3 ranuras interactivas)
-                top_bar.spawn(Node {
-                    flex_direction: FlexDirection::Row,
-                    column_gap: Val::Px(8.0),
-                    ..default()
-                }).with_children(|belt| {
-                    for slot in 0..3 {
-                        let item_text = match &run_state.consumables[slot] {
-                            Some(name) => format!("[ITEM] {}", name),
-                            None => "[-]".to_string(),
-                        };
-                        belt.spawn((
-                            Button,
-                            ConsumableButton { slot },
+                // Izquierda: Nombre, Nivel y Dinero en cápsulas VectorCraft
+                top_bar
+                    .spawn(Node {
+                        flex_direction: FlexDirection::Row,
+                        align_items: AlignItems::Center,
+                        column_gap: Val::Px(12.0),
+                        ..default()
+                    })
+                    .with_children(|left| {
+                        left.spawn((
                             Node {
-                                padding: UiRect::axes(Val::Px(10.0), Val::Px(4.0)),
-                                border: UiRect::all(Val::Px(1.0)),
+                                padding: UiRect::axes(Val::Px(12.0), Val::Px(5.0)),
+                                border: UiRect::all(Val::Px(1.5)),
+                                border_radius: BorderRadius::all(Val::Px(10.0)),
                                 ..default()
                             },
-                            BackgroundColor(Color::srgb(0.18, 0.22, 0.28)),
-                            BorderColor(Color::srgb(0.35, 0.40, 0.50)),
-                        )).with_child((
-                            Text::new(item_text),
-                            TextFont::from_font_size(14.0),
-                            TextColor(Color::WHITE),
+                            BackgroundColor(Color::srgba(0.08, 0.12, 0.19, 0.95)),
+                            BorderColor(Color::srgb(0.22, 0.71, 1.0)),
+                        ))
+                        .with_child((
+                            Text::new(format!("{} (Nv. {})", player_stats.name, player_stats.level)),
+                            TextFont::from_font_size(16.0),
+                            TextColor(Color::srgb(0.96, 0.97, 1.0)),
                         ));
-                    }
-                });
 
-                // Derecha: Piso del Acto y Reliquias
-                top_bar.spawn(Node {
-                    flex_direction: FlexDirection::Row,
-                    align_items: AlignItems::Center,
-                    column_gap: Val::Px(12.0),
-                    ..default()
-                }).with_children(|right| {
-                    right.spawn((
-                        Text::new(format!("Piso {}/15 (Acto {})", run_state.current_floor, run_state.current_act)),
-                        TextFont::from_font_size(16.0),
-                        TextColor(Color::srgb(0.4, 0.8, 1.0)),
-                    ));
-                });
+                        left.spawn((
+                            Node {
+                                padding: UiRect::axes(Val::Px(12.0), Val::Px(5.0)),
+                                border: UiRect::all(Val::Px(1.5)),
+                                border_radius: BorderRadius::all(Val::Px(10.0)),
+                                ..default()
+                            },
+                            BackgroundColor(Color::srgba(0.08, 0.12, 0.19, 0.95)),
+                            BorderColor(Color::srgb(0.95, 0.76, 0.30)),
+                        ))
+                        .with_child((
+                            Text::new(format!("P$ {}", run_state.poke_dollars)),
+                            TextFont::from_font_size(16.0),
+                            TextColor(Color::srgb(0.95, 0.76, 0.30)),
+                        ));
+                    });
+
+                // Centro: Cinturón de Consumibles (3 ranuras interactivas con botones del kit UI)
+                top_bar
+                    .spawn(Node {
+                        flex_direction: FlexDirection::Row,
+                        column_gap: Val::Px(10.0),
+                        ..default()
+                    })
+                    .with_children(|belt| {
+                        for slot in 0..3 {
+                            let has_item = run_state.consumables[slot].is_some();
+                            let item_text = match &run_state.consumables[slot] {
+                                Some(name) => format!("[ITEM] {}", name),
+                                None => "[ VACÍO ]".to_string(),
+                            };
+                            let btn_tex = if has_item {
+                                btn_secondary_tex.clone()
+                            } else {
+                                btn_disabled_tex.clone()
+                            };
+                            belt.spawn((
+                                Button,
+                                ConsumableButton { slot },
+                                Node {
+                                    min_width: Val::Px(118.0),
+                                    height: Val::Px(36.0),
+                                    position_type: PositionType::Relative,
+                                    justify_content: JustifyContent::Center,
+                                    align_items: AlignItems::Center,
+                                    padding: UiRect::axes(Val::Px(12.0), Val::Px(4.0)),
+                                    border: UiRect::all(Val::Px(1.5)),
+                                    border_radius: BorderRadius::all(Val::Px(9.0)),
+                                    overflow: Overflow::clip(),
+                                    ..default()
+                                },
+                                BackgroundColor(Color::srgb(0.11, 0.16, 0.24)),
+                                BorderColor(if has_item {
+                                    Color::srgb(0.29, 0.69, 1.0)
+                                } else {
+                                    Color::srgb(0.22, 0.27, 0.36)
+                                }),
+                            ))
+                            .with_children(|btn| {
+                                if let Some(tex) = btn_tex {
+                                    btn.spawn((
+                                        ImageNode::new(tex),
+                                        Node {
+                                            position_type: PositionType::Absolute,
+                                            left: Val::Px(0.0),
+                                            right: Val::Px(0.0),
+                                            top: Val::Px(0.0),
+                                            bottom: Val::Px(0.0),
+                                            ..default()
+                                        },
+                                    ));
+                                }
+                                btn.spawn((
+                                    Text::new(item_text),
+                                    TextFont::from_font_size(12.5),
+                                    TextColor(if has_item {
+                                        Color::WHITE
+                                    } else {
+                                        Color::srgb(0.55, 0.62, 0.72)
+                                    }),
+                                ));
+                            });
+                        }
+                    });
+
+                // Derecha: Piso del Acto
+                top_bar
+                    .spawn(Node {
+                        flex_direction: FlexDirection::Row,
+                        align_items: AlignItems::Center,
+                        column_gap: Val::Px(12.0),
+                        ..default()
+                    })
+                    .with_children(|right| {
+                        right
+                            .spawn((
+                                Node {
+                                    padding: UiRect::axes(Val::Px(14.0), Val::Px(5.0)),
+                                    border: UiRect::all(Val::Px(1.5)),
+                                    border_radius: BorderRadius::all(Val::Px(10.0)),
+                                    ..default()
+                                },
+                                BackgroundColor(Color::srgba(0.08, 0.12, 0.19, 0.95)),
+                                BorderColor(Color::srgb(0.95, 0.76, 0.30)),
+                            ))
+                            .with_child((
+                                Text::new(format!(
+                                    "Piso {}/15 (Acto {})",
+                                    run_state.current_floor, run_state.current_act
+                                )),
+                                TextFont::from_font_size(15.0),
+                                TextColor(Color::srgb(0.95, 0.76, 0.30)),
+                            ));
+                    });
             });
 
             // ==========================================
@@ -343,276 +464,505 @@ fn setup_combat_ui(
             // ==========================================
             root.spawn(Node {
                 width: Val::Percent(100.0),
-                height: Val::Px(310.0),
+                height: Val::Px(320.0),
                 flex_direction: FlexDirection::Row,
                 justify_content: JustifyContent::SpaceBetween,
                 align_items: AlignItems::Center,
-                padding: UiRect::axes(Val::Px(40.0), Val::Px(10.0)),
+                padding: UiRect::axes(Val::Px(28.0), Val::Px(6.0)),
                 ..default()
-            }).with_children(|arena| {
+            })
+            .with_children(|arena| {
                 // --- LADO IZQUIERDO: JUGADOR ---
-                arena.spawn(Node {
-                    flex_direction: FlexDirection::Column,
-                    align_items: AlignItems::Center,
-                    row_gap: Val::Px(8.0),
-                    width: Val::Px(280.0),
-                    ..default()
-                }).with_children(|p_col| {
-                    // Barra de Vida Jugador
-                    p_col.spawn((
-                        Node {
-                            width: Val::Percent(100.0),
-                            height: Val::Px(20.0),
-                            border: UiRect::all(Val::Px(1.0)),
-                            ..default()
-                        },
-                        BackgroundColor(Color::srgb(0.2, 0.2, 0.2)),
-                        BorderColor(Color::srgb(0.4, 0.4, 0.4)),
-                    )).with_children(|bar| {
-                        bar.spawn((
-                            PlayerHpBarFill,
-                            Node {
-                                width: Val::Percent(100.0),
-                                height: Val::Percent(100.0),
-                                ..default()
-                            },
-                            BackgroundColor(Color::srgb(0.25, 0.75, 0.35)),
-                        ));
-                    });
-
-                    // Texto HP y Bloqueo
-                    p_col.spawn(Node {
-                        flex_direction: FlexDirection::Row,
-                        justify_content: JustifyContent::SpaceBetween,
-                        width: Val::Percent(100.0),
+                arena
+                    .spawn(Node {
+                        flex_direction: FlexDirection::Column,
+                        align_items: AlignItems::Center,
+                        row_gap: Val::Px(8.0),
+                        width: Val::Px(310.0),
                         ..default()
-                    }).with_children(|sub| {
-                        sub.spawn((
-                            PlayerHpText,
-                            Text::new(format!("HP: {}/{}", player_stats.hp, player_stats.max_hp)),
-                            TextFont::from_font_size(14.0),
-                            TextColor(Color::WHITE),
-                        ));
-                        sub.spawn((
-                            PlayerBlockText,
-                            Text::new(format!("Bloqueo: {}", player_stats.block)),
-                            TextFont::from_font_size(14.0),
-                            TextColor(Color::srgb(0.4, 0.7, 1.0)),
-                        ));
+                    })
+                    .with_children(|p_col| {
+                        // Tarjeta HUD del Jugador (estilo VectorCraft)
+                        p_col
+                            .spawn((
+                                Node {
+                                    width: Val::Percent(100.0),
+                                    flex_direction: FlexDirection::Column,
+                                    row_gap: Val::Px(6.0),
+                                    padding: UiRect::axes(Val::Px(14.0), Val::Px(10.0)),
+                                    border: UiRect::all(Val::Px(2.0)),
+                                    border_radius: BorderRadius::all(Val::Px(14.0)),
+                                    ..default()
+                                },
+                                BackgroundColor(Color::srgba(0.07, 0.10, 0.16, 0.94)),
+                                BorderColor(Color::srgb(0.16, 0.23, 0.33)),
+                            ))
+                            .with_children(|hud_card| {
+                                // Cabecera de tarjeta: Entrenador + Stats
+                                hud_card
+                                    .spawn(Node {
+                                        width: Val::Percent(100.0),
+                                        flex_direction: FlexDirection::Row,
+                                        justify_content: JustifyContent::SpaceBetween,
+                                        align_items: AlignItems::Center,
+                                        ..default()
+                                    })
+                                    .with_children(|top_row| {
+                                        top_row
+                                            .spawn((
+                                                Node {
+                                                    padding: UiRect::axes(Val::Px(8.0), Val::Px(2.0)),
+                                                    border: UiRect::all(Val::Px(1.0)),
+                                                    border_radius: BorderRadius::all(Val::Px(6.0)),
+                                                    ..default()
+                                                },
+                                                BackgroundColor(Color::srgb(0.09, 0.14, 0.22)),
+                                                BorderColor(Color::srgb(0.22, 0.71, 1.0)),
+                                            ))
+                                            .with_child((
+                                                Text::new(format!("[ {} ]", player_trainer.name)),
+                                                TextFont::from_font_size(11.0),
+                                                TextColor(Color::srgb(0.65, 0.88, 1.0)),
+                                            ));
+
+                                        top_row.spawn((
+                                            PlayerStatsText,
+                                            Text::new(format!(
+                                                "ATK: {:.0} | DEF: {:.0} | SP.ATK: {:.0}",
+                                                player_stats.atk, player_stats.def, player_stats.sp_atk
+                                            )),
+                                            TextFont::from_font_size(11.0),
+                                            TextColor(Color::srgb(0.75, 0.82, 0.92)),
+                                        ));
+                                    });
+
+                                // Barra de Vida Jugador (`ui/bars/hp_bar_bg.png` + `ui/bars/hp_fill_player.png`)
+                                hud_card
+                                    .spawn((
+                                        Node {
+                                            width: Val::Percent(100.0),
+                                            height: Val::Px(24.0),
+                                            position_type: PositionType::Relative,
+                                            padding: UiRect::axes(Val::Px(4.0), Val::Px(3.0)),
+                                            border_radius: BorderRadius::all(Val::Px(8.0)),
+                                            overflow: Overflow::clip(),
+                                            ..default()
+                                        },
+                                        BackgroundColor(Color::srgb(0.04, 0.06, 0.09)),
+                                    ))
+                                    .with_children(|bar| {
+                                        if let Some(ref bg_img) = hp_bar_bg_tex {
+                                            bar.spawn((
+                                                ImageNode::new(bg_img.clone()),
+                                                Node {
+                                                    position_type: PositionType::Absolute,
+                                                    left: Val::Px(0.0),
+                                                    right: Val::Px(0.0),
+                                                    top: Val::Px(0.0),
+                                                    bottom: Val::Px(0.0),
+                                                    ..default()
+                                                },
+                                            ));
+                                        }
+                                        bar.spawn((
+                                            PlayerHpBarFill,
+                                            Node {
+                                                width: Val::Percent(100.0),
+                                                height: Val::Percent(100.0),
+                                                position_type: PositionType::Relative,
+                                                border_radius: BorderRadius::all(Val::Px(5.0)),
+                                                overflow: Overflow::clip(),
+                                                ..default()
+                                            },
+                                            BackgroundColor(Color::srgb(0.18, 0.84, 0.45)),
+                                        ))
+                                        .with_children(|fill| {
+                                            if let Some(ref fill_img) = hp_fill_player_tex {
+                                                fill.spawn((
+                                                    ImageNode::new(fill_img.clone()),
+                                                    Node {
+                                                        width: Val::Percent(100.0),
+                                                        height: Val::Percent(100.0),
+                                                        ..default()
+                                                    },
+                                                ));
+                                            }
+                                        });
+                                    });
+
+                                // Texto HP y Bloqueo (`ui/bars/block_badge.png`)
+                                hud_card
+                                    .spawn(Node {
+                                        flex_direction: FlexDirection::Row,
+                                        justify_content: JustifyContent::SpaceBetween,
+                                        align_items: AlignItems::Center,
+                                        width: Val::Percent(100.0),
+                                        ..default()
+                                    })
+                                    .with_children(|sub| {
+                                        sub.spawn((
+                                            PlayerHpText,
+                                            Text::new(format!(
+                                                "HP: {}/{}",
+                                                player_stats.hp, player_stats.max_hp
+                                            )),
+                                            TextFont::from_font_size(14.0),
+                                            TextColor(Color::srgb(0.32, 0.96, 0.62)),
+                                        ));
+
+                                        sub.spawn(Node {
+                                            flex_direction: FlexDirection::Row,
+                                            align_items: AlignItems::Center,
+                                            column_gap: Val::Px(4.0),
+                                            ..default()
+                                        })
+                                        .with_children(|blk| {
+                                            if let Some(ref badge_img) = block_badge_tex {
+                                                blk.spawn((
+                                                    ImageNode::new(badge_img.clone()),
+                                                    Node {
+                                                        width: Val::Px(22.0),
+                                                        height: Val::Px(24.0),
+                                                        ..default()
+                                                    },
+                                                ));
+                                            }
+                                            blk.spawn((
+                                                PlayerBlockText,
+                                                Text::new(format!("ESC: {}", player_stats.block)),
+                                                TextFont::from_font_size(13.5),
+                                                TextColor(Color::srgb(0.35, 0.78, 1.0)),
+                                            ));
+                                        });
+                                    });
+
+                                // Estados activos del Pokémon del jugador
+                                hud_card.spawn((
+                                    PlayerStatusesText,
+                                    Text::new(""),
+                                    TextFont::from_font_size(11.5),
+                                    TextColor(Color::srgb(1.0, 0.76, 0.32)),
+                                ));
+                            });
+
+                        // Fila de Entrenador (trasero) + Pokémon Jugador
+                        p_col
+                            .spawn(Node {
+                                flex_direction: FlexDirection::Row,
+                                align_items: AlignItems::FlexEnd,
+                                justify_content: JustifyContent::Center,
+                                column_gap: Val::Px(8.0),
+                                ..default()
+                            })
+                            .with_children(|combatants| {
+                                // Sprite del Entrenador Red en combate (trasero)
+                                combatants.spawn((
+                                    ImageNode::new(asset_server.load(player_trainer.relative_path())),
+                                    Node {
+                                        width: Val::Px(56.0),
+                                        height: Val::Px(56.0),
+                                        margin: UiRect::bottom(Val::Px(12.0)),
+                                        ..default()
+                                    },
+                                ));
+
+                                // Sprite del Pokémon Jugador (Back Sprite oficial)
+                                combatants.spawn((
+                                    PlayerSpriteImage,
+                                    SpriteAnimator::default(),
+                                    UiTransform::default(),
+                                    ImageNode::new(asset_server.load(player_sprite.relative_path())),
+                                    Node {
+                                        width: Val::Px(140.0),
+                                        height: Val::Px(140.0),
+                                        ..default()
+                                    },
+                                ));
+                            });
                     });
 
-                    // Insignia identificativa del Entrenador Jugador
-                    p_col.spawn((
-                        Node {
-                            padding: UiRect::axes(Val::Px(8.0), Val::Px(2.0)),
-                            border: UiRect::all(Val::Px(1.0)),
-                            ..default()
-                        },
-                        BackgroundColor(Color::srgb(0.12, 0.20, 0.32)),
-                        BorderColor(Color::srgb(0.35, 0.65, 0.95)),
-                    )).with_child((
-                        Text::new(format!("[ {} ]", player_trainer.name)),
-                        TextFont::from_font_size(11.0),
-                        TextColor(Color::srgb(0.7, 0.9, 1.0)),
-                    ));
-
-                    // Fila de Entrenador (trasero) + Pokémon Jugador
-                    p_col.spawn(Node {
-                        flex_direction: FlexDirection::Row,
-                        align_items: AlignItems::FlexEnd,
+                // --- CENTRO: BANNER DE TURNO Y LOG FEED DE ACCIÓN (`ui/hud/hud_turn_banner.png`) ---
+                arena
+                    .spawn(Node {
+                        width: Val::Px(360.0),
+                        min_height: Val::Px(92.0),
+                        position_type: PositionType::Relative,
+                        padding: UiRect::axes(Val::Px(46.0), Val::Px(18.0)),
+                        flex_direction: FlexDirection::Column,
                         justify_content: JustifyContent::Center,
-                        column_gap: Val::Px(8.0),
+                        align_items: AlignItems::Center,
                         ..default()
-                    }).with_children(|combatants| {
-                        // Sprite del Entrenador Red en combate (trasero)
-                        combatants.spawn((
-                            ImageNode::new(asset_server.load(player_trainer.relative_path())),
-                            Node {
-                                width: Val::Px(56.0),
-                                height: Val::Px(56.0),
-                                margin: UiRect::bottom(Val::Px(12.0)),
-                                ..default()
-                            },
-                        ));
-
-                        // Sprite del Pokémon Jugador (Back Sprite oficial)
-                        combatants.spawn((
-                            PlayerSpriteImage,
-                            SpriteAnimator::default(),
-                            UiTransform::default(),
-                            ImageNode::new(asset_server.load(player_sprite.relative_path())),
-                            Node {
-                                width: Val::Px(140.0),
-                                height: Val::Px(140.0),
-                                ..default()
-                            },
+                    })
+                    .with_children(|log_box| {
+                        if let Some(ref banner_img) = hud_turn_banner_tex {
+                            log_box.spawn((
+                                ImageNode::new(banner_img.clone()),
+                                Node {
+                                    position_type: PositionType::Absolute,
+                                    left: Val::Px(0.0),
+                                    right: Val::Px(0.0),
+                                    top: Val::Px(0.0),
+                                    bottom: Val::Px(0.0),
+                                    ..default()
+                                },
+                            ));
+                        }
+                        log_box.spawn((
+                            CombatLogFeed,
+                            Text::new("[COMBATE] ¡Combate iniciado! Selecciona tus cartas."),
+                            TextFont::from_font_size(13.0),
+                            TextColor(Color::srgb(0.98, 0.88, 0.58)),
                         ));
                     });
-
-                    // Panel compacto de stats RPG
-                    p_col.spawn((
-                        PlayerStatsText,
-                        Text::new(format!(
-                            "ATK: {:.0} | DEF: {:.0} | SP.ATK: {:.0}",
-                            player_stats.atk, player_stats.def, player_stats.sp_atk
-                        )),
-                        TextFont::from_font_size(12.0),
-                        TextColor(Color::srgb(0.8, 0.8, 0.8)),
-                    ));
-
-                    // Estados activos del Pokémon del jugador
-                    p_col.spawn((
-                        PlayerStatusesText,
-                        Text::new(""),
-                        TextFont::from_font_size(11.5),
-                        TextColor(Color::srgb(1.0, 0.7, 0.3)),
-                    ));
-                });
-
-                // --- CENTRO: LOG FEED DE ACCIÓN TÁCTICA ---
-                arena.spawn(Node {
-                    width: Val::Px(320.0),
-                    height: Val::Px(140.0),
-                    padding: UiRect::all(Val::Px(8.0)),
-                    flex_direction: FlexDirection::Column,
-                    justify_content: JustifyContent::Center,
-                    align_items: AlignItems::Center,
-                    border: UiRect::all(Val::Px(1.0)),
-                    ..default()
-                }).with_children(|log_box| {
-                    log_box.spawn((
-                        CombatLogFeed,
-                        Text::new("[COMBATE] ¡Combate iniciado! Selecciona tus cartas."),
-                        TextFont::from_font_size(13.0),
-                        TextColor(Color::srgb(0.9, 0.85, 0.6)),
-                    ));
-                });
 
                 // --- LADO DERECHO: RIVAL (ENEMIGO) ---
-                arena.spawn(Node {
-                    flex_direction: FlexDirection::Column,
-                    align_items: AlignItems::Center,
-                    row_gap: Val::Px(8.0),
-                    width: Val::Px(280.0),
-                    ..default()
-                }).with_children(|e_col| {
-                    // Acción Anunciada del Rival (Transparencia Táctica GDD 2)
-                    e_col.spawn((
-                        Node {
-                            padding: UiRect::axes(Val::Px(10.0), Val::Px(3.0)),
-                            border: UiRect::all(Val::Px(1.0)),
-                            border_radius: BorderRadius::all(Val::Px(4.0)),
-                            margin: UiRect::bottom(Val::Px(2.0)),
-                            ..default()
-                        },
-                        BackgroundColor(Color::srgba(0.24, 0.12, 0.16, 0.85)),
-                        BorderColor(Color::srgb(0.9, 0.35, 0.35)),
-                    )).with_child((
-                        EnemyIntentText,
-                        Text::new("[ACCIÓN RIVAL] Calculando..."),
-                        TextFont::from_font_size(13.5),
-                        TextColor(Color::srgb(1.0, 0.45, 0.45)),
-                    ));
-
-                    // Barra de Vida Enemigo
-                    e_col.spawn((
-                        Node {
-                            width: Val::Percent(100.0),
-                            height: Val::Px(20.0),
-                            border: UiRect::all(Val::Px(1.0)),
-                            ..default()
-                        },
-                        BackgroundColor(Color::srgb(0.2, 0.2, 0.2)),
-                        BorderColor(Color::srgb(0.4, 0.4, 0.4)),
-                    )).with_children(|bar| {
-                        bar.spawn((
-                            EnemyHpBarFill,
-                            Node {
-                                width: Val::Percent(100.0),
-                                height: Val::Percent(100.0),
-                                ..default()
-                            },
-                            BackgroundColor(Color::srgb(0.85, 0.25, 0.25)),
-                        ));
-                    });
-
-                    // Texto HP y Bloqueo Rival
-                    e_col.spawn(Node {
-                        flex_direction: FlexDirection::Row,
-                        justify_content: JustifyContent::SpaceBetween,
-                        width: Val::Percent(100.0),
+                arena
+                    .spawn(Node {
+                        flex_direction: FlexDirection::Column,
+                        align_items: AlignItems::Center,
+                        row_gap: Val::Px(8.0),
+                        width: Val::Px(310.0),
                         ..default()
-                    }).with_children(|sub| {
-                        sub.spawn((
-                            EnemyHpText,
-                            Text::new(format!("{} (Nv. {}) HP: {}/{}", enemy_stats.name, enemy_stats.level, enemy_stats.hp, enemy_stats.max_hp)),
-                            TextFont::from_font_size(14.0),
-                            TextColor(Color::WHITE),
-                        ));
-                        sub.spawn((
-                            EnemyBlockText,
-                            Text::new(format!("Bloqueo: {}", enemy_stats.block)),
-                            TextFont::from_font_size(14.0),
-                            TextColor(Color::srgb(0.4, 0.7, 1.0)),
-                        ));
-                    });
+                    })
+                    .with_children(|e_col| {
+                        // Tarjeta de Intención del Rival (`ui/hud/hud_intent.png`)
+                        e_col
+                            .spawn((
+                                Node {
+                                    width: Val::Percent(100.0),
+                                    min_height: Val::Px(48.0),
+                                    position_type: PositionType::Relative,
+                                    padding: UiRect::axes(Val::Px(18.0), Val::Px(8.0)),
+                                    justify_content: JustifyContent::Center,
+                                    align_items: AlignItems::Center,
+                                    ..default()
+                                },
+                                BackgroundColor(Color::NONE),
+                            ))
+                            .with_children(|intent_card| {
+                                if let Some(ref intent_img) = hud_intent_tex {
+                                    intent_card.spawn((
+                                        ImageNode::new(intent_img.clone()),
+                                        Node {
+                                            position_type: PositionType::Absolute,
+                                            left: Val::Px(0.0),
+                                            right: Val::Px(0.0),
+                                            top: Val::Px(0.0),
+                                            bottom: Val::Px(0.0),
+                                            ..default()
+                                        },
+                                    ));
+                                }
+                                intent_card.spawn((
+                                    EnemyIntentText,
+                                    Text::new("[ACCIÓN RIVAL] Calculando..."),
+                                    TextFont::from_font_size(13.0),
+                                    TextColor(Color::srgb(1.0, 0.82, 0.84)),
+                                ));
+                            });
 
-                    // Insignia identificativa del Entrenador Rival
-                    e_col.spawn((
-                        Node {
-                            padding: UiRect::axes(Val::Px(8.0), Val::Px(2.0)),
-                            border: UiRect::all(Val::Px(1.0)),
-                            ..default()
-                        },
-                        BackgroundColor(Color::srgb(0.24, 0.16, 0.18)),
-                        BorderColor(Color::srgb(0.9, 0.4, 0.3)),
-                    )).with_child((
-                        Text::new(format!("[ {} ]", enemy_trainer.name)),
-                        TextFont::from_font_size(11.0),
-                        TextColor(Color::srgb(1.0, 0.75, 0.7)),
-                    ));
+                        // Tarjeta HUD del Rival (estilo VectorCraft)
+                        let enemy_card_border = if is_boss {
+                            Color::srgb(0.61, 0.30, 1.0)
+                        } else if is_mini_boss {
+                            Color::srgb(0.95, 0.76, 0.30)
+                        } else {
+                            Color::srgb(0.16, 0.23, 0.33)
+                        };
+                        e_col
+                            .spawn((
+                                Node {
+                                    width: Val::Percent(100.0),
+                                    flex_direction: FlexDirection::Column,
+                                    row_gap: Val::Px(6.0),
+                                    padding: UiRect::axes(Val::Px(14.0), Val::Px(10.0)),
+                                    border: UiRect::all(Val::Px(2.0)),
+                                    border_radius: BorderRadius::all(Val::Px(14.0)),
+                                    ..default()
+                                },
+                                BackgroundColor(Color::srgba(0.07, 0.10, 0.16, 0.94)),
+                                BorderColor(enemy_card_border),
+                            ))
+                            .with_children(|hud_card| {
+                                // Cabecera de tarjeta: Entrenador Rival
+                                hud_card
+                                    .spawn(Node {
+                                        width: Val::Percent(100.0),
+                                        flex_direction: FlexDirection::Row,
+                                        justify_content: JustifyContent::SpaceBetween,
+                                        align_items: AlignItems::Center,
+                                        ..default()
+                                    })
+                                    .with_children(|top_row| {
+                                        top_row
+                                            .spawn((
+                                                Node {
+                                                    padding: UiRect::axes(Val::Px(8.0), Val::Px(2.0)),
+                                                    border: UiRect::all(Val::Px(1.0)),
+                                                    border_radius: BorderRadius::all(Val::Px(6.0)),
+                                                    ..default()
+                                                },
+                                                BackgroundColor(Color::srgb(0.18, 0.10, 0.14)),
+                                                BorderColor(Color::srgb(0.95, 0.35, 0.35)),
+                                            ))
+                                            .with_child((
+                                                Text::new(format!("[ {} ]", enemy_trainer.name)),
+                                                TextFont::from_font_size(11.0),
+                                                TextColor(Color::srgb(1.0, 0.75, 0.75)),
+                                            ));
+                                    });
 
-                    // Fila de Pokémon Rival + Entrenador Rival (frontal)
-                    e_col.spawn(Node {
-                        flex_direction: FlexDirection::Row,
-                        align_items: AlignItems::FlexEnd,
-                        justify_content: JustifyContent::Center,
-                        column_gap: Val::Px(8.0),
-                        ..default()
-                    }).with_children(|combatants| {
-                        // Sprite del Pokémon Rival (Front Sprite oficial)
-                        combatants.spawn((
-                            EnemySpriteImage,
-                            SpriteAnimator::default(),
-                            UiTransform::default(),
-                            ImageNode::new(asset_server.load(enemy_sprite.relative_path())),
-                            Node {
-                                width: Val::Px(140.0),
-                                height: Val::Px(140.0),
+                                // Barra de Vida Enemigo (`ui/bars/hp_bar_bg.png` + `hp_fill_enemy.png` / `hp_fill_boss.png`)
+                                hud_card
+                                    .spawn((
+                                        Node {
+                                            width: Val::Percent(100.0),
+                                            height: Val::Px(24.0),
+                                            position_type: PositionType::Relative,
+                                            padding: UiRect::axes(Val::Px(4.0), Val::Px(3.0)),
+                                            border_radius: BorderRadius::all(Val::Px(8.0)),
+                                            overflow: Overflow::clip(),
+                                            ..default()
+                                        },
+                                        BackgroundColor(Color::srgb(0.04, 0.06, 0.09)),
+                                    ))
+                                    .with_children(|bar| {
+                                        if let Some(ref bg_img) = hp_bar_bg_tex {
+                                            bar.spawn((
+                                                ImageNode::new(bg_img.clone()),
+                                                Node {
+                                                    position_type: PositionType::Absolute,
+                                                    left: Val::Px(0.0),
+                                                    right: Val::Px(0.0),
+                                                    top: Val::Px(0.0),
+                                                    bottom: Val::Px(0.0),
+                                                    ..default()
+                                                },
+                                            ));
+                                        }
+                                        bar.spawn((
+                                            EnemyHpBarFill,
+                                            Node {
+                                                width: Val::Percent(100.0),
+                                                height: Val::Percent(100.0),
+                                                position_type: PositionType::Relative,
+                                                border_radius: BorderRadius::all(Val::Px(5.0)),
+                                                overflow: Overflow::clip(),
+                                                ..default()
+                                            },
+                                            BackgroundColor(if is_boss || is_mini_boss {
+                                                Color::srgb(0.61, 0.30, 1.0)
+                                            } else {
+                                                Color::srgb(0.95, 0.25, 0.25)
+                                            }),
+                                        ))
+                                        .with_children(|fill| {
+                                            if let Some(ref fill_img) = hp_fill_enemy_tex {
+                                                fill.spawn((
+                                                    ImageNode::new(fill_img.clone()),
+                                                    Node {
+                                                        width: Val::Percent(100.0),
+                                                        height: Val::Percent(100.0),
+                                                        ..default()
+                                                    },
+                                                ));
+                                            }
+                                        });
+                                    });
+
+                                // Texto HP y Bloqueo Rival (`ui/bars/block_badge.png`)
+                                hud_card
+                                    .spawn(Node {
+                                        flex_direction: FlexDirection::Row,
+                                        justify_content: JustifyContent::SpaceBetween,
+                                        align_items: AlignItems::Center,
+                                        width: Val::Percent(100.0),
+                                        ..default()
+                                    })
+                                    .with_children(|sub| {
+                                        sub.spawn((
+                                            EnemyHpText,
+                                            Text::new(format!(
+                                                "{} (Nv. {}) HP: {}/{}",
+                                                enemy_stats.name,
+                                                enemy_stats.level,
+                                                enemy_stats.hp,
+                                                enemy_stats.max_hp
+                                            )),
+                                            TextFont::from_font_size(13.5),
+                                            TextColor(Color::WHITE),
+                                        ));
+
+                                        sub.spawn(Node {
+                                            flex_direction: FlexDirection::Row,
+                                            align_items: AlignItems::Center,
+                                            column_gap: Val::Px(4.0),
+                                            ..default()
+                                        })
+                                        .with_children(|blk| {
+                                            if let Some(ref badge_img) = block_badge_tex {
+                                                blk.spawn((
+                                                    ImageNode::new(badge_img.clone()),
+                                                    Node {
+                                                        width: Val::Px(22.0),
+                                                        height: Val::Px(24.0),
+                                                        ..default()
+                                                    },
+                                                ));
+                                            }
+                                            blk.spawn((
+                                                EnemyBlockText,
+                                                Text::new(format!("ESC: {}", enemy_stats.block)),
+                                                TextFont::from_font_size(13.5),
+                                                TextColor(Color::srgb(0.35, 0.78, 1.0)),
+                                            ));
+                                        });
+                                    });
+
+                                // Estados activos del Pokémon rival
+                                hud_card.spawn((
+                                    EnemyStatusesText,
+                                    Text::new(""),
+                                    TextFont::from_font_size(11.5),
+                                    TextColor(Color::srgb(1.0, 0.75, 0.35)),
+                                ));
+                            });
+
+                        // Fila de Pokémon Rival + Entrenador Rival (frontal)
+                        e_col
+                            .spawn(Node {
+                                flex_direction: FlexDirection::Row,
+                                align_items: AlignItems::FlexEnd,
+                                justify_content: JustifyContent::Center,
+                                column_gap: Val::Px(8.0),
                                 ..default()
-                            },
-                        ));
+                            })
+                            .with_children(|combatants| {
+                                // Sprite del Pokémon Rival (Front Sprite oficial)
+                                combatants.spawn((
+                                    EnemySpriteImage,
+                                    SpriteAnimator::default(),
+                                    UiTransform::default(),
+                                    ImageNode::new(asset_server.load(enemy_sprite.relative_path())),
+                                    Node {
+                                        width: Val::Px(140.0),
+                                        height: Val::Px(140.0),
+                                        ..default()
+                                    },
+                                ));
 
-                        // Sprite del Entrenador Rival
-                        combatants.spawn((
-                            ImageNode::new(asset_server.load(enemy_trainer.relative_path())),
-                            Node {
-                                width: Val::Px(56.0),
-                                height: Val::Px(56.0),
-                                margin: UiRect::bottom(Val::Px(12.0)),
-                                ..default()
-                            },
-                        ));
+                                // Sprite del Entrenador Rival
+                                combatants.spawn((
+                                    ImageNode::new(asset_server.load(enemy_trainer.relative_path())),
+                                    Node {
+                                        width: Val::Px(56.0),
+                                        height: Val::Px(56.0),
+                                        margin: UiRect::bottom(Val::Px(12.0)),
+                                        ..default()
+                                    },
+                                ));
+                            });
                     });
-
-                    // Estados activos del Pokémon rival (ubicados abajo de los sprites, separados de la acción)
-                    e_col.spawn((
-                        EnemyStatusesText,
-                        Text::new(""),
-                        TextFont::from_font_size(11.5),
-                        TextColor(Color::srgb(1.0, 0.75, 0.35)),
-                    ));
-                });
             });
 
             // ==========================================
@@ -621,75 +971,106 @@ fn setup_combat_ui(
             root.spawn((
                 Node {
                     width: Val::Percent(100.0),
-                    height: Val::Px(210.0),
+                    height: Val::Px(212.0),
                     flex_direction: FlexDirection::Row,
                     justify_content: JustifyContent::SpaceBetween,
                     align_items: AlignItems::Center,
-                    padding: UiRect::axes(Val::Px(16.0), Val::Px(4.0)),
-                    border: UiRect::all(Val::Px(1.0)),
+                    padding: UiRect::axes(Val::Px(18.0), Val::Px(6.0)),
+                    border: UiRect::all(Val::Px(2.0)),
+                    border_radius: BorderRadius::all(Val::Px(16.0)),
                     ..default()
                 },
-                BackgroundColor(Color::srgba(0.08, 0.10, 0.15, 0.88)),
-                BorderColor(Color::srgb(0.25, 0.30, 0.40)),
-            )).with_children(|bottom| {
-                // Grupo Izquierdo: Mazo de Robo + Orbe de Energía
-                bottom.spawn(Node {
-                    flex_direction: FlexDirection::Row,
-                    align_items: AlignItems::Center,
-                    column_gap: Val::Px(12.0),
-                    ..default()
-                }).with_children(|left_group| {
-                    // Pila de Robo (Draw Pile)
-                    left_group.spawn((
-                        DrawPileWidget,
-                        Node {
-                            width: Val::Px(64.0),
-                            height: Val::Px(88.0),
-                            flex_direction: FlexDirection::Column,
-                            justify_content: JustifyContent::Center,
-                            align_items: AlignItems::Center,
-                            border: UiRect::all(Val::Px(2.0)),
-                            border_radius: BorderRadius::all(Val::Px(6.0)),
-                            padding: UiRect::axes(Val::Px(4.0), Val::Px(6.0)),
-                            row_gap: Val::Px(4.0),
-                            ..default()
-                        },
-                        BackgroundColor(Color::srgba(0.10, 0.14, 0.22, 0.95)),
-                        BorderColor(Color::srgb(0.35, 0.65, 0.95)),
-                    )).with_children(|dp| {
-                        dp.spawn((
-                            Text::new("MAZO"),
-                            TextFont::from_font_size(10.0),
-                            TextColor(Color::srgb(0.65, 0.85, 1.0)),
-                        ));
-                        dp.spawn((
-                            DrawPileCountText,
-                            Text::new("0"),
-                            TextFont::from_font_size(20.0),
-                            TextColor(Color::WHITE),
-                        ));
-                    });
+                BackgroundColor(Color::srgba(0.06, 0.09, 0.14, 0.90)),
+                BorderColor(Color::srgb(0.16, 0.23, 0.33)),
+            ))
+            .with_children(|bottom| {
+                // Grupo Izquierdo: Mazo de Robo (`hud_deck_draw.png`) + Orbe de Energía (`energy_orb.png`)
+                bottom
+                    .spawn(Node {
+                        flex_direction: FlexDirection::Row,
+                        align_items: AlignItems::Center,
+                        column_gap: Val::Px(14.0),
+                        ..default()
+                    })
+                    .with_children(|left_group| {
+                        // Pila de Robo (Draw Pile)
+                        left_group
+                            .spawn((
+                                DrawPileWidget,
+                                Node {
+                                    width: Val::Px(82.0),
+                                    height: Val::Px(94.0),
+                                    position_type: PositionType::Relative,
+                                    flex_direction: FlexDirection::Column,
+                                    justify_content: JustifyContent::SpaceBetween,
+                                    align_items: AlignItems::Center,
+                                    padding: UiRect::all(Val::Px(6.0)),
+                                    border_radius: BorderRadius::all(Val::Px(10.0)),
+                                    ..default()
+                                },
+                            ))
+                            .with_children(|dp| {
+                                if let Some(ref draw_img) = hud_deck_draw_tex {
+                                    dp.spawn((
+                                        ImageNode::new(draw_img.clone()),
+                                        Node {
+                                            position_type: PositionType::Absolute,
+                                            left: Val::Px(0.0),
+                                            right: Val::Px(0.0),
+                                            top: Val::Px(0.0),
+                                            bottom: Val::Px(0.0),
+                                            ..default()
+                                        },
+                                    ));
+                                }
+                                dp.spawn((
+                                    Text::new("MAZO"),
+                                    TextFont::from_font_size(10.0),
+                                    TextColor(Color::srgb(0.65, 0.88, 1.0)),
+                                ));
 
-                    // Orbe de Energía
-                    left_group.spawn((
-                        Node {
-                            width: Val::Px(88.0),
-                            height: Val::Px(88.0),
-                            border: UiRect::all(Val::Px(3.0)),
-                            border_radius: BorderRadius::all(Val::Px(44.0)),
-                            justify_content: JustifyContent::Center,
-                            align_items: AlignItems::Center,
-                            ..default()
-                        },
-                        BackgroundColor(Color::srgb(0.18, 0.16, 0.05)),
-                        BorderColor(Color::srgb(1.0, 0.85, 0.15)),
-                    )).with_child((
-                        EnergyOrbText,
-                        Text::new(format!("{}/{} EN", run_state.energy, run_state.max_energy)),
-                        TextFont::from_font_size(18.0),
-                        TextColor(Color::srgb(1.0, 0.9, 0.3)),
-                    ));
-                });
+                                dp.spawn((
+                                    DrawPileCountText,
+                                    Text::new("0"),
+                                    TextFont::from_font_size(16.0),
+                                    TextColor(Color::WHITE),
+                                ));
+                            });
+
+                        // Orbe de Energía (`ui/bars/energy_orb.png`)
+                        left_group
+                            .spawn((
+                                Node {
+                                    width: Val::Px(96.0),
+                                    height: Val::Px(100.0),
+                                    position_type: PositionType::Relative,
+                                    justify_content: JustifyContent::Center,
+                                    align_items: AlignItems::Center,
+                                    ..default()
+                                },
+                            ))
+                            .with_children(|orb_node| {
+                                if let Some(ref orb_img) = energy_orb_tex {
+                                    orb_node.spawn((
+                                        ImageNode::new(orb_img.clone()),
+                                        Node {
+                                            position_type: PositionType::Absolute,
+                                            left: Val::Px(0.0),
+                                            right: Val::Px(0.0),
+                                            top: Val::Px(0.0),
+                                            bottom: Val::Px(0.0),
+                                            ..default()
+                                        },
+                                    ));
+                                }
+                                orb_node.spawn((
+                                    EnergyOrbText,
+                                    Text::new(format!("{}/{} EN", run_state.energy, run_state.max_energy)),
+                                    TextFont::from_font_size(15.0),
+                                    TextColor(Color::srgb(0.92, 1.0, 1.0)),
+                                ));
+                            });
+                    });
 
                 // Abanico de Cartas en Mano (Centro)
                 bottom.spawn((
@@ -704,65 +1085,101 @@ fn setup_combat_ui(
                     },
                 ));
 
-                // Grupo Derecho: Botón Fin de Turno + Pila de Descarte
-                bottom.spawn(Node {
-                    flex_direction: FlexDirection::Row,
-                    align_items: AlignItems::Center,
-                    column_gap: Val::Px(12.0),
-                    ..default()
-                }).with_children(|right_group| {
-                    // Botón de Terminar Turno
-                    right_group.spawn((
-                        Button,
-                        EndTurnButton,
-                        Node {
-                            width: Val::Px(110.0),
-                            height: Val::Px(64.0),
-                            justify_content: JustifyContent::Center,
-                            align_items: AlignItems::Center,
-                            border: UiRect::all(Val::Px(2.0)),
-                            border_radius: BorderRadius::all(Val::Px(6.0)),
-                            ..default()
-                        },
-                        BackgroundColor(Color::srgb(0.65, 0.22, 0.22)),
-                        BorderColor(Color::srgb(0.9, 0.4, 0.4)),
-                    )).with_child((
-                        Text::new("TERMINAR\nTURNO [>>]"),
-                        TextFont::from_font_size(14.0),
-                        TextColor(Color::WHITE),
-                    ));
+                // Grupo Derecho: Botón Fin de Turno (`hud_end_turn.png`) + Pila de Descarte (`hud_deck_discard.png`)
+                bottom
+                    .spawn(Node {
+                        flex_direction: FlexDirection::Row,
+                        align_items: AlignItems::Center,
+                        column_gap: Val::Px(14.0),
+                        ..default()
+                    })
+                    .with_children(|right_group| {
+                        // Botón de Terminar Turno
+                        right_group
+                            .spawn((
+                                Button,
+                                EndTurnButton,
+                                Node {
+                                    width: Val::Px(162.0),
+                                    height: Val::Px(64.0),
+                                    position_type: PositionType::Relative,
+                                    justify_content: JustifyContent::Center,
+                                    align_items: AlignItems::Center,
+                                    padding: UiRect::left(Val::Px(22.0)),
+                                    ..default()
+                                },
+                                UiTransform::default(),
+                                GlobalZIndex(10),
+                                CardHoverAnimation::new(Color::srgb(1.0, 0.48, 0.24))
+                                    .with_lift(-4.0)
+                                    .with_scale(1.04),
+                                BackgroundColor(Color::NONE),
+                            ))
+                            .with_children(|end_btn| {
+                                if let Some(ref end_img) = hud_end_turn_tex {
+                                    end_btn.spawn((
+                                        ImageNode::new(end_img.clone()),
+                                        Node {
+                                            position_type: PositionType::Absolute,
+                                            left: Val::Px(0.0),
+                                            right: Val::Px(0.0),
+                                            top: Val::Px(0.0),
+                                            bottom: Val::Px(0.0),
+                                            ..default()
+                                        },
+                                    ));
+                                }
+                                end_btn.spawn((
+                                    Text::new("TERMINAR TURNO"),
+                                    TextFont::from_font_size(12.5),
+                                    TextColor(Color::srgb(1.0, 0.96, 0.90)),
+                                ));
+                            });
 
-                    // Pila de Descarte (Discard Pile)
-                    right_group.spawn((
-                        DiscardPileWidget,
-                        Node {
-                            width: Val::Px(64.0),
-                            height: Val::Px(88.0),
-                            flex_direction: FlexDirection::Column,
-                            justify_content: JustifyContent::Center,
-                            align_items: AlignItems::Center,
-                            border: UiRect::all(Val::Px(2.0)),
-                            border_radius: BorderRadius::all(Val::Px(6.0)),
-                            padding: UiRect::axes(Val::Px(4.0), Val::Px(6.0)),
-                            row_gap: Val::Px(4.0),
-                            ..default()
-                        },
-                        BackgroundColor(Color::srgba(0.20, 0.12, 0.12, 0.95)),
-                        BorderColor(Color::srgb(0.90, 0.45, 0.30)),
-                    )).with_children(|dp| {
-                        dp.spawn((
-                            Text::new("DESCARTE"),
-                            TextFont::from_font_size(9.0),
-                            TextColor(Color::srgb(1.0, 0.75, 0.65)),
-                        ));
-                        dp.spawn((
-                            DiscardPileCountText,
-                            Text::new("0"),
-                            TextFont::from_font_size(20.0),
-                            TextColor(Color::WHITE),
-                        ));
+                        // Pila de Descarte (Discard Pile)
+                        right_group
+                            .spawn((
+                                DiscardPileWidget,
+                                Node {
+                                    width: Val::Px(82.0),
+                                    height: Val::Px(94.0),
+                                    position_type: PositionType::Relative,
+                                    flex_direction: FlexDirection::Column,
+                                    justify_content: JustifyContent::SpaceBetween,
+                                    align_items: AlignItems::Center,
+                                    padding: UiRect::all(Val::Px(6.0)),
+                                    border_radius: BorderRadius::all(Val::Px(10.0)),
+                                    ..default()
+                                },
+                            ))
+                            .with_children(|dp| {
+                                if let Some(ref disc_img) = hud_deck_discard_tex {
+                                    dp.spawn((
+                                        ImageNode::new(disc_img.clone()),
+                                        Node {
+                                            position_type: PositionType::Absolute,
+                                            left: Val::Px(0.0),
+                                            right: Val::Px(0.0),
+                                            top: Val::Px(0.0),
+                                            bottom: Val::Px(0.0),
+                                            ..default()
+                                        },
+                                    ));
+                                }
+                                dp.spawn((
+                                    Text::new("DESCARTE"),
+                                    TextFont::from_font_size(9.5),
+                                    TextColor(Color::srgb(1.0, 0.72, 0.55)),
+                                ));
+
+                                dp.spawn((
+                                    DiscardPileCountText,
+                                    Text::new("0"),
+                                    TextFont::from_font_size(16.0),
+                                    TextColor(Color::WHITE),
+                                ));
+                            });
                     });
-                });
             });
         });
 }
@@ -1528,34 +1945,53 @@ pub fn trigger_deck_shuffle_animation(
             commands.entity(b).despawn();
         }
 
-        // Cartel flotante anunciador de barajado en el centro inferior
-        commands.spawn((
-            CleanupUi,
-            DeckShuffleBanner {
-                timer: Timer::from_seconds(1.15, TimerMode::Once),
-            },
-            Node {
-                position_type: PositionType::Absolute,
-                left: Val::Percent(35.0),
-                bottom: Val::Px(230.0),
-                width: Val::Percent(30.0),
-                height: Val::Px(44.0),
-                justify_content: JustifyContent::Center,
-                align_items: AlignItems::Center,
-                border: UiRect::all(Val::Px(2.0)),
-                border_radius: BorderRadius::all(Val::Px(8.0)),
-                padding: UiRect::axes(Val::Px(16.0), Val::Px(6.0)),
-                ..default()
-            },
-            BackgroundColor(Color::srgba(0.10, 0.14, 0.22, 0.95)),
-            BorderColor(Color::srgb(0.35, 0.85, 0.95)),
-            GlobalZIndex(260),
-            UiTransform::default(),
-        )).with_child((
-            Text::new(format!("[MAZO] ¡BARAJANDO MAZO! ({} cartas)", ev.card_count)),
-            TextFont::from_font_size(14.0),
-            TextColor(Color::srgb(1.0, 0.95, 0.45)),
-        ));
+        let banner_tex = crate::ui::load_ui_image(
+            preloaded.as_deref(),
+            asset_server.as_deref(),
+            "ui/hud/hud_turn_banner.png",
+        );
+
+        // Cartel flotante anunciador de barajado en el centro inferior (`ui/hud/hud_turn_banner.png`)
+        commands
+            .spawn((
+                CleanupUi,
+                DeckShuffleBanner {
+                    timer: Timer::from_seconds(1.15, TimerMode::Once),
+                },
+                Node {
+                    position_type: PositionType::Absolute,
+                    left: Val::Percent(33.0),
+                    bottom: Val::Px(228.0),
+                    width: Val::Percent(34.0),
+                    height: Val::Px(54.0),
+                    justify_content: JustifyContent::Center,
+                    align_items: AlignItems::Center,
+                    padding: UiRect::axes(Val::Px(16.0), Val::Px(6.0)),
+                    ..default()
+                },
+                GlobalZIndex(260),
+                UiTransform::default(),
+            ))
+            .with_children(|banner| {
+                if let Some(tex) = banner_tex {
+                    banner.spawn((
+                        ImageNode::new(tex),
+                        Node {
+                            position_type: PositionType::Absolute,
+                            left: Val::Px(0.0),
+                            right: Val::Px(0.0),
+                            top: Val::Px(0.0),
+                            bottom: Val::Px(0.0),
+                            ..default()
+                        },
+                    ));
+                }
+                banner.spawn((
+                    Text::new(format!("[MAZO] ¡BARAJANDO MAZO! ({} cartas)", ev.card_count)),
+                    TextFont::from_font_size(14.0),
+                    TextColor(Color::srgb(0.98, 0.88, 0.58)),
+                ));
+            });
 
         let normal_tex = preloaded
             .as_ref()

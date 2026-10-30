@@ -14960,112 +14960,6 @@
             },
             {
               "id": 109,
-              "kind": {
-                "type": "text",
-                "kind": {
-                  "kind": "area",
-                  "frame": {
-                    "subpaths": [
-                      {
-                        "anchors": [
-                          {
-                            "p": [
-                              0.0,
-                              0.0
-                            ]
-                          },
-                          {
-                            "p": [
-                              88.0,
-                              0.0
-                            ]
-                          },
-                          {
-                            "p": [
-                              88.0,
-                              34.0
-                            ]
-                          },
-                          {
-                            "p": [
-                              0.0,
-                              34.0
-                            ]
-                          }
-                        ],
-                        "closed": true
-                      }
-                    ]
-                  }
-                },
-                "xf": [
-                  1.0,
-                  0.0,
-                  0.0,
-                  1.0,
-                  5516.0,
-                  130.0
-                ],
-                "runs": [
-                  {
-                    "text": "3 / 3",
-                    "style": {
-                      "font_family": "Inter",
-                      "font_style": "SemiBold",
-                      "size": 21.0,
-                      "tracking": 30.0,
-                      "baseline_shift": 0.0,
-                      "h_scale": 100.0,
-                      "v_scale": 100.0,
-                      "rotation": 0.0,
-                      "fill": {
-                        "type": "solid",
-                        "color": {
-                          "model": "rgb",
-                          "r": 0.91764706,
-                          "g": 1.0,
-                          "b": 1.0
-                        }
-                      },
-                      "stroke": {
-                        "type": "none"
-                      },
-                      "stroke_width": 0.0,
-                      "underline": false,
-                      "strikethrough": false,
-                      "all_caps": false
-                    }
-                  }
-                ],
-                "para": {
-                  "justify": "Center",
-                  "left_indent": 0.0,
-                  "right_indent": 0.0,
-                  "first_line_indent": 0.0,
-                  "space_before": 0.0,
-                  "space_after": 0.0,
-                  "hyphenate": false,
-                  "mojikumi": "lineEndHalf",
-                  "burasagari": "standard"
-                },
-                "area": {
-                  "rows": 1,
-                  "columns": 1,
-                  "gutter": 18.0,
-                  "inset": 0.0,
-                  "firstBaseline": "ascent",
-                  "firstBaselineMin": 0.0,
-                  "verticalAlign": "center",
-                  "fit": {
-                    "shrinkText": {
-                      "minPercent": 40.0
-                    }
-                  }
-                }
-              }
-            },
-            {
-              "id": 110,
               "appearance": {
                 "items": [
                   {
@@ -15186,7 +15080,7 @@
               }
             },
             {
-              "id": 111,
+              "id": 110,
               "appearance": {
                 "items": [
                   {
@@ -15307,7 +15201,7 @@
               }
             },
             {
-              "id": 112,
+              "id": 111,
               "appearance": {
                 "items": [
                   {
@@ -15428,7 +15322,7 @@
               }
             },
             {
-              "id": 113,
+              "id": 112,
               "appearance": {
                 "items": [
                   {
@@ -15549,7 +15443,7 @@
               }
             },
             {
-              "id": 114,
+              "id": 113,
               "appearance": {
                 "items": [
                   {
@@ -15670,7 +15564,7 @@
               }
             },
             {
-              "id": 115,
+              "id": 114,
               "appearance": {
                 "items": [
                   {
@@ -15791,7 +15685,7 @@
               }
             },
             {
-              "id": 116,
+              "id": 115,
               "appearance": {
                 "items": [
                   {
@@ -15912,7 +15806,7 @@
               }
             },
             {
-              "id": 117,
+              "id": 116,
               "appearance": {
                 "items": [
                   {
@@ -16033,113 +15927,7 @@
               }
             },
             {
-              "id": 118,
-              "kind": {
-                "type": "text",
-                "kind": {
-                  "kind": "area",
-                  "frame": {
-                    "subpaths": [
-                      {
-                        "anchors": [
-                          {
-                            "p": [
-                              0.0,
-                              0.0
-                            ]
-                          },
-                          {
-                            "p": [
-                              160.0,
-                              0.0
-                            ]
-                          },
-                          {
-                            "p": [
-                              160.0,
-                              18.0
-                            ]
-                          },
-                          {
-                            "p": [
-                              0.0,
-                              18.0
-                            ]
-                          }
-                        ],
-                        "closed": true
-                      }
-                    ]
-                  }
-                },
-                "xf": [
-                  1.0,
-                  0.0,
-                  0.0,
-                  1.0,
-                  5480.0,
-                  186.0
-                ],
-                "runs": [
-                  {
-                    "text": "ENERGÍA",
-                    "style": {
-                      "font_family": "Inter",
-                      "font_style": "SemiBold",
-                      "size": 10.0,
-                      "tracking": 180.0,
-                      "baseline_shift": 0.0,
-                      "h_scale": 100.0,
-                      "v_scale": 100.0,
-                      "rotation": 0.0,
-                      "fill": {
-                        "type": "solid",
-                        "color": {
-                          "model": "rgb",
-                          "r": 0.5764706,
-                          "g": 0.6431373,
-                          "b": 0.7529412
-                        }
-                      },
-                      "stroke": {
-                        "type": "none"
-                      },
-                      "stroke_width": 0.0,
-                      "underline": false,
-                      "strikethrough": false,
-                      "all_caps": false
-                    }
-                  }
-                ],
-                "para": {
-                  "justify": "Center",
-                  "left_indent": 0.0,
-                  "right_indent": 0.0,
-                  "first_line_indent": 0.0,
-                  "space_before": 0.0,
-                  "space_after": 0.0,
-                  "hyphenate": false,
-                  "mojikumi": "lineEndHalf",
-                  "burasagari": "standard"
-                },
-                "area": {
-                  "rows": 1,
-                  "columns": 1,
-                  "gutter": 18.0,
-                  "inset": 0.0,
-                  "firstBaseline": "ascent",
-                  "firstBaselineMin": 0.0,
-                  "verticalAlign": "center",
-                  "fit": {
-                    "shrinkText": {
-                      "minPercent": 40.0
-                    }
-                  }
-                }
-              }
-            },
-            {
-              "id": 119,
+              "id": 117,
               "appearance": {
                 "items": [
                   {
@@ -16226,76 +16014,76 @@
                       "anchors": [
                         {
                           "p": [
-                            5774.0,
-                            36.0
+                            5768.0,
+                            41.0
                           ],
                           "out": [
-                            5774.0,
-                            28.0
+                            5768.0,
+                            33.0
                           ]
                         },
                         {
                           "p": [
-                            5788.0,
-                            24.0
+                            5782.0,
+                            29.0
                           ],
                           "in": [
-                            5778.666666666667,
-                            24.0
+                            5772.666666666667,
+                            29.0
                           ]
                         },
                         {
                           "p": [
-                            5852.0,
-                            24.0
+                            5858.0,
+                            29.0
                           ],
                           "out": [
-                            5861.333333333333,
-                            24.0
+                            5867.333333333333,
+                            29.0
                           ]
                         },
                         {
                           "p": [
-                            5866.0,
-                            36.0
+                            5872.0,
+                            41.0
                           ],
                           "in": [
-                            5866.0,
-                            28.0
+                            5872.0,
+                            33.0
                           ]
                         },
                         {
                           "p": [
-                            5866.0,
-                            88.8
+                            5872.0,
+                            102.2
                           ],
                           "out": [
-                            5866.0,
-                            106.08
+                            5872.0,
+                            121.72000000000001
                           ]
                         },
                         {
                           "p": [
                             5820.0,
-                            132.0
+                            151.0
                           ],
                           "in": [
-                            5850.666666666667,
-                            120.48
+                            5854.666666666667,
+                            137.98666666666668
                           ],
                           "out": [
-                            5789.333333333333,
-                            120.48
+                            5785.333333333333,
+                            137.98666666666668
                           ]
                         },
                         {
                           "p": [
-                            5774.0,
-                            88.8
+                            5768.0,
+                            102.2
                           ],
                           "in": [
-                            5774.0,
-                            106.08
+                            5768.0,
+                            121.72000000000001
                           ]
                         }
                       ],
@@ -16306,7 +16094,7 @@
               }
             },
             {
-              "id": 120,
+              "id": 118,
               "appearance": {
                 "items": [
                   {
@@ -16360,362 +16148,44 @@
                       "anchors": [
                         {
                           "p": [
-                            5788.0,
-                            62.0
+                            5786.0,
+                            72.0
                           ]
                         },
                         {
                           "p": [
                             5820.0,
-                            44.0
+                            52.0
                           ]
                         },
                         {
                           "p": [
-                            5852.0,
-                            62.0
+                            5854.0,
+                            72.0
                           ]
                         },
                         {
                           "p": [
-                            5844.0,
-                            98.0
+                            5846.0,
+                            112.0
                           ]
                         },
                         {
                           "p": [
                             5820.0,
-                            116.0
+                            132.0
                           ]
                         },
                         {
                           "p": [
-                            5796.0,
-                            98.0
+                            5794.0,
+                            112.0
                           ]
                         }
                       ],
                       "closed": true
                     }
                   ]
-                }
-              }
-            },
-            {
-              "id": 121,
-              "kind": {
-                "type": "text",
-                "kind": {
-                  "kind": "area",
-                  "frame": {
-                    "subpaths": [
-                      {
-                        "anchors": [
-                          {
-                            "p": [
-                              0.0,
-                              0.0
-                            ]
-                          },
-                          {
-                            "p": [
-                              100.0,
-                              0.0
-                            ]
-                          },
-                          {
-                            "p": [
-                              100.0,
-                              44.0
-                            ]
-                          },
-                          {
-                            "p": [
-                              0.0,
-                              44.0
-                            ]
-                          }
-                        ],
-                        "closed": true
-                      }
-                    ]
-                  }
-                },
-                "xf": [
-                  1.0,
-                  0.0,
-                  0.0,
-                  1.0,
-                  5770.0,
-                  60.0
-                ],
-                "runs": [
-                  {
-                    "text": "12",
-                    "style": {
-                      "font_family": "Inter",
-                      "font_style": "SemiBold",
-                      "size": 32.0,
-                      "tracking": 10.0,
-                      "baseline_shift": 0.0,
-                      "h_scale": 100.0,
-                      "v_scale": 100.0,
-                      "rotation": 0.0,
-                      "fill": {
-                        "type": "solid",
-                        "color": {
-                          "model": "rgb",
-                          "r": 1.0,
-                          "g": 1.0,
-                          "b": 1.0
-                        }
-                      },
-                      "stroke": {
-                        "type": "none"
-                      },
-                      "stroke_width": 0.0,
-                      "underline": false,
-                      "strikethrough": false,
-                      "all_caps": false
-                    }
-                  }
-                ],
-                "para": {
-                  "justify": "Center",
-                  "left_indent": 0.0,
-                  "right_indent": 0.0,
-                  "first_line_indent": 0.0,
-                  "space_before": 0.0,
-                  "space_after": 0.0,
-                  "hyphenate": false,
-                  "mojikumi": "lineEndHalf",
-                  "burasagari": "standard"
-                },
-                "area": {
-                  "rows": 1,
-                  "columns": 1,
-                  "gutter": 18.0,
-                  "inset": 0.0,
-                  "firstBaseline": "ascent",
-                  "firstBaselineMin": 0.0,
-                  "verticalAlign": "center",
-                  "fit": {
-                    "shrinkText": {
-                      "minPercent": 40.0
-                    }
-                  }
-                }
-              }
-            },
-            {
-              "id": 122,
-              "kind": {
-                "type": "text",
-                "kind": {
-                  "kind": "area",
-                  "frame": {
-                    "subpaths": [
-                      {
-                        "anchors": [
-                          {
-                            "p": [
-                              0.0,
-                              0.0
-                            ]
-                          },
-                          {
-                            "p": [
-                              100.0,
-                              0.0
-                            ]
-                          },
-                          {
-                            "p": [
-                              100.0,
-                              18.0
-                            ]
-                          },
-                          {
-                            "p": [
-                              0.0,
-                              18.0
-                            ]
-                          }
-                        ],
-                        "closed": true
-                      }
-                    ]
-                  }
-                },
-                "xf": [
-                  1.0,
-                  0.0,
-                  0.0,
-                  1.0,
-                  5770.0,
-                  102.0
-                ],
-                "runs": [
-                  {
-                    "text": "DEF",
-                    "style": {
-                      "font_family": "Inter",
-                      "font_style": "SemiBold",
-                      "size": 11.0,
-                      "tracking": 200.0,
-                      "baseline_shift": 0.0,
-                      "h_scale": 100.0,
-                      "v_scale": 100.0,
-                      "rotation": 0.0,
-                      "fill": {
-                        "type": "solid",
-                        "color": {
-                          "model": "rgb",
-                          "r": 0.8509804,
-                          "g": 0.9372549,
-                          "b": 1.0
-                        }
-                      },
-                      "stroke": {
-                        "type": "none"
-                      },
-                      "stroke_width": 0.0,
-                      "underline": false,
-                      "strikethrough": false,
-                      "all_caps": false
-                    }
-                  }
-                ],
-                "para": {
-                  "justify": "Center",
-                  "left_indent": 0.0,
-                  "right_indent": 0.0,
-                  "first_line_indent": 0.0,
-                  "space_before": 0.0,
-                  "space_after": 0.0,
-                  "hyphenate": false,
-                  "mojikumi": "lineEndHalf",
-                  "burasagari": "standard"
-                },
-                "area": {
-                  "rows": 1,
-                  "columns": 1,
-                  "gutter": 18.0,
-                  "inset": 0.0,
-                  "firstBaseline": "ascent",
-                  "firstBaselineMin": 0.0,
-                  "verticalAlign": "center",
-                  "fit": {
-                    "shrinkText": {
-                      "minPercent": 40.0
-                    }
-                  }
-                }
-              }
-            },
-            {
-              "id": 123,
-              "kind": {
-                "type": "text",
-                "kind": {
-                  "kind": "area",
-                  "frame": {
-                    "subpaths": [
-                      {
-                        "anchors": [
-                          {
-                            "p": [
-                              0.0,
-                              0.0
-                            ]
-                          },
-                          {
-                            "p": [
-                              120.0,
-                              0.0
-                            ]
-                          },
-                          {
-                            "p": [
-                              120.0,
-                              18.0
-                            ]
-                          },
-                          {
-                            "p": [
-                              0.0,
-                              18.0
-                            ]
-                          }
-                        ],
-                        "closed": true
-                      }
-                    ]
-                  }
-                },
-                "xf": [
-                  1.0,
-                  0.0,
-                  0.0,
-                  1.0,
-                  5760.0,
-                  160.0
-                ],
-                "runs": [
-                  {
-                    "text": "BLOQUEO",
-                    "style": {
-                      "font_family": "Inter",
-                      "font_style": "SemiBold",
-                      "size": 10.0,
-                      "tracking": 180.0,
-                      "baseline_shift": 0.0,
-                      "h_scale": 100.0,
-                      "v_scale": 100.0,
-                      "rotation": 0.0,
-                      "fill": {
-                        "type": "solid",
-                        "color": {
-                          "model": "rgb",
-                          "r": 0.5764706,
-                          "g": 0.6431373,
-                          "b": 0.7529412
-                        }
-                      },
-                      "stroke": {
-                        "type": "none"
-                      },
-                      "stroke_width": 0.0,
-                      "underline": false,
-                      "strikethrough": false,
-                      "all_caps": false
-                    }
-                  }
-                ],
-                "para": {
-                  "justify": "Center",
-                  "left_indent": 0.0,
-                  "right_indent": 0.0,
-                  "first_line_indent": 0.0,
-                  "space_before": 0.0,
-                  "space_after": 0.0,
-                  "hyphenate": false,
-                  "mojikumi": "lineEndHalf",
-                  "burasagari": "standard"
-                },
-                "area": {
-                  "rows": 1,
-                  "columns": 1,
-                  "gutter": 18.0,
-                  "inset": 0.0,
-                  "firstBaseline": "ascent",
-                  "firstBaselineMin": 0.0,
-                  "verticalAlign": "center",
-                  "fit": {
-                    "shrinkText": {
-                      "minPercent": 40.0
-                    }
-                  }
                 }
               }
             }
@@ -17655,7 +17125,7 @@
     },
     "raster_effects_ppi": 72.0,
     "images": {},
-    "next_id": 124,
+    "next_id": 119,
     "metadata": {
       "author": "",
       "authorTitle": "",
@@ -17665,8 +17135,8 @@
       "copyrightStatus": "unknown",
       "copyrightNotice": "",
       "copyrightUrl": "",
-      "created": 1793365719,
-      "modified": 1793365719
+      "created": 1793370037,
+      "modified": 1793370037
     }
   },
   "images": {}

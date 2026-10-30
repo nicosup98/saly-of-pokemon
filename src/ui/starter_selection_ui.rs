@@ -48,9 +48,16 @@ pub struct SelectedStarterInfoLabel;
 fn setup_starter_selection(
     mut commands: Commands,
     asset_server: Res<AssetServer>,
+    preloaded: Option<Res<crate::ui::PreloadedAssets>>,
     meta: Res<MetaProfile>,
     run_state: Res<CurrentRunState>,
 ) {
+    let pre = preloaded.as_deref();
+    let srv = Some(&*asset_server);
+    let banner_tex = crate::ui::load_ui_image(pre, srv, "ui/hud/hud_turn_banner.png");
+    let btn_gold_tex = crate::ui::load_ui_image(pre, srv, "ui/buttons/btn_gold.png");
+    let btn_secondary_tex = crate::ui::load_ui_image(pre, srv, "ui/buttons/btn_secondary.png");
+
     commands
         .spawn((
             CleanupUi,
@@ -63,26 +70,44 @@ fn setup_starter_selection(
                 padding: UiRect::all(Val::Px(24.0)),
                 ..default()
             },
-            BackgroundColor(Color::srgb(0.08, 0.09, 0.13)),
+            BackgroundColor(Color::srgb(0.03, 0.04, 0.07)),
         ))
         .with_children(|root| {
-            // === CABECERA ===
+            // === CABECERA (`ui/hud/hud_turn_banner.png`) ===
             root.spawn(Node {
+                min_width: Val::Px(560.0),
+                min_height: Val::Px(84.0),
+                position_type: PositionType::Relative,
                 flex_direction: FlexDirection::Column,
+                justify_content: JustifyContent::Center,
                 align_items: AlignItems::Center,
-                row_gap: Val::Px(6.0),
+                padding: UiRect::axes(Val::Px(42.0), Val::Px(12.0)),
+                row_gap: Val::Px(2.0),
                 ..default()
             })
             .with_children(|header| {
+                if let Some(ref tex) = banner_tex {
+                    header.spawn((
+                        ImageNode::new(tex.clone()),
+                        Node {
+                            position_type: PositionType::Absolute,
+                            left: Val::Px(0.0),
+                            right: Val::Px(0.0),
+                            top: Val::Px(0.0),
+                            bottom: Val::Px(0.0),
+                            ..default()
+                        },
+                    ));
+                }
                 header.spawn((
                     Text::new("SELECCIÓN DE POKÉMON INICIAL"),
-                    TextFont::from_font_size(24.0),
-                    TextColor(Color::srgb(1.0, 0.85, 0.2)),
+                    TextFont::from_font_size(22.0),
+                    TextColor(Color::srgb(0.95, 0.76, 0.30)),
                 ));
                 header.spawn((
                     Text::new("Elige con cuál de tus Pokémon desbloqueados en el Gachapón deseas iniciar la travesía:"),
-                    TextFont::from_font_size(14.0),
-                    TextColor(Color::srgb(0.8, 0.85, 0.95)),
+                    TextFont::from_font_size(12.5),
+                    TextColor(Color::srgb(0.75, 0.84, 0.96)),
                 ));
             });
 
@@ -102,8 +127,14 @@ fn setup_starter_selection(
                 for &spec_id in meta.unlocked_pokemon.iter() {
                     let is_active = run_state.selected_starter_id == spec_id;
                     let sp = get_species_data(spec_id);
-                    let name = sp.as_ref().map(|s| s.name.clone()).unwrap_or_else(|| format!("Pokémon #{}", spec_id));
-                    let primary_type = sp.as_ref().and_then(|s| s.primary_types.first().copied()).unwrap_or(ElementType::Normal);
+                    let name = sp
+                        .as_ref()
+                        .map(|s| s.name.clone())
+                        .unwrap_or_else(|| format!("Pokémon #{}", spec_id));
+                    let primary_type = sp
+                        .as_ref()
+                        .and_then(|s| s.primary_types.first().copied())
+                        .unwrap_or(ElementType::Normal);
                     let type_col = element_color(primary_type);
 
                     let (hp, atk, def, spatk) = if let Some(s) = &sp {
@@ -113,15 +144,15 @@ fn setup_starter_selection(
                     };
 
                     let border_col = if is_active {
-                        Color::srgb(1.0, 0.85, 0.2)
+                        Color::srgb(0.95, 0.76, 0.30)
                     } else {
-                        Color::srgb(0.28, 0.32, 0.42)
+                        Color::srgb(0.16, 0.23, 0.33)
                     };
 
                     let card_bg = if is_active {
-                        Color::srgb(0.22, 0.20, 0.16)
+                        Color::srgb(0.11, 0.16, 0.24)
                     } else {
-                        Color::srgb(0.13, 0.15, 0.20)
+                        Color::srgb(0.06, 0.09, 0.14)
                     };
 
                     grid.spawn((
@@ -133,13 +164,16 @@ fn setup_starter_selection(
                             flex_direction: FlexDirection::Column,
                             justify_content: JustifyContent::SpaceBetween,
                             align_items: AlignItems::Center,
-                            padding: UiRect::all(Val::Px(10.0)),
-                            border: UiRect::all(Val::Px(2.0)),
+                            padding: UiRect::all(Val::Px(12.0)),
+                            border: UiRect::all(Val::Px(2.5)),
+                            border_radius: BorderRadius::all(Val::Px(16.0)),
                             ..default()
                         },
                         UiTransform::default(),
                         GlobalZIndex(10),
-                        CardHoverAnimation::new(border_col).with_lift(-16.0).with_scale(1.06),
+                        CardHoverAnimation::new(border_col)
+                            .with_lift(-16.0)
+                            .with_scale(1.06),
                         BackgroundColor(card_bg),
                         BorderColor(border_col),
                     ))
@@ -156,13 +190,13 @@ fn setup_starter_selection(
                             top.spawn((
                                 Text::new(format!("#{:03}", spec_id)),
                                 TextFont::from_font_size(11.0),
-                                TextColor(Color::srgb(0.65, 0.70, 0.80)),
+                                TextColor(Color::srgb(0.65, 0.72, 0.84)),
                             ));
                             top.spawn((
                                 StarterActiveBadge(spec_id),
                                 Text::new(if is_active { "EN EQUIPO" } else { "" }),
                                 TextFont::from_font_size(10.0),
-                                TextColor(Color::srgb(1.0, 0.85, 0.2)),
+                                TextColor(Color::srgb(0.95, 0.76, 0.30)),
                             ));
                         });
 
@@ -187,8 +221,9 @@ fn setup_starter_selection(
                         // Insignia de Tipo
                         card.spawn((
                             Node {
-                                padding: UiRect::axes(Val::Px(6.0), Val::Px(2.0)),
+                                padding: UiRect::axes(Val::Px(8.0), Val::Px(2.0)),
                                 border: UiRect::all(Val::Px(1.0)),
+                                border_radius: BorderRadius::all(Val::Px(6.0)),
                                 ..default()
                             },
                             BackgroundColor(type_col),
@@ -211,15 +246,16 @@ fn setup_starter_selection(
                         let btn_bg = if is_active {
                             Color::srgb(0.35, 0.30, 0.10)
                         } else {
-                            Color::srgb(0.18, 0.35, 0.55)
+                            Color::srgb(0.14, 0.24, 0.38)
                         };
 
                         card.spawn((
                             Node {
                                 width: Val::Percent(100.0),
-                                height: Val::Px(26.0),
+                                height: Val::Px(28.0),
                                 justify_content: JustifyContent::Center,
                                 align_items: AlignItems::Center,
+                                border_radius: BorderRadius::all(Val::Px(6.0)),
                                 ..default()
                             },
                             BackgroundColor(btn_bg),
@@ -253,59 +289,92 @@ fn setup_starter_selection(
                         current_name, run_state.selected_starter_id
                     )),
                     TextFont::from_font_size(14.0),
-                    TextColor(Color::srgb(0.95, 0.9, 0.7)),
+                    TextColor(Color::srgb(0.95, 0.76, 0.30)),
                 ));
 
-                footer.spawn(Node {
-                    flex_direction: FlexDirection::Row,
-                    column_gap: Val::Px(18.0),
-                    ..default()
-                })
-                .with_children(|actions| {
-                    // Botón Iniciar Ruta
-                    actions
-                        .spawn((
-                            Button,
-                            StarterActionNavButton(StarterNavAction::StartMap),
-                            Node {
-                                width: Val::Px(240.0),
-                                height: Val::Px(46.0),
-                                justify_content: JustifyContent::Center,
-                                align_items: AlignItems::Center,
-                                border: UiRect::all(Val::Px(1.5)),
-                                ..default()
-                            },
-                            BackgroundColor(Color::srgb(0.20, 0.55, 0.85)),
-                            BorderColor(Color::WHITE),
-                        ))
-                        .with_child((
-                            Text::new("INICIAR RUTA (MAPA)"),
-                            TextFont::from_font_size(14.0),
-                            TextColor(Color::WHITE),
-                        ));
+                footer
+                    .spawn(Node {
+                        flex_direction: FlexDirection::Row,
+                        column_gap: Val::Px(18.0),
+                        ..default()
+                    })
+                    .with_children(|actions| {
+                        // Botón Iniciar Ruta (`ui/buttons/btn_gold.png`)
+                        actions
+                            .spawn((
+                                Button,
+                                StarterActionNavButton(StarterNavAction::StartMap),
+                                Node {
+                                    width: Val::Px(245.0),
+                                    height: Val::Px(48.0),
+                                    position_type: PositionType::Relative,
+                                    justify_content: JustifyContent::Center,
+                                    align_items: AlignItems::Center,
+                                    border: UiRect::all(Val::Px(2.0)),
+                                    border_radius: BorderRadius::all(Val::Px(12.0)),
+                                    overflow: Overflow::clip(),
+                                    ..default()
+                                },
+                                BackgroundColor(Color::srgb(0.28, 0.22, 0.08)),
+                                BorderColor(Color::srgb(0.95, 0.76, 0.30)),
+                            ))
+                            .with_children(|btn| {
+                                if let Some(ref tex) = btn_gold_tex {
+                                    btn.spawn((
+                                        ImageNode::new(tex.clone()),
+                                        Node {
+                                            position_type: PositionType::Absolute,
+                                            left: Val::Px(0.0),
+                                            right: Val::Px(0.0),
+                                            top: Val::Px(0.0),
+                                            bottom: Val::Px(0.0),
+                                            ..default()
+                                        },
+                                    ));
+                                }
+                                btn.spawn((
+                                    Text::new("INICIAR RUTA (MAPA)"),
+                                    TextFont::from_font_size(14.0),
+                                    TextColor(Color::srgb(0.15, 0.09, 0.02)),
+                                ));
+                            });
 
-                    // Botón Volver al Menú
-                    actions
-                        .spawn((
-                            Button,
-                            StarterActionNavButton(StarterNavAction::BackToMenu),
-                            Node {
-                                width: Val::Px(200.0),
-                                height: Val::Px(46.0),
-                                justify_content: JustifyContent::Center,
-                                align_items: AlignItems::Center,
-                                border: UiRect::all(Val::Px(1.5)),
-                                ..default()
-                            },
-                            BackgroundColor(Color::srgb(0.25, 0.28, 0.35)),
-                            BorderColor(Color::srgb(0.5, 0.55, 0.65)),
-                        ))
-                        .with_child((
-                            Text::new("VOLVER AL MENÚ"),
-                            TextFont::from_font_size(14.0),
-                            TextColor(Color::WHITE),
-                        ));
-                });
+                        // Botón Volver al Menú (`ui/buttons/btn_secondary.png`)
+                        actions
+                            .spawn((
+                                Button,
+                                StarterActionNavButton(StarterNavAction::BackToMenu),
+                                Node {
+                                    width: Val::Px(215.0),
+                                    height: Val::Px(48.0),
+                                    position_type: PositionType::Relative,
+                                    justify_content: JustifyContent::Center,
+                                    align_items: AlignItems::Center,
+                                    ..default()
+                                },
+                                BackgroundColor(Color::NONE),
+                            ))
+                            .with_children(|btn| {
+                                if let Some(ref tex) = btn_secondary_tex {
+                                    btn.spawn((
+                                        ImageNode::new(tex.clone()),
+                                        Node {
+                                            position_type: PositionType::Absolute,
+                                            left: Val::Px(0.0),
+                                            right: Val::Px(0.0),
+                                            top: Val::Px(0.0),
+                                            bottom: Val::Px(0.0),
+                                            ..default()
+                                        },
+                                    ));
+                                }
+                                btn.spawn((
+                                    Text::new("VOLVER AL MENÚ"),
+                                    TextFont::from_font_size(14.0),
+                                    TextColor(Color::WHITE),
+                                ));
+                            });
+                    });
             });
         });
 }
@@ -350,18 +419,18 @@ fn update_starter_cards_visuals(
     for (card, mut bg, mut border, mut hover) in q_cards.iter_mut() {
         let is_active = card.0 == run_state.selected_starter_id;
         let border_col = if is_active {
-            Color::srgb(1.0, 0.85, 0.2)
+            Color::srgb(0.95, 0.76, 0.30)
         } else {
-            Color::srgb(0.28, 0.32, 0.42)
+            Color::srgb(0.16, 0.23, 0.33)
         };
         *border = BorderColor(border_col);
         if let Some(ref mut h) = hover {
             h.base_border = border_col;
         }
         *bg = if is_active {
-            BackgroundColor(Color::srgb(0.22, 0.20, 0.16))
+            BackgroundColor(Color::srgb(0.11, 0.16, 0.24))
         } else {
-            BackgroundColor(Color::srgb(0.13, 0.15, 0.20))
+            BackgroundColor(Color::srgb(0.06, 0.09, 0.14))
         };
     }
 

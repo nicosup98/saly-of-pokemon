@@ -682,3 +682,59 @@ fn test_self_contained_embedded_assets_registry() {
         assert!(!data.value().is_empty());
     }
 }
+
+#[test]
+fn test_new_ui_kit_assets_embedded_and_mapped() {
+    use slay_of_pokemon::card::ALL_UI_KIT_ASSETS;
+    use slay_of_pokemon::{build_embedded_asset_dir, EMBEDDED_ASSETS};
+    use slay_of_pokemon::map::generator::NodeType;
+    use slay_of_pokemon::ui::node_ui_asset_path;
+    use std::path::Path;
+
+    assert_eq!(ALL_UI_KIT_ASSETS.len(), 33);
+
+    let dir = build_embedded_asset_dir();
+
+    // Todos los assets del UI kit deben existir en disco y en memoria incrustada
+    for &ui_path in ALL_UI_KIT_ASSETS.iter() {
+        let full_disk_path = format!("assets/{}", ui_path);
+        assert!(
+            Path::new(&full_disk_path).exists(),
+            "El asset de UI '{}' no existe en disco",
+            full_disk_path
+        );
+        let data = dir.get_asset(Path::new(ui_path)).expect(&format!(
+            "El asset de UI '{}' debe estar incrustado en memoria",
+            ui_path
+        ));
+        assert!(!data.value().is_empty());
+    }
+
+    // Los archivos de vista previa y código fuente de VectorCraft (.svg, .vectorcraft, .json) no deben inflar el binario
+    assert!(dir.get_asset(Path::new("ui/preview_kit.png")).is_none());
+    assert!(dir.get_asset(Path::new("ui/preview_combat.png")).is_none());
+    for &(rel_path, _) in EMBEDDED_ASSETS.iter() {
+        assert!(!rel_path.ends_with(".svg"), "No se deben incrustar archivos .svg: {}", rel_path);
+        assert!(!rel_path.ends_with(".vectorcraft"), "No se deben incrustar archivos .vectorcraft: {}", rel_path);
+        assert!(!rel_path.ends_with(".json"), "No se deben incrustar archivos .json: {}", rel_path);
+    }
+
+    // Todos los tipos de nodo del mapa deben mapear a un icono de nodo válido del UI kit
+    for node_type in [
+        NodeType::Enemy,
+        NodeType::MiniBoss,
+        NodeType::PokemonCenter,
+        NodeType::Shop,
+        NodeType::Treasure,
+        NodeType::GymLeader,
+    ] {
+        let path = node_ui_asset_path(node_type);
+        assert!(
+            ALL_UI_KIT_ASSETS.contains(&path),
+            "El icono de nodo '{}' para {:?} debe pertenecer a ALL_UI_KIT_ASSETS",
+            path,
+            node_type
+        );
+    }
+}
+

@@ -134,24 +134,23 @@ function button(ctx, kind, label, state = 'normal') {
     });
   }
 
-  // label
-  let textX = X + 34;
-  let textW = BW - 68;
   if (s.icon === 'pokeball') {
-    ctx.pokeball(X + 52, Y + oy + BH / 2, 20, '#e8452b', '#f7f9ff', '#111827');
-    textX = X + 82;
-    textW = BW - 112;
+    ctx.pokeball(X + 46, Y + oy + BH / 2, 19, '#e8452b', '#f7f9ff', '#111827');
   }
 
-  ctx.text(textX, Y + oy + 18, textW, BH - 36, label, {
-    size: 25,
-    style: 'SemiBold',
-    color: s.text,
-    tracking: 70,
-    justify: 'center',
-    valign: 'center',
-    fit: 'shrinkText',
-  });
+  if (label) {
+    let textX = s.icon === 'pokeball' ? X + 82 : X + 34;
+    let textW = s.icon === 'pokeball' ? BW - 112 : BW - 68;
+    ctx.text(textX, Y + oy + 18, textW, BH - 36, label, {
+      size: 25,
+      style: 'SemiBold',
+      color: s.text,
+      tracking: 70,
+      justify: 'center',
+      valign: 'center',
+      fit: 'shrinkText',
+    });
+  }
 
   if (s.icon === 'chevron') {
     // small forward chevron at the right
@@ -168,13 +167,13 @@ function button(ctx, kind, label, state = 'normal') {
 }
 
 doc
-  .board('btn_primary', W, H, (c) => button(c, 'primary', 'CONTINUAR'))
-  .board('btn_primary_hover', W, H, (c) => button(c, 'primary', 'CONTINUAR', 'hover'))
-  .board('btn_primary_pressed', W, H, (c) => button(c, 'primary', 'CONTINUAR', 'pressed'))
-  .board('btn_secondary', W, H, (c) => button(c, 'secondary', 'OPCIONES'))
-  .board('btn_danger', W, H, (c) => button(c, 'danger', 'SALIR'))
-  .board('btn_gold', W, H, (c) => button(c, 'gold', 'INICIAR RUN'))
-  .board('btn_disabled', W, H, (c) => button(c, 'disabled', 'BLOQUEADO'))
+  .board('btn_primary', W, H, (c) => button(c, 'primary', ''))
+  .board('btn_primary_hover', W, H, (c) => button(c, 'primary', '', 'hover'))
+  .board('btn_primary_pressed', W, H, (c) => button(c, 'primary', '', 'pressed'))
+  .board('btn_secondary', W, H, (c) => button(c, 'secondary', ''))
+  .board('btn_danger', W, H, (c) => button(c, 'danger', ''))
+  .board('btn_gold', W, H, (c) => button(c, 'gold', ''))
+  .board('btn_disabled', W, H, (c) => button(c, 'disabled', ''))
   .board('btn_icon', 128, 128, (c) => {
     c.rect(14, 14, 100, 100, 26, {
       fillGrad: [
